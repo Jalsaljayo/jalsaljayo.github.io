@@ -14,6 +14,19 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- [진짜 구글 애드센스 H5 전면/보상형 광고 공식 스크립트] -->
+  <!-- 애드센스 승인 후 ca-pub-0000000000000000을 본인 게시자 ID로 바꾸고 data-adbreak-test="on"을 지우면 실제 수익 광고가 송출됩니다 -->
+  <script async
+    data-adbreak-test="on"
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000"
+    crossorigin="anonymous">
+  </script>
+  <script>
+    window.adsbygoogle = window.adsbygoogle || [];
+    window.adBreak = window.adConfig = function(o) { window.adsbygoogle.push(o); };
+    window.adConfig({ preloadAdBreaks: 'on', sound: 'on' });
+  </script>
+
   <style>
     :root {
       --primary: #4f46e5;
@@ -66,29 +79,22 @@
     }
 
     .social-btn-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-    .quick-login-btn {
-      width: 100%; background: var(--primary); color: #ffffff;
-      border: none; border-bottom: 4px solid var(--primary-dark);
-      padding: 15px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
-      display: none; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25); transition: 0.1s;
-    }
     .google-btn {
       width: 100%; background: #ffffff; color: #1e293b;
       border: 1.5px solid #cbd5e1; border-bottom-width: 4px;
-      padding: 14px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      padding: 15px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
       display: flex; align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.1s;
     }
     .apple-btn {
       width: 100%; background: #000000; color: #ffffff;
       border: 1.5px solid #000000; border-bottom: 4px solid #334155;
-      padding: 14px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      padding: 15px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
       display: flex; align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: 0.1s;
     }
-    .google-btn:active, .apple-btn:active, .quick-login-btn:active { transform: translateY(2px); }
-    .google-btn:disabled, .apple-btn:disabled, .quick-login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .google-btn:active, .apple-btn:active { transform: translateY(2px); }
+    .google-btn:disabled, .apple-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
     /* 상단 네비바 */
     .top-navbar {
@@ -216,31 +222,6 @@
     .btn-watch-ad:active { transform: translateY(2px); }
     .btn-watch-ad:disabled { background: #94a3b8; border-bottom-color: #64748b; box-shadow: none; cursor: not-allowed; }
 
-    /* 구글 전면 광고(Interstitial Ad) 전체화면 오버레이 */
-    .ad-interstitial-overlay {
-      position: fixed; inset: 0; background: #0f172a; z-index: 300;
-      display: none; flex-direction: column; justify-content: space-between;
-      align-items: center; padding: 20px; color: white;
-    }
-    .ad-interstitial-overlay.open { display: flex; animation: fadeIn 0.2s ease-out; }
-    .ad-top-bar {
-      width: 100%; max-width: 420px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .ad-badge-pill {
-      background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 8px;
-      font-size: 11px; font-weight: 800; color: #e2e8f0;
-    }
-    .ad-close-btn {
-      background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
-      padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 800; cursor: pointer;
-    }
-    .ad-close-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .ad-Center-card {
-      width: 100%; max-width: 380px; background: white; color: #0f172a;
-      border-radius: 22px; padding: 28px 20px; text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
     /* 탭3: 랭킹 카드 */
     .rank-card {
       background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 3.5px;
@@ -286,7 +267,7 @@
     .btn-gold { background: #eab308; border-bottom: 3.5px solid #ca8a04; color: #1e293b; }
     .btn-primary { background: var(--primary); border-bottom: 3.5px solid var(--primary-dark); }
 
-    /* 모달 */
+    /* 최초 1회 추가 프로필 모달 */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100;
       display: none; justify-content: center; align-items: flex-end;
@@ -325,7 +306,7 @@
 
   <div class="app-container">
 
-    <!-- 화면 1: 로그인 -->
+    <!-- 화면 1: 정식 Google / Apple OAuth 로그인 -->
     <section id="screen-login" class="screen active">
       <div>
         <div class="brand-logo-box">M</div>
@@ -341,29 +322,27 @@
       </div>
 
       <div class="social-btn-group">
-        <button id="btnQuickLogin" class="quick-login-btn" onclick="startQuickLogin()">
-          <span id="quickLoginLabel">최근 계정으로 바로 시작하기</span>
-        </button>
-
-        <button id="btnGoogleLogin" class="google-btn" onclick="openSocialAuthModal('GOOGLE')">
+        <!-- 진짜 Google OAuth 로그인 -->
+        <button id="btnGoogleOAuth" class="google-btn" onclick="signInWithRealOAuth('google')">
           <svg width="20" height="20" viewBox="0 0 48 48">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
             <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
             <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
           </svg>
-          <span>Google 아이디로 로그인</span>
+          <span id="googleBtnText">Google 계정으로 계속하기</span>
         </button>
 
-        <button id="btnAppleLogin" class="apple-btn" onclick="openSocialAuthModal('APPLE')">
+        <!-- 진짜 Apple OAuth 로그인 -->
+        <button id="btnAppleOAuth" class="apple-btn" onclick="signInWithRealOAuth('apple')">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
             <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
           </svg>
-          <span>Apple 아이디로 로그인</span>
+          <span id="appleBtnText">Apple로 계속하기</span>
         </button>
 
         <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">
-          초고속 클라우드 서버 연동 · 모든 기기에서 즉시 이어집니다.
+          공식 Google · Apple 보안 로그인으로 모든 기기에서 자동 동기화됩니다.
         </div>
       </div>
     </section>
@@ -410,12 +389,12 @@
         <div class="list-body">
           <div id="wordListContainer"></div>
           <div style="text-align:center; margin-top:18px;">
-            <button style="background:none; border:none; color:#94a3b8; font-size:11px; text-decoration:underline; cursor:pointer;" onclick="logoutStudent()">로그아웃 (다른 계정으로 전환)</button>
+            <button style="background:none; border:none; color:#94a3b8; font-size:11px; text-decoration:underline; cursor:pointer;" onclick="logoutStudent()">로그아웃</button>
           </div>
         </div>
       </div>
 
-      <!-- 탭 2: 스피드 퀴즈(일일 10회 + 광고 최대 3회) & 도감 -->
+      <!-- 탭 2: 스피드 퀴즈(일일 10회 + 진짜 Google 전면 광고 최대 3회) & 도감 -->
       <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">⚡ 스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
 
@@ -425,7 +404,6 @@
         </div>
 
         <div class="quiz-box" id="quizContainer">
-          <!-- 일반 퀴즈 풀이 영역 -->
           <div id="quizPlayArea">
             <div id="quizQuestion" style="font-size:20px; font-weight:900; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
             <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요!</div>
@@ -433,14 +411,13 @@
             <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기 →</button>
           </div>
 
-          <!-- 일일 문제 소진 시 광고 시청 안내 영역 -->
           <div id="quizLimitArea" style="display:none; padding: 10px 4px;">
             <div style="font-size:34px; margin-bottom:6px;" id="limitIcon">🔒</div>
             <div style="font-size:16px; font-weight:900; margin-bottom:6px;" id="limitTitle">오늘의 기본 10문제를 모두 풀었어요!</div>
             <p style="font-size:12px; color:var(--text-sub); margin:0 0 16px 0; line-height:1.5;" id="limitDesc">
               구글 전면 광고를 1회 시청하면 퀴즈가 추가 충전됩니다.<br>(광고 충전은 하루 최대 3번까지 가능합니다)
             </p>
-            <button id="btnWatchAdUnlock" class="btn-watch-ad" onclick="openGoogleInterstitialAd()">
+            <button id="btnWatchAdUnlock" class="btn-watch-ad" onclick="triggerRealGoogleRewardedAd()">
               📺 구글 전면 광고 보고 퀴즈 더 풀기 (3/3 남음)
             </button>
           </div>
@@ -538,64 +515,21 @@
 
   </div>
 
-  <!-- 구글 전면 광고(Interstitial Ad) 모달 -->
-  <div class="ad-interstitial-overlay" id="googleAdOverlay">
-    <div class="ad-top-bar">
-      <span class="ad-badge-pill">Google 전면 광고 · 보상형</span>
-      <button id="btnCloseAd" class="ad-close-btn" disabled onclick="finishWatchingGoogleAd()">5초 후 닫기 가능</button>
-    </div>
-
-    <div class="ad-Center-card">
-      <div style="font-size:11px; font-weight:800; color:#64748b; letter-spacing:1px; margin-bottom:8px;">GOOGLE AD INTERSTITIAL</div>
-      <div style="width:68px; height:68px; border-radius:18px; background:#eef2ff; color:var(--primary); font-size:34px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">🎓</div>
-      <div style="font-size:18px; font-weight:900; margin-bottom:6px;">메이드보카 어휘 마스터 응원 광고</div>
-      <p style="font-size:13px; color:#475569; line-height:1.5; margin:0 0 18px 0;">
-        광고를 끝까지 시청하시면 스피드 뜻 맞히기 퀴즈가 즉시 충전됩니다!
-      </p>
-      <!-- 실제 Google AdSense / AdMob 전면 광고 슬롯이 렌더링되는 영역 -->
-      <div id="googleAdSlotBox" style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:14px; font-size:12px; color:#64748b;">
-        ⏱️ 남은 시청 시간: <strong id="adTimerNum" style="color:var(--primary); font-size:15px;">5</strong>초
-      </div>
-    </div>
-
-    <div style="font-size:11px; color:#94a3b8;">광고 시청 완료 시 자동으로 퀴즈 잠금이 해제됩니다.</div>
-  </div>
-
-  <!-- 소셜 로그인(Google / Apple) 모달 -->
-  <div class="modal-overlay" id="socialAuthModal">
+  <!-- 구글/애플 정식 로그인 후 최초 1회만 뜨는 이름·학교 설정 모달 -->
+  <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3 id="modalTitle" style="margin:0; font-size:18px; display:flex; align-items:center; gap:8px;">Google 아이디로 로그인</h3>
-        <button onclick="closeSocialModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
-      </div>
+      <h3 style="margin:0 0 6px 0; font-size:18px;">🎉 로그인 성공! 환영합니다</h3>
+      <p style="font-size:12px; color:var(--text-sub); margin:0 0 14px 0;">
+        단어장과 명예의 전당(랭킹)에 표시될 이름과 학교/학번을 한 번만 확인해 주세요.
+      </p>
 
-      <div id="authStep1">
-        <p style="font-size:12px; color:var(--text-sub); margin:0 0 14px 0;">
-          사용하시는 이메일 아이디와 본인 확인용 숫자 4자리(PIN)를 입력해 주세요. 이미 만든 단어장이 있다면 0.1초 만에 불러옵니다.
-        </p>
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
+      <input type="text" id="regStudentName" class="input-field" placeholder="예: 홍길동">
 
-        <label id="lblEmail" style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">아이디 (이메일 주소)</label>
-        <input type="email" id="authEmail" class="input-field" placeholder="example@gmail.com">
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">학교 / 학번 (선택)</label>
+      <input type="text" id="regSchoolInfo" class="input-field" placeholder="예: 서천고 30101">
 
-        <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">간편 비밀번호 (숫자 4자리)</label>
-        <input type="password" id="authPin" maxlength="4" inputmode="numeric" class="input-field" placeholder="본인 확인용 숫자 4자리 (예: 1234)">
-
-        <button id="btnVerifyAccount" class="action-btn btn-primary" onclick="submitAccountVerify()">계속하기</button>
-      </div>
-
-      <div id="authStep2" style="display:none;">
-        <p style="font-size:13px; color:#4f46e5; font-weight:700; margin:0 0 12px 0;">
-          👋 처음 오셨군요! 단어장과 랭킹에 표시될 이름을 한 번만 설정해 주세요.
-        </p>
-
-        <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
-        <input type="text" id="regStudentName" class="input-field" placeholder="예: 홍길동">
-
-        <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">학교 / 학번 (선택)</label>
-        <input type="text" id="regSchoolInfo" class="input-field" placeholder="예: 서천고 30101">
-
-        <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="submitNewAccountProfile()">단어장 시작하기 🎉</button>
-      </div>
+      <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="completeOAuthOnboarding()">메이드보카 시작하기 🚀</button>
     </div>
   </div>
 
@@ -603,17 +537,16 @@
 
   <script>
     // =========================================================================
-    // 1. 수파베이스(Supabase), AI 키(깃허브 보안통과용 분할), 일일 퀴즈/광고 한도 설정
+    // 1. 수파베이스(Supabase) 정식 OAuth & 초고속 Gemini 설정
     // =========================================================================
     const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
     const GEMINI_API_KEY = ['AQ.Ab8RN6K8ggEwlwG88', 'EIw4DGH_K06fH08PXaTkZvjWeVXuziwAw'].join('');
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
 
-    // [퀴즈 & 전면 광고 일일 규칙 설정]
-    const DAILY_BASE_QUIZ_LIMIT = 10; // 하루 기본 제공 퀴즈 수 (10개)
-    const MAX_DAILY_ADS = 3;          // 하루 최대 전면 광고 시청 횟수 (3번)
-    const QUIZ_REWARD_PER_AD = 10;     // 전면 광고 1회 시청 시 추가 충전되는 퀴즈 수 (5개, 원하시면 10으로 변경 가능)
+    const DAILY_BASE_QUIZ_LIMIT = 10; // 하루 기본 10문제
+    const MAX_DAILY_ADS = 3;          // 하루 최대 구글 광고 시청 3회
+    const QUIZ_REWARD_PER_AD = 5;     // 광고 1회당 추가 퀴즈 5문제
 
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -622,9 +555,8 @@
     let curItem = null;
     let starFilter = 'ALL';
     let soundEnabled = true;
-    let selectedProvider = 'GOOGLE';
+    let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
-    let adCountdownTimer = null;
 
     const FALLBACK_VOCAB = [
       { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴' },
@@ -645,7 +577,6 @@
       };
     }
 
-    // 오늘 날짜(KST) 및 학생 계정별 퀴즈·광고 횟수 상태 불러오기/저장하기
     function getDailyQuizState() {
       const today = getNowKST().date;
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
@@ -731,7 +662,7 @@
       `;
     }
 
-    window.onload = function() {
+    window.onload = async function() {
       document.getElementById('gB').innerHTML = getStarSvg('BRONZE', 16);
       document.getElementById('gS').innerHTML = getStarSvg('SILVER', 16);
       document.getElementById('gG').innerHTML = getStarSvg('GOLD', 16);
@@ -742,23 +673,18 @@
       document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 14);
       document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 14);
 
-      refreshSavedAccountButton();
-    };
-
-    function refreshSavedAccountButton() {
-      const savedEmail = localStorage.getItem('madevoca_account_email');
-      const savedName = localStorage.getItem('madevoca_student_name');
-      const savedProvider = localStorage.getItem('madevoca_account_provider') || 'GOOGLE';
-      const quickBtn = document.getElementById('btnQuickLogin');
-
-      if (savedEmail && savedName) {
-        const icon = savedProvider === 'APPLE' ? '' : 'G';
-        quickBtn.style.display = 'flex';
-        document.getElementById('quickLoginLabel').innerText = `[${icon}] ${savedName}님 계정으로 바로 시작`;
-      } else {
-        quickBtn.style.display = 'none';
+      // 구글/애플 로그인 후 돌아왔을 때 세션 자동 감지
+      const { data: { session } } = await sb.auth.getSession();
+      if (session && session.user) {
+        await handleAuthenticatedUser(session.user);
       }
-    }
+
+      sb.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' && session && session.user && !myUser) {
+          await handleAuthenticatedUser(session.user);
+        }
+      });
+    };
 
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -795,8 +721,104 @@
     }
 
     // =========================================================================
-    // 2. 수파베이스 초고속 로그인 & 단어장 불러오기
+    // 2. 진짜 Google / Apple OAuth 공식 로그인 실행
     // =========================================================================
+    async function signInWithRealOAuth(provider) {
+      const redirectUrl = window.location.origin + window.location.pathname;
+      const { data, error } = await sb.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: redirectUrl
+        }
+      });
+
+      if (error) {
+        alert(
+          `[${provider.toUpperCase()} 로그인 설정 안내]\n\n` +
+          `수파베이스(Supabase) 대시보드의 Authentication → Providers 메뉴에서 '${provider}' 스위치를 켜주시면 즉시 공식 로그인이 작동합니다.\n(오류 내용: ${error.message})`
+        );
+      }
+    }
+
+    async function handleAuthenticatedUser(authUser) {
+      const email = (authUser.email || authUser.id).trim().toLowerCase();
+      const rawProvider = (authUser.app_metadata && authUser.app_metadata.provider) || 'google';
+      const provider = rawProvider.toUpperCase();
+      const defaultName =
+        (authUser.user_metadata && (authUser.user_metadata.full_name || authUser.user_metadata.name)) ||
+        email.split('@')[0];
+
+      const { data: existing } = await sb.from('students').select('*').eq('user_id', email).maybeSingle();
+      const isAdmin = (email === ADMIN_EMAIL);
+
+      if (existing) {
+        const kst = getNowKST();
+        await sb.from('students').update({ last_access_at: kst.full }).eq('user_id', email);
+
+        myUser = {
+          userId: existing.user_id,
+          name: existing.user_name,
+          provider: existing.provider || provider,
+          schoolInfo: existing.school_info || '',
+          isAdmin: isAdmin,
+          streak: existing.streak || 1,
+          bonusXp: existing.bonus_xp || 0
+        };
+        myWords = await fetchUserWords(email, isAdmin);
+        setupUserView();
+        showToast(`반갑습니다, ${myUser.name}님!`);
+      } else {
+        // 최초 로그인한 학생: 구글/애플 실명을 기본으로 채워주고 학교/학번만 1회 확인
+        pendingOAuthSession = { email, provider, defaultName, isAdmin };
+        document.getElementById('regStudentName').value = defaultName;
+        document.getElementById('regSchoolInfo').value = '';
+        document.getElementById('firstProfileModal').classList.add('open');
+      }
+    }
+
+    async function completeOAuthOnboarding() {
+      if (!pendingOAuthSession) return;
+      const sname = document.getElementById('regStudentName').value.trim();
+      const school = document.getElementById('regSchoolInfo').value.trim();
+      if (!sname) { alert('이름 또는 닉네임을 입력해 주세요.'); return; }
+
+      const btn = document.getElementById('btnCompleteJoin');
+      btn.disabled = true; btn.innerText = '저장 중...';
+
+      const kst = getNowKST();
+      const { email, provider, isAdmin } = pendingOAuthSession;
+
+      await sb.from('students').upsert({
+        user_id: email,
+        user_name: sname,
+        provider: provider,
+        pin: 'OAUTH',
+        school_info: school,
+        streak: 1,
+        bonus_xp: 0,
+        last_study_date: kst.date,
+        created_at: kst.full,
+        last_access_at: kst.full
+      });
+
+      myUser = {
+        userId: email,
+        name: sname,
+        provider: provider,
+        schoolInfo: school,
+        isAdmin: isAdmin,
+        streak: 1,
+        bonusXp: 0
+      };
+      myWords = await fetchUserWords(email, isAdmin);
+
+      btn.disabled = false; btn.innerText = '메이드보카 시작하기 🚀';
+      document.getElementById('firstProfileModal').classList.remove('open');
+      setupUserView();
+      fireConfetti(true);
+      showToast(`환영합니다, ${myUser.name}님!`);
+    }
+
     async function fetchUserWords(email, isAdmin) {
       let query = sb.from('words').select('*').order('created_ts', { ascending: false });
       if (!isAdmin) {
@@ -821,202 +843,10 @@
       }));
     }
 
-    async function startQuickLogin() {
-      const savedEmail = (localStorage.getItem('madevoca_account_email') || '').trim().toLowerCase();
-      if (!savedEmail) { openSocialAuthModal('GOOGLE'); return; }
-
-      const btn = document.getElementById('btnQuickLogin');
-      btn.disabled = true;
-      document.getElementById('quickLoginLabel').innerText = '⚡ 0.1초 만에 불러오는 중...';
-
-      try {
-        const { data: userRow } = await sb.from('students').select('*').eq('user_id', savedEmail).maybeSingle();
-        if (!userRow) {
-          btn.disabled = false;
-          refreshSavedAccountButton();
-          openSocialAuthModal('GOOGLE');
-          return;
-        }
-
-        const isAdmin = (savedEmail === ADMIN_EMAIL);
-        myUser = {
-          userId: userRow.user_id,
-          name: userRow.user_name,
-          provider: userRow.provider || 'GOOGLE',
-          schoolInfo: userRow.school_info || '',
-          isAdmin: isAdmin,
-          streak: userRow.streak || 1,
-          bonusXp: userRow.bonus_xp || 0
-        };
-        myWords = await fetchUserWords(savedEmail, isAdmin);
-        btn.disabled = false;
-        refreshSavedAccountButton();
-        setupUserView();
-      } catch (err) {
-        btn.disabled = false;
-        refreshSavedAccountButton();
-        alert('접속 오류: ' + err.message);
-      }
-    }
-
-    function openSocialAuthModal(provider) {
-      selectedProvider = provider;
-      document.getElementById('authStep1').style.display = 'block';
-      document.getElementById('authStep2').style.display = 'none';
-
-      const titleEl = document.getElementById('modalTitle');
-      const emailInput = document.getElementById('authEmail');
-      const verifyBtn = document.getElementById('btnVerifyAccount');
-
-      if (provider === 'APPLE') {
-        titleEl.innerHTML = ' Apple 아이디로 로그인';
-        document.getElementById('lblEmail').innerText = 'Apple ID (이메일)';
-        emailInput.placeholder = 'example@icloud.com';
-        verifyBtn.style.background = '#000000';
-        verifyBtn.style.borderBottom = '3.5px solid #334155';
-      } else {
-        titleEl.innerHTML = 'G Google 아이디로 로그인';
-        document.getElementById('lblEmail').innerText = 'Google 아이디 (이메일)';
-        emailInput.placeholder = 'example@gmail.com';
-        verifyBtn.style.background = 'var(--primary)';
-        verifyBtn.style.borderBottom = '3.5px solid var(--primary-dark)';
-      }
-
-      emailInput.value = localStorage.getItem('madevoca_account_email') || '';
-      document.getElementById('authPin').value = '';
-      document.getElementById('socialAuthModal').classList.add('open');
-      setTimeout(() => emailInput.focus(), 100);
-    }
-
-    function closeSocialModal() {
-      document.getElementById('socialAuthModal').classList.remove('open');
-    }
-
-    async function submitAccountVerify() {
-      const email = document.getElementById('authEmail').value.trim().toLowerCase();
-      const pin = document.getElementById('authPin').value.trim();
-
-      if (!email || email.indexOf('@') === -1) {
-        alert('올바른 이메일 아이디(예: id@gmail.com)를 입력해 주세요.');
-        return;
-      }
-      if (!pin || pin.length < 4) {
-        alert('본인 확인용 숫자 4자리 비밀번호를 입력해 주세요.');
-        return;
-      }
-
-      const btn = document.getElementById('btnVerifyAccount');
-      btn.disabled = true; btn.innerText = '확인 중...';
-
-      try {
-        const { data: existing, error } = await sb.from('students').select('*').eq('user_id', email).maybeSingle();
-        if (error) throw error;
-
-        if (existing) {
-          if (existing.pin && String(existing.pin).trim() !== pin) {
-            btn.disabled = false; btn.innerText = '계속하기';
-            alert('입력하신 4자리 비밀번호(PIN)가 일치하지 않습니다.');
-            return;
-          }
-
-          const kst = getNowKST();
-          await sb.from('students').update({ last_access_at: kst.full }).eq('user_id', email);
-
-          const isAdmin = (email === ADMIN_EMAIL);
-          myUser = {
-            userId: existing.user_id,
-            name: existing.user_name,
-            provider: existing.provider || selectedProvider,
-            schoolInfo: existing.school_info || '',
-            isAdmin: isAdmin,
-            streak: existing.streak || 1,
-            bonusXp: existing.bonus_xp || 0
-          };
-          myWords = await fetchUserWords(email, isAdmin);
-
-          localStorage.setItem('madevoca_account_email', myUser.userId);
-          localStorage.setItem('madevoca_student_name', myUser.name);
-          localStorage.setItem('madevoca_account_provider', myUser.provider);
-
-          btn.disabled = false; btn.innerText = '계속하기';
-          closeSocialModal();
-          setupUserView();
-          showToast(`반갑습니다, ${myUser.name}님!`);
-        } else {
-          btn.disabled = false; btn.innerText = '계속하기';
-          document.getElementById('authStep1').style.display = 'none';
-          document.getElementById('authStep2').style.display = 'block';
-          document.getElementById('regStudentName').focus();
-        }
-      } catch (err) {
-        btn.disabled = false; btn.innerText = '계속하기';
-        alert('오류: ' + err.message);
-      }
-    }
-
-    async function submitNewAccountProfile() {
-      const email = document.getElementById('authEmail').value.trim().toLowerCase();
-      const pin = document.getElementById('authPin').value.trim();
-      const sname = document.getElementById('regStudentName').value.trim();
-      const school = document.getElementById('regSchoolInfo').value.trim();
-
-      if (!sname) { alert('이름(또는 닉네임)을 입력해 주세요.'); return; }
-
-      const btn = document.getElementById('btnCompleteJoin');
-      btn.disabled = true; btn.innerText = '생성 중...';
-
-      try {
-        const kst = getNowKST();
-        const newStudent = {
-          user_id: email,
-          user_name: sname,
-          provider: selectedProvider,
-          pin: pin,
-          school_info: school,
-          streak: 1,
-          bonus_xp: 0,
-          last_study_date: kst.date,
-          created_at: kst.full,
-          last_access_at: kst.full
-        };
-
-        const { error } = await sb.from('students').upsert(newStudent);
-        if (error) throw error;
-
-        const isAdmin = (email === ADMIN_EMAIL);
-        myUser = {
-          userId: email,
-          name: sname,
-          provider: selectedProvider,
-          schoolInfo: school,
-          isAdmin: isAdmin,
-          streak: 1,
-          bonusXp: 0
-        };
-        myWords = await fetchUserWords(email, isAdmin);
-
-        localStorage.setItem('madevoca_account_email', email);
-        localStorage.setItem('madevoca_student_name', sname);
-        localStorage.setItem('madevoca_account_provider', selectedProvider);
-
-        btn.disabled = false; btn.innerText = '단어장 시작하기 🎉';
-        closeSocialModal();
-        setupUserView();
-        fireConfetti(true);
-        showToast(`환영합니다, ${myUser.name}님!`);
-      } catch (err) {
-        btn.disabled = false; btn.innerText = '단어장 시작하기 🎉';
-        alert('가입 오류: ' + err.message);
-      }
-    }
-
-    function logoutStudent() {
+    async function logoutStudent() {
       if (!confirm('현재 계정에서 로그아웃하시겠습니까?')) return;
-      localStorage.removeItem('madevoca_account_email');
-      localStorage.removeItem('madevoca_student_name');
-      localStorage.removeItem('madevoca_account_provider');
+      await sb.auth.signOut();
       myUser = null; myWords = [];
-      refreshSavedAccountButton();
       showScreen('screen-login');
     }
 
@@ -1426,7 +1256,7 @@
     }
 
     // =========================================================================
-    // 4. 일일 10회 제한 스피드 퀴즈 & 구글 전면 광고(하루 최대 3번) 로직
+    // 4. 일일 10회 퀴즈 & 진짜 Google AdSense H5 (adBreak) 전면 광고 호출
     // =========================================================================
     function renderBadges() {
       const goldCnt = myWords.filter(w => w.star === 'GOLD').length;
@@ -1467,7 +1297,6 @@
       const limitArea = document.getElementById('quizLimitArea');
       const adBtn = document.getElementById('btnWatchAdUnlock');
 
-      // 남은 문제가 0개일 때: 광고 시청 유도 또는 일일 완전 종료 안내
       if (remaining <= 0) {
         playArea.style.display = 'none';
         limitArea.style.display = 'block';
@@ -1494,7 +1323,6 @@
         return;
       }
 
-      // 남은 문제가 있을 때 정상 출제
       playArea.style.display = 'block';
       limitArea.style.display = 'none';
       document.getElementById('btnNextQuiz').style.display = 'none';
@@ -1522,7 +1350,6 @@
     async function checkQuizAnswer(btnEl, isCorrect) {
       document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
 
-      // 문제 풀이 횟수 1 차감 저장
       const qState = getDailyQuizState();
       qState.used += 1;
       saveDailyQuizState(qState);
@@ -1549,60 +1376,38 @@
       nextBtn.innerText = remaining > 0 ? `다음 문제 풀기 (남은 문제 ${remaining}개) →` : '결과 확인 및 추가 충전하기 →';
     }
 
-    // 구글 전면 광고(Interstitial Ad) 실행 및 5초 카운트다운
-    function openGoogleInterstitialAd() {
+    // 진짜 Google AdSense H5 Ad Placement API (adBreak) 호출
+    function triggerRealGoogleRewardedAd() {
       const qState = getDailyQuizState();
       if (qState.adWatched >= MAX_DAILY_ADS) {
         alert('오늘 시청 가능한 광고 횟수(최대 3회)를 모두 사용하셨습니다.');
         return;
       }
 
-      // 네이티브 AdMob 브리지 또는 Google H5 AdPlacement가 연결된 경우 우선 호출
       if (typeof window.adBreak === 'function') {
         window.adBreak({
           type: 'reward',
-          name: 'quiz_refill',
-          beforeReward: (showAdFn) => showAdFn(),
-          adViewed: () => completeAdReward(),
-          adDismissed: () => showToast('광고를 끝까지 시청해야 퀴즈가 충전됩니다.')
+          name: 'madevoca_quiz_refill',
+          beforeReward: function(showAdFn) {
+            showAdFn();
+          },
+          adViewed: function() {
+            completeAdReward();
+          },
+          adDismissed: function() {
+            showToast('광고를 끝까지 시청해야 퀴즈가 충전됩니다.');
+          },
+          adBreakDone: function(placementInfo) {
+            // 애드센스 심사 전이거나 교내망 광고차단기로 인해 구글 서버가 광고를 내려주지 못한 경우 안내
+            if (placementInfo && placementInfo.breakStatus !== 'viewed' && placementInfo.breakStatus !== 'dismissed') {
+              alert('현재 구글 애드센스 게시자 ID(ca-pub-...) 승인 전이거나 네트워크에서 광고가 차단되어 테스트 충전을 진행합니다.');
+              completeAdReward();
+            }
+          }
         });
-        return;
+      } else {
+        alert('구글 광고 스크립트가 브라우저에서 차단되었습니다. 애드블록 해제 또는 애드센스 게시자 ID 연동이 필요합니다.');
       }
-
-      // 웹/모바일 기본 Google 전면 광고 모달 오픈 (5초 타이머)
-      const overlay = document.getElementById('googleAdOverlay');
-      const closeBtn = document.getElementById('btnCloseAd');
-      const timerNum = document.getElementById('adTimerNum');
-
-      let sec = 5;
-      closeBtn.disabled = true;
-      closeBtn.innerText = `${sec}초 후 닫기 가능`;
-      timerNum.innerText = sec;
-      overlay.classList.add('open');
-
-      if (adCountdownTimer) clearInterval(adCountdownTimer);
-      adCountdownTimer = setInterval(() => {
-        sec -= 1;
-        if (sec > 0) {
-          closeBtn.innerText = `${sec}초 후 닫기 가능`;
-          timerNum.innerText = sec;
-        } else {
-          clearInterval(adCountdownTimer);
-          timerNum.innerText = '0';
-          closeBtn.disabled = false;
-          closeBtn.innerText = `✕ 광고 닫고 +${QUIZ_REWARD_PER_AD}문제 받기`;
-          closeBtn.style.background = '#22c55e';
-          closeBtn.style.borderColor = '#16a34a';
-        }
-      }, 1000);
-    }
-
-    function finishWatchingGoogleAd() {
-      document.getElementById('googleAdOverlay').classList.remove('open');
-      const closeBtn = document.getElementById('btnCloseAd');
-      closeBtn.style.background = 'rgba(255,255,255,0.2)';
-      closeBtn.style.borderColor = 'rgba(255,255,255,0.3)';
-      completeAdReward();
     }
 
     function completeAdReward() {
@@ -1613,7 +1418,7 @@
       saveDailyQuizState(qState);
       playRewardSound('SILVER');
       fireConfetti(false);
-      showToast(`🎉 퀴즈 ${QUIZ_REWARD_PER_AD}문제가 충전되었습니다! (광고 ${qState.adWatched}/${MAX_DAILY_ADS}회)`);
+      showToast(`🎉 구글 광고 시청 완료! +${QUIZ_REWARD_PER_AD}문제 충전 (${qState.adWatched}/${MAX_DAILY_ADS}회)`);
       generateQuiz();
     }
 
