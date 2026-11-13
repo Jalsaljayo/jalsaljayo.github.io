@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <!-- 스마트폰 홈 화면 추가 시 주소창을 없애고 진짜 앱처럼 실행하는 설정 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="메이드보카">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4f46e5">
+  <title>메이드보카 (MadeVoca)</title>
+
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --duo-green: #58cc02;
+      --duo-green-dark: #46a302;
+      --bg-app: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --border: #e2e8f0;
+      --bronze-border: #eab676;
+      --silver-border: #cbd5e1;
+      --gold-border: #fde047;
+    }
+
+    * { box-sizing: border-box; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; background-color: #cbd5e1; color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+
+    .app-container {
+      width: 100%; max-width: 440px; min-height: 100vh;
+      background-color: var(--bg-app); position: relative;
+      display: flex; flex-direction: column;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1); overflow-x: hidden;
+    }
+
+    .screen { display: none; flex-direction: column; min-height: 100vh; width: 100%; padding-bottom: 74px; }
+    #screen-login, #screen-builder, #screen-admin { padding-bottom: 0; }
+    .screen.active { display: flex; animation: fadeIn 0.18s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .star-svg { display: inline-block; vertical-align: middle; overflow: visible; flex-shrink: 0; }
+
+    /* 화면 1: 로그인 화면 */
+    #screen-login {
+      background: linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
+      padding: 48px 24px 36px; justify-content: space-between; align-items: center; text-align: center;
+    }
+    .brand-logo-box {
+      width: 76px; height: 76px; border-radius: 24px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; font-weight: 900; color: white;
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.25); margin: 0 auto 14px;
+    }
+    .guide-card {
+      background: rgba(255,255,255,0.9); border: 1px solid var(--border);
+      padding: 11px 14px; border-radius: 14px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px; color: #334155; margin-bottom: 8px;
+    }
+
+    .social-btn-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+    .quick-login-btn {
+      width: 100%; background: var(--primary); color: #ffffff;
+      border: none; border-bottom: 4px solid var(--primary-dark);
+      padding: 15px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      display: none; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25); transition: 0.1s;
+    }
+    .google-btn {
+      width: 100%; background: #ffffff; color: #1e293b;
+      border: 1.5px solid #cbd5e1; border-bottom-width: 4px;
+      padding: 14px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.1s;
+    }
+    .apple-btn {
+      width: 100%; background: #000000; color: #ffffff;
+      border: 1.5px solid #000000; border-bottom: 4px solid #334155;
+      padding: 14px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: 0.1s;
+    }
+    .google-btn:active, .apple-btn:active, .quick-login-btn:active { transform: translateY(2px); }
+    .google-btn:disabled, .apple-btn:disabled, .quick-login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* 상단 네비바 */
+    .top-navbar {
+      position: sticky; top: 0; z-index: 30; background: var(--surface);
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .btn-top-plus {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: var(--primary); color: white; border: none; border-bottom: 3px solid var(--primary-dark);
+      font-size: 22px; font-weight: 700; line-height: 1; cursor: pointer;
+    }
+    .btn-icon-sound {
+      width: 34px; height: 34px; border-radius: 10px; background: #f1f5f9;
+      border: 1px solid var(--border); font-size: 16px; cursor: pointer;
+    }
+    .btn-admin-pill {
+      background: #fef08a; color: #854d0e; border: 1px solid #facc15;
+      padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+
+    /* 게이미피케이션 히어로 배너 */
+    .gamify-card {
+      margin: 12px 16px 6px; padding: 14px 16px; border-radius: 18px;
+      background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%);
+      color: white; box-shadow: 0 8px 18px rgba(79, 70, 229, 0.18);
+    }
+    .gamify-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .level-badge {
+      background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .streak-pill {
+      background: #fff7ed; color: #ea580c; padding: 4px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 900; display: inline-flex; align-items: center; gap: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+    .xp-bar-bg {
+      width: 100%; height: 9px; background: rgba(255,255,255,0.22);
+      border-radius: 999px; overflow: hidden; margin: 6px 0 4px;
+    }
+    .xp-bar-fill {
+      height: 100%; background: linear-gradient(90deg, #fde047, #facc15);
+      border-radius: 999px; width: 0%; transition: width 0.4s ease;
+    }
+
+    .daily-quest-box {
+      margin: 6px 16px 8px; padding: 10px 14px; border-radius: 14px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .quest-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .quest-bar-fill { height: 100%; background: var(--duo-green); width: 0%; transition: width 0.4s ease; }
+
+    .reward-summary {
+      padding: 4px 16px 10px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .reward-pill {
+      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 3px;
+      border-radius: 12px; padding: 8px 6px; display: flex; align-items: center; justify-content: center; gap: 5px;
+      font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.1s;
+    }
+    .reward-pill.active-filter { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+
+    .list-body { padding: 6px 16px 24px; flex: 1; }
+    .word-item-card {
+      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
+      border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; transition: transform 0.1s;
+    }
+    .word-item-card:active { transform: scale(0.98); }
+    .word-item-card.GOLD { border-color: #facc15; background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%); }
+
+    /* 하단 탭 네비게이션 */
+    .bottom-tab-bar {
+      position: fixed; bottom: 0; width: 100%; max-width: 440px; height: 64px;
+      background: var(--surface); border-top: 1.5px solid var(--border);
+      display: grid; grid-template-columns: repeat(3, 1fr); z-index: 40;
+    }
+    .tab-btn {
+      background: none; border: none; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px;
+      font-size: 11px; font-weight: 800; color: var(--text-sub); cursor: pointer;
+    }
+    .tab-btn.active { color: var(--primary); }
+    .tab-icon { font-size: 19px; line-height: 1; }
+
+    /* 탭2: 도감 & 스피드 복습 퀴즈 */
+    .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+    .badge-card {
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 12px 6px; text-align: center; opacity: 0.4; filter: grayscale(1); transition: 0.2s;
+    }
+    .badge-card.unlocked {
+      opacity: 1; filter: none; border-color: #facc15;
+      background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%);
+      box-shadow: 0 4px 10px rgba(250, 204, 21, 0.15);
+    }
+    .quiz-box {
+      background: var(--surface); border: 2px solid var(--primary); border-bottom-width: 5px;
+      border-radius: 18px; padding: 18px; margin-bottom: 16px; text-align: center;
+    }
+    .quiz-option-btn {
+      width: 100%; text-align: left; background: #f8fafc; border: 1.5px solid var(--border);
+      border-bottom-width: 3.5px; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
+      font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.1s;
+    }
+    .quiz-option-btn.correct { background: #dcfce7; border-color: #22c55e; color: #166534; }
+    .quiz-option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+
+    /* 탭3: 랭킹 카드 */
+    .rank-card {
+      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 3.5px;
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .rank-card.me { border-color: var(--primary); background: #eef2ff; }
+    .rank-num { width: 28px; font-size: 16px; font-weight: 900; text-align: center; }
+
+    /* 화면 3: 단어 만들기 */
+    .builder-body { padding: 14px 16px 40px; flex: 1; }
+    .hero-star-stage {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 18px; padding: 14px 16px; margin-bottom: 14px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      transition: all 0.25s ease;
+    }
+    .hero-star-stage.stage-BRONZE { border-color: var(--bronze-border); background: #fff7ed; }
+    .hero-star-stage.stage-SILVER { border-color: var(--silver-border); background: #f1f5f9; }
+    .hero-star-stage.stage-GOLD { border-color: #facc15; background: #fef9c3; transform: scale(1.01); }
+
+    .step-card {
+      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
+      border-radius: 16px; padding: 16px; margin-bottom: 12px;
+    }
+    .step-card.current { border-color: var(--primary); }
+    .step-card.locked { opacity: 0.45; pointer-events: none; background: #f1f5f9; }
+
+    .input-field {
+      width: 100%; padding: 11px 13px; border-radius: 11px; border: 1.5px solid var(--border);
+      font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc;
+    }
+    .input-field:focus { border-color: var(--primary); background: white; }
+
+    .action-btn {
+      width: 100%; padding: 13px; border-radius: 12px; border: none;
+      font-size: 14px; font-weight: 800; color: white; cursor: pointer; transition: 0.1s;
+    }
+    .action-btn:active { transform: translateY(2px); }
+    .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-bronze { background: #cd7f32; border-bottom: 3.5px solid #9a581b; }
+    .btn-silver { background: #475569; border-bottom: 3.5px solid #334155; }
+    .btn-gold { background: #eab308; border-bottom: 3.5px solid #ca8a04; color: #1e293b; }
+    .btn-primary { background: var(--primary); border-bottom: 3.5px solid var(--primary-dark); }
+
+    /* 모달 */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100;
+      display: none; justify-content: center; align-items: flex-end;
+    }
+    .modal-overlay.open { display: flex; }
+    .bottom-sheet {
+      width: 100%; max-width: 440px; background: white;
+      border-radius: 24px 24px 0 0; padding: 24px 20px 32px;
+      animation: slideUp 0.2s ease-out;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .admin-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .admin-stat-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; text-align: center; }
+    .student-row-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+
+    #toast {
+      visibility: hidden; background: #0f172a; color: white; padding: 12px 18px;
+      border-radius: 12px; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 200; font-size: 13px; font-weight: 700; white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    #toast.show { visibility: visible; }
+  </style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="starGrad-NONE" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f1f5f9" /><stop offset="100%" stop-color="#cbd5e1" /></linearGradient>
+      <linearGradient id="starGrad-BRONZE" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fbd38d" /><stop offset="45%" stop-color="#cd7f32" /><stop offset="100%" stop-color="#7b341e" /></linearGradient>
+      <linearGradient id="starGrad-SILVER" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="45%" stop-color="#cbd5e1" /><stop offset="100%" stop-color="#475569" /></linearGradient>
+      <linearGradient id="starGrad-GOLD" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fef08a" /><stop offset="45%" stop-color="#facc15" /><stop offset="100%" stop-color="#b45309" /></linearGradient>
+    </defs>
+  </svg>
+
+  <div class="app-container">
+
+    <!-- 화면 1: 로그인 -->
+    <section id="screen-login" class="screen active">
+      <div>
+        <div class="brand-logo-box">M</div>
+        <h1 style="font-size:28px; font-weight:900; margin:0;">메이드보카</h1>
+        <div style="font-size:12px; font-weight:800; color:var(--primary); letter-spacing:1px; margin-top:4px;">MADE VOCA</div>
+        <p style="font-size:14px; color:var(--text-sub); margin-top:8px;">매일 성장하는 나만의 AI 별 단어장</p>
+      </div>
+
+      <div style="width:100%;">
+        <div class="guide-card"><span id="gB"></span> 1단계: 단어·뜻 적고 <strong>동별 (+10 XP)</strong></div>
+        <div class="guide-card"><span id="gS"></span> 2단계: 출처 문장 적고 <strong>은별 (+30 XP)</strong></div>
+        <div class="guide-card"><span id="gG"></span> 3단계: 내 문장 완성해 <strong>금별 (+60 XP)</strong></div>
+      </div>
+
+      <div class="social-btn-group">
+        <button id="btnQuickLogin" class="quick-login-btn" onclick="startQuickLogin()">
+          <span id="quickLoginLabel">최근 계정으로 바로 시작하기</span>
+        </button>
+
+        <button id="btnGoogleLogin" class="google-btn" onclick="openSocialAuthModal('GOOGLE')">
+          <svg width="20" height="20" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span>Google 아이디로 로그인</span>
+        </button>
+
+        <button id="btnAppleLogin" class="apple-btn" onclick="openSocialAuthModal('APPLE')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+          <span>Apple 아이디로 로그인</span>
+        </button>
+
+        <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">
+          초고속 클라우드 서버 연동 · 모든 기기에서 즉시 이어집니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- 화면 2: 메인 (단어장 / 도감&퀴즈 / 랭킹) -->
+    <section id="screen-list" class="screen">
+      <header class="top-navbar">
+        <div>
+          <div style="font-size:17px; font-weight:900;">메이드보카</div>
+          <div id="userLabel" style="font-size:11px; color:var(--text-sub); font-weight:700;">내 단어장</div>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button id="btnSoundToggle" class="btn-icon-sound" onclick="toggleSound()" title="효과음 켜기/끄기">🔊</button>
+          <button id="btnAdminMode" class="btn-admin-pill" style="display:none;" onclick="openAdminScreen()">👑 관리자</button>
+          <button class="btn-top-plus" title="새 단어 추가" onclick="openBuilder(null)">＋</button>
+        </div>
+      </header>
+
+      <div class="gamify-card">
+        <div class="gamify-top">
+          <div class="level-badge" id="lvlBadge">🌱 Lv.1 어휘 새싹</div>
+          <div class="streak-pill" id="streakBadge">🔥 1일 연속</div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline;">
+          <div style="font-size:15px; font-weight:900;" id="xpTotalText">0 XP</div>
+          <div style="font-size:11px; opacity:0.85;" id="xpNextText">다음 레벨까지 100 XP</div>
+        </div>
+        <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
+      </div>
+
+      <div class="daily-quest-box">
+        <div style="font-size:12px; font-weight:800; white-space:nowrap;">🎯 오늘 금별 목표</div>
+        <div class="quest-bar-bg"><div class="quest-bar-fill" id="dailyQuestFill"></div></div>
+        <div style="font-size:12px; font-weight:900; color:var(--duo-green-dark);" id="dailyQuestText">0 / 3</div>
+      </div>
+
+      <div id="tab-words" class="tab-pane">
+        <div class="reward-summary">
+          <div class="reward-pill" id="filterB" onclick="toggleStarFilter('BRONZE')"><span id="sumB"></span> 동별 <span id="cntB">0</span></div>
+          <div class="reward-pill" id="filterS" onclick="toggleStarFilter('SILVER')"><span id="sumS"></span> 은별 <span id="cntS">0</span></div>
+          <div class="reward-pill" id="filterG" onclick="toggleStarFilter('GOLD')"><span id="sumG"></span> 금별 <span id="cntG">0</span></div>
+        </div>
+
+        <div class="list-body">
+          <div id="wordListContainer"></div>
+          <div style="text-align:center; margin-top:18px;">
+            <button style="background:none; border:none; color:#94a3b8; font-size:11px; text-decoration:underline; cursor:pointer;" onclick="logoutStudent()">로그아웃 (다른 계정으로 전환)</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">⚡ 스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
+        <div class="quiz-box" id="quizContainer">
+          <div id="quizQuestion" style="font-size:20px; font-weight:900; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
+          <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요!</div>
+          <div id="quizOptions"></div>
+          <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기 →</button>
+        </div>
+
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">🏅 나의 성취 뱃지 도감</div>
+        <div class="badge-grid" id="badgeCollection"></div>
+      </div>
+
+      <div id="tab-rank" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="font-size:14px; font-weight:800;">🏆 실시간 명예의 전당</div>
+          <button onclick="loadRanking()" style="background:#eef2ff; color:var(--primary); border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer;">↻ 새로고침</button>
+        </div>
+        <div id="rankingContainer">불러오는 중...</div>
+      </div>
+
+      <nav class="bottom-tab-bar">
+        <button class="tab-btn active" id="navBtnWords" onclick="switchMainTab('words')">
+          <span class="tab-icon">📚</span><span>내 단어장</span>
+        </button>
+        <button class="tab-btn" id="navBtnQuiz" onclick="switchMainTab('quiz')">
+          <span class="tab-icon">🏅</span><span>도감·퀴즈</span>
+        </button>
+        <button class="tab-btn" id="navBtnRank" onclick="switchMainTab('rank')">
+          <span class="tab-icon">🏆</span><span>명예의전당</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- 화면 3: 단어 만들기 -->
+    <section id="screen-builder" class="screen">
+      <header class="top-navbar">
+        <button class="action-btn" style="width:auto; padding:6px 12px; background:#f1f5f9; color:var(--text-main);" onclick="goToList()">← 목록으로</button>
+        <div style="font-size:15px; font-weight:800;">단어 별 키우기</div>
+        <button id="btnDel" style="background:#fee2e2; color:#b91c1c; border:none; padding:6px 10px; border-radius:8px; font-weight:700; visibility:hidden;" onclick="doDelete()">삭제</button>
+      </header>
+
+      <div class="builder-body">
+        <div id="heroStage" class="hero-star-stage stage-NONE">
+          <div id="heroStarBox" style="margin-bottom:6px;"></div>
+          <div id="heroTitle" style="font-size:15px; font-weight:800;">아직 빛나지 않은 별</div>
+          <div id="heroDesc" style="font-size:12px; color:var(--text-sub);">1단계 단어와 뜻을 저장하면 동별(+10 XP)이 켜집니다</div>
+        </div>
+
+        <div id="card1" class="step-card current">
+          <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar1"></span> 1단계. 단어와 뜻 (+10 XP)</div>
+          <div id="form1">
+            <input type="text" id="inpW" class="input-field" placeholder="모르는 단어 (예: 배양)">
+            <input type="text" id="inpM" class="input-field" placeholder="단어의 뜻">
+            <button id="btnS1" class="action-btn btn-bronze" onclick="doStep1()">저장하고 동별 켜기</button>
+          </div>
+          <div id="sum1" style="display:none; font-weight:700;"></div>
+        </div>
+
+        <div id="card2" class="step-card locked">
+          <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar2"></span> 2단계. 출처 문장 & AI 유의어·반의어 (+20 XP)</div>
+          <div id="form2">
+            <input type="text" id="inpSrc" class="input-field" placeholder="단어가 쓰인 출처 문장 입력">
+            <button id="btnS2" class="action-btn btn-silver" onclick="doStep2()">은별 켜고 3단계 열기</button>
+          </div>
+          <div id="sum2" style="display:none;"></div>
+        </div>
+
+        <div id="card3" class="step-card locked">
+          <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar3"></span> 3단계. 나만의 문장 만들기 (+30 XP)</div>
+          <div id="form3">
+            <input type="text" id="inpMy" class="input-field" placeholder="단어를 활용해 직접 문장 작성">
+            <button id="btnS3" class="action-btn btn-gold" onclick="doStep3()">AI 피드백 받고 금별 완성하기</button>
+          </div>
+          <div id="sum3" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 화면 4: 관리자 모드 -->
+    <section id="screen-admin" class="screen">
+      <header class="top-navbar">
+        <button class="action-btn" style="width:auto; padding:6px 12px; background:#f1f5f9; color:var(--text-main);" onclick="goToList()">← 내 단어장</button>
+        <div style="font-size:16px; font-weight:800; color:#854d0e;">👑 교사용 관리자 모드</div>
+        <button class="action-btn" style="width:auto; padding:6px 10px; background:#e0e7ff; color:#3730a3;" onclick="loadAdminData()">새로고침</button>
+      </header>
+
+      <div class="list-body">
+        <div class="admin-stat-grid">
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">참여 학생</div><div id="admStudentCnt" style="font-size:18px; font-weight:900; color:var(--primary); margin-top:4px;">0명</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">총 등록 단어</div><div id="admWordCnt" style="font-size:18px; font-weight:900; color:var(--primary); margin-top:4px;">0개</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">금별 완성수</div><div id="admGoldCnt" style="font-size:18px; font-weight:900; color:#ca8a04; margin-top:4px;">0개</div></div>
+        </div>
+        <div style="font-size:14px; font-weight:800; margin-bottom:10px;">📋 학생별 단어장 학습 현황</div>
+        <div id="adminStudentList">불러오는 중...</div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 소셜 로그인(Google / Apple) 모달 -->
+  <div class="modal-overlay" id="socialAuthModal">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 id="modalTitle" style="margin:0; font-size:18px; display:flex; align-items:center; gap:8px;">Google 아이디로 로그인</h3>
+        <button onclick="closeSocialModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+
+      <div id="authStep1">
+        <p style="font-size:12px; color:var(--text-sub); margin:0 0 14px 0;">
+          사용하시는 이메일 아이디와 본인 확인용 숫자 4자리(PIN)를 입력해 주세요. 이미 만든 단어장이 있다면 0.1초 만에 불러옵니다.
+        </p>
+
+        <label id="lblEmail" style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">아이디 (이메일 주소)</label>
+        <input type="email" id="authEmail" class="input-field" placeholder="example@gmail.com">
+
+        <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">간편 비밀번호 (숫자 4자리)</label>
+        <input type="password" id="authPin" maxlength="4" inputmode="numeric" class="input-field" placeholder="본인 확인용 숫자 4자리 (예: 1234)">
+
+        <button id="btnVerifyAccount" class="action-btn btn-primary" onclick="submitAccountVerify()">계속하기</button>
+      </div>
+
+      <div id="authStep2" style="display:none;">
+        <p style="font-size:13px; color:#4f46e5; font-weight:700; margin:0 0 12px 0;">
+          👋 처음 오셨군요! 단어장과 랭킹에 표시될 이름을 한 번만 설정해 주세요.
+        </p>
+
+        <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
+        <input type="text" id="regStudentName" class="input-field" placeholder="예: 홍길동">
+
+        <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">학교 / 학번 (선택)</label>
+        <input type="text" id="regSchoolInfo" class="input-field" placeholder="예: 서천고 30101">
+
+        <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="submitNewAccountProfile()">단어장 시작하기 🎉</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">알림</div>
+
+  <script>
+    // =========================================================================
+    // 1. 수파베이스(Supabase) 및 초고속 Gemini AI 연결 설정
+    // =========================================================================
+    const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
+    const GEMINI_API_KEY = ['AQ.Ab8RN6K8ggEwlwG88', 'EIw4DGH_K06fH08PXaTkZvjWeVXuziwAw'].join('');
+    const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let myUser = null;
+    let myWords = [];
+    let curItem = null;
+    let starFilter = 'ALL';
+    let soundEnabled = true;
+    let selectedProvider = 'GOOGLE';
+    let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
+
+    const FALLBACK_VOCAB = [
+      { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴' },
+      { word: '고찰', meaning: '사물이나 현상을 깊이 생각하여 살핌' },
+      { word: '역설', meaning: '겉으로는 모순되나 그 속에 진리가 담긴 표현' },
+      { word: '간과', meaning: '큰 관심 없이 대강 보아 넘김' },
+      { word: '귀결', meaning: '어떤 결말이나 결과에 이르게 됨' },
+      { word: '사상', meaning: '공통점만 취하고 차이점을 버림' }
+    ];
+
+    function getNowKST() {
+      const now = new Date();
+      const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+      return {
+        full: kst.toISOString().slice(0, 16).replace('T', ' '),
+        date: kst.toISOString().slice(0, 10),
+        yesterday: new Date(kst.getTime() - 86400000).toISOString().slice(0, 10)
+      };
+    }
+
+    function getLevelInfo(xp) {
+      const levels = [
+        { lv: 1, title: '🌱 어휘 새싹', min: 0, max: 100 },
+        { lv: 2, title: '🍀 낱말 수집가', min: 100, max: 250 },
+        { lv: 3, title: '🧭 문맥 탐험가', min: 250, max: 500 },
+        { lv: 4, title: '⚡ 표현의 달인', min: 500, max: 900 },
+        { lv: 5, title: '🔥 문해력 장인', min: 900, max: 1500 },
+        { lv: 6, title: '👑 수능 국어 마스터', min: 1500, max: 2500 },
+        { lv: 7, title: '🌌 어휘의 신화', min: 2500, max: 99999 }
+      ];
+      for (let i = 0; i < levels.length; i++) {
+        if (xp < levels[i].max) return levels[i];
+      }
+      return levels[levels.length - 1];
+    }
+
+    function playRewardSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = {
+          'BRONZE': [523.25, 659.25],
+          'SILVER': [587.33, 783.99, 987.77],
+          'GOLD': [523.25, 659.25, 783.99, 1046.50],
+          'QUIZ': [659.25, 880.00]
+        }[type] || [523.25, 659.25];
+
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.09);
+          gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.09 + 0.28);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.09);
+          osc.stop(ctx.currentTime + idx * 0.09 + 0.28);
+        });
+      } catch (e) {}
+    }
+
+    function fireConfetti(isBig) {
+      if (typeof confetti !== 'function') return;
+      confetti({
+        particleCount: isBig ? 90 : 40,
+        spread: isBig ? 75 : 55,
+        origin: { y: 0.65 }
+      });
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('btnSoundToggle').innerText = soundEnabled ? '🔊' : '🔇';
+      showToast(soundEnabled ? '🔊 효과음이 켜졌습니다' : '🔇 효과음이 꺼졌습니다');
+    }
+
+    function getStarSvg(tier, size = 16) {
+      const strokeMap = { 'NONE': '#94a3b8', 'BRONZE': '#7b341e', 'SILVER': '#475569', 'GOLD': '#b45309' };
+      return `
+        <svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 100 100" style="width:${size}px; height:${size}px;">
+          <polygon points="50,6 63.5,33.5 94,38 72,59.5 77,90 50,75.5 23,90 28,59.5 6,38 36.5,33.5"
+            fill="url(#starGrad-${tier})" stroke="${strokeMap[tier]}" stroke-width="${size >= 40 ? '3.5' : '5'}" stroke-linejoin="round" />
+        </svg>
+      `;
+    }
+
+    window.onload = function() {
+      document.getElementById('gB').innerHTML = getStarSvg('BRONZE', 16);
+      document.getElementById('gS').innerHTML = getStarSvg('SILVER', 16);
+      document.getElementById('gG').innerHTML = getStarSvg('GOLD', 16);
+      document.getElementById('sumB').innerHTML = getStarSvg('BRONZE', 15);
+      document.getElementById('sumS').innerHTML = getStarSvg('SILVER', 15);
+      document.getElementById('sumG').innerHTML = getStarSvg('GOLD', 15);
+      document.getElementById('bStar1').innerHTML = getStarSvg('BRONZE', 14);
+      document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 14);
+      document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 14);
+
+      refreshSavedAccountButton();
+    };
+
+    function refreshSavedAccountButton() {
+      const savedEmail = localStorage.getItem('madevoca_account_email');
+      const savedName = localStorage.getItem('madevoca_student_name');
+      const savedProvider = localStorage.getItem('madevoca_account_provider') || 'GOOGLE';
+      const quickBtn = document.getElementById('btnQuickLogin');
+
+      if (savedEmail && savedName) {
+        const icon = savedProvider === 'APPLE' ? '' : 'G';
+        quickBtn.style.display = 'flex';
+        document.getElementById('quickLoginLabel').innerText = `[${icon}] ${savedName}님 계정으로 바로 시작`;
+      } else {
+        quickBtn.style.display = 'none';
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg; t.className = 'show';
+      setTimeout(() => { t.className = ''; }, 2600);
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function switchMainTab(tabName) {
+      document.getElementById('tab-words').style.display = tabName === 'words' ? 'block' : 'none';
+      document.getElementById('tab-quiz').style.display = tabName === 'quiz' ? 'block' : 'none';
+      document.getElementById('tab-rank').style.display = tabName === 'rank' ? 'block' : 'none';
+
+      document.getElementById('navBtnWords').className = 'tab-btn' + (tabName === 'words' ? ' active' : '');
+      document.getElementById('navBtnQuiz').className = 'tab-btn' + (tabName === 'quiz' ? ' active' : '');
+      document.getElementById('navBtnRank').className = 'tab-btn' + (tabName === 'rank' ? ' active' : '');
+
+      if (tabName === 'quiz') {
+        renderBadges();
+        generateQuiz();
+      } else if (tabName === 'rank') {
+        loadRanking();
+      }
+    }
+
+    function goToList() {
+      renderMyList();
+      showScreen('screen-list');
+    }
+
+    // =========================================================================
+    // 2. 수파베이스 초고속 로그인 & 단어장 불러오기 (0.1초)
+    // =========================================================================
+    async function fetchUserWords(email, isAdmin) {
+      let query = sb.from('words').select('*').order('created_ts', { ascending: false });
+      if (!isAdmin) {
+        query = query.eq('user_id', email);
+      }
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data || []).map(row => ({
+        id: row.id,
+        userId: row.user_id,
+        userName: row.user_name,
+        word: row.word,
+        meaning: row.meaning,
+        sourceSentence: row.source_sentence || '',
+        aiMeaning: row.ai_meaning || '',
+        synonyms: row.synonyms || '',
+        antonyms: row.antonyms || '',
+        mySentence: row.my_sentence || '',
+        aiFeedback: row.ai_feedback || '',
+        star: row.star || 'BRONZE',
+        updatedAt: row.updated_at || ''
+      }));
+    }
+
+    async function startQuickLogin() {
+      const savedEmail = (localStorage.getItem('madevoca_account_email') || '').trim().toLowerCase();
+      if (!savedEmail) { openSocialAuthModal('GOOGLE'); return; }
+
+      const btn = document.getElementById('btnQuickLogin');
+      btn.disabled = true;
+      document.getElementById('quickLoginLabel').innerText = '⚡ 0.1초 만에 불러오는 중...';
+
+      try {
+        const { data: userRow } = await sb.from('students').select('*').eq('user_id', savedEmail).maybeSingle();
+        if (!userRow) {
+          btn.disabled = false;
+          refreshSavedAccountButton();
+          openSocialAuthModal('GOOGLE');
+          return;
+        }
+
+        const isAdmin = (savedEmail === ADMIN_EMAIL);
+        myUser = {
+          userId: userRow.user_id,
+          name: userRow.user_name,
+          provider: userRow.provider || 'GOOGLE',
+          schoolInfo: userRow.school_info || '',
+          isAdmin: isAdmin,
+          streak: userRow.streak || 1,
+          bonusXp: userRow.bonus_xp || 0
+        };
+        myWords = await fetchUserWords(savedEmail, isAdmin);
+        btn.disabled = false;
+        refreshSavedAccountButton();
+        setupUserView();
+      } catch (err) {
+        btn.disabled = false;
+        refreshSavedAccountButton();
+        alert('접속 오류: ' + err.message);
+      }
+    }
+
+    function openSocialAuthModal(provider) {
+      selectedProvider = provider;
+      document.getElementById('authStep1').style.display = 'block';
+      document.getElementById('authStep2').style.display = 'none';
+
+      const titleEl = document.getElementById('modalTitle');
+      const emailInput = document.getElementById('authEmail');
+      const verifyBtn = document.getElementById('btnVerifyAccount');
+
+      if (provider === 'APPLE') {
+        titleEl.innerHTML = ' Apple 아이디로 로그인';
+        document.getElementById('lblEmail').innerText = 'Apple ID (이메일)';
+        emailInput.placeholder = 'example@icloud.com';
+        verifyBtn.style.background = '#000000';
+        verifyBtn.style.borderBottom = '3.5px solid #334155';
+      } else {
+        titleEl.innerHTML = 'G Google 아이디로 로그인';
+        document.getElementById('lblEmail').innerText = 'Google 아이디 (이메일)';
+        emailInput.placeholder = 'example@gmail.com';
+        verifyBtn.style.background = 'var(--primary)';
+        verifyBtn.style.borderBottom = '3.5px solid var(--primary-dark)';
+      }
+
+      emailInput.value = localStorage.getItem('madevoca_account_email') || '';
+      document.getElementById('authPin').value = '';
+      document.getElementById('socialAuthModal').classList.add('open');
+      setTimeout(() => emailInput.focus(), 100);
+    }
+
+    function closeSocialModal() {
+      document.getElementById('socialAuthModal').classList.remove('open');
+    }
+
+    async function submitAccountVerify() {
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const pin = document.getElementById('authPin').value.trim();
+
+      if (!email || email.indexOf('@') === -1) {
+        alert('올바른 이메일 아이디(예: id@gmail.com)를 입력해 주세요.');
+        return;
+      }
+      if (!pin || pin.length < 4) {
+        alert('본인 확인용 숫자 4자리 비밀번호를 입력해 주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('btnVerifyAccount');
+      btn.disabled = true; btn.innerText = '확인 중...';
+
+      try {
+        const { data: existing, error } = await sb.from('students').select('*').eq('user_id', email).maybeSingle();
+        if (error) throw error;
+
+        if (existing) {
+          if (existing.pin && String(existing.pin).trim() !== pin) {
+            btn.disabled = false; btn.innerText = '계속하기';
+            alert('입력하신 4자리 비밀번호(PIN)가 일치하지 않습니다.');
+            return;
+          }
+
+          const kst = getNowKST();
+          await sb.from('students').update({ last_access_at: kst.full }).eq('user_id', email);
+
+          const isAdmin = (email === ADMIN_EMAIL);
+          myUser = {
+            userId: existing.user_id,
+            name: existing.user_name,
+            provider: existing.provider || selectedProvider,
+            schoolInfo: existing.school_info || '',
+            isAdmin: isAdmin,
+            streak: existing.streak || 1,
+            bonusXp: existing.bonus_xp || 0
+          };
+          myWords = await fetchUserWords(email, isAdmin);
+
+          localStorage.setItem('madevoca_account_email', myUser.userId);
+          localStorage.setItem('madevoca_student_name', myUser.name);
+          localStorage.setItem('madevoca_account_provider', myUser.provider);
+
+          btn.disabled = false; btn.innerText = '계속하기';
+          closeSocialModal();
+          setupUserView();
+          showToast(`반갑습니다, ${myUser.name}님!`);
+        } else {
+          btn.disabled = false; btn.innerText = '계속하기';
+          document.getElementById('authStep1').style.display = 'none';
+          document.getElementById('authStep2').style.display = 'block';
+          document.getElementById('regStudentName').focus();
+        }
+      } catch (err) {
+        btn.disabled = false; btn.innerText = '계속하기';
+        alert('오류: ' + err.message);
+      }
+    }
+
+    async function submitNewAccountProfile() {
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const pin = document.getElementById('authPin').value.trim();
+      const sname = document.getElementById('regStudentName').value.trim();
+      const school = document.getElementById('regSchoolInfo').value.trim();
+
+      if (!sname) { alert('이름(또는 닉네임)을 입력해 주세요.'); return; }
+
+      const btn = document.getElementById('btnCompleteJoin');
+      btn.disabled = true; btn.innerText = '생성 중...';
+
+      try {
+        const kst = getNowKST();
+        const newStudent = {
+          user_id: email,
+          user_name: sname,
+          provider: selectedProvider,
+          pin: pin,
+          school_info: school,
+          streak: 1,
+          bonus_xp: 0,
+          last_study_date: kst.date,
+          created_at: kst.full,
+          last_access_at: kst.full
+        };
+
+        const { error } = await sb.from('students').upsert(newStudent);
+        if (error) throw error;
+
+        const isAdmin = (email === ADMIN_EMAIL);
+        myUser = {
+          userId: email,
+          name: sname,
+          provider: selectedProvider,
+          schoolInfo: school,
+          isAdmin: isAdmin,
+          streak: 1,
+          bonusXp: 0
+        };
+        myWords = await fetchUserWords(email, isAdmin);
+
+        localStorage.setItem('madevoca_account_email', email);
+        localStorage.setItem('madevoca_student_name', sname);
+        localStorage.setItem('madevoca_account_provider', selectedProvider);
+
+        btn.disabled = false; btn.innerText = '단어장 시작하기 🎉';
+        closeSocialModal();
+        setupUserView();
+        fireConfetti(true);
+        showToast(`환영합니다, ${myUser.name}님!`);
+      } catch (err) {
+        btn.disabled = false; btn.innerText = '단어장 시작하기 🎉';
+        alert('가입 오류: ' + err.message);
+      }
+    }
+
+    function logoutStudent() {
+      if (!confirm('현재 계정에서 로그아웃하시겠습니까?')) return;
+      localStorage.removeItem('madevoca_account_email');
+      localStorage.removeItem('madevoca_student_name');
+      localStorage.removeItem('madevoca_account_provider');
+      myUser = null; myWords = [];
+      refreshSavedAccountButton();
+      showScreen('screen-login');
+    }
+
+    function setupUserView() {
+      const pBadge = myUser.provider === 'APPLE' ? '' : 'G';
+      const schoolText = myUser.schoolInfo ? ` · ${myUser.schoolInfo}` : '';
+      document.getElementById('userLabel').innerText = `[${pBadge}] ${myUser.name}${schoolText}`;
+      document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-block' : 'none';
+      switchMainTab('words');
+      renderMyList();
+      showScreen('screen-list');
+    }
+
+    function toggleStarFilter(tier) {
+      starFilter = (starFilter === tier) ? 'ALL' : tier;
+      document.getElementById('filterB').className = 'reward-pill' + (starFilter === 'BRONZE' ? ' active-filter' : '');
+      document.getElementById('filterS').className = 'reward-pill' + (starFilter === 'SILVER' ? ' active-filter' : '');
+      document.getElementById('filterG').className = 'reward-pill' + (starFilter === 'GOLD' ? ' active-filter' : '');
+      renderMyList();
+    }
+
+    function getMyTotalXp() {
+      let xp = Number(myUser && myUser.bonusXp ? myUser.bonusXp : 0);
+      myWords.forEach(w => {
+        if (w.star === 'GOLD') xp += 60;
+        else if (w.star === 'SILVER') xp += 30;
+        else xp += 10;
+      });
+      return xp;
+    }
+
+    function renderMyList() {
+      let b = 0, s = 0, g = 0, todayGold = 0;
+      const todayPrefix = getNowKST().date;
+
+      myWords.forEach(w => {
+        if (w.star === 'BRONZE') b++;
+        else if (w.star === 'SILVER') s++;
+        else if (w.star === 'GOLD') {
+          g++;
+          if (w.updatedAt && w.updatedAt.indexOf(todayPrefix) === 0) todayGold++;
+        }
+      });
+
+      document.getElementById('cntB').innerText = b;
+      document.getElementById('cntS').innerText = s;
+      document.getElementById('cntG').innerText = g;
+
+      const totalXp = getMyTotalXp();
+      const lvInfo = getLevelInfo(totalXp);
+      const progressPct = Math.min(100, Math.round(((totalXp - lvInfo.min) / (lvInfo.max - lvInfo.min)) * 100));
+
+      document.getElementById('lvlBadge').innerText = `Lv.${lvInfo.lv} ${lvInfo.title}`;
+      document.getElementById('streakBadge').innerText = `🔥 ${(myUser && myUser.streak) || 1}일 연속`;
+      document.getElementById('xpTotalText').innerText = `${totalXp} XP`;
+      document.getElementById('xpNextText').innerText = `다음 레벨까지 ${Math.max(0, lvInfo.max - totalXp)} XP`;
+      document.getElementById('xpBarFill').style.width = `${progressPct}%`;
+
+      const questPct = Math.min(100, Math.round((todayGold / 3) * 100));
+      document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
+      document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료! 🎉' : `${todayGold} / 3`;
+
+      const filtered = starFilter === 'ALL' ? myWords : myWords.filter(w => w.star === starFilter);
+      const c = document.getElementById('wordListContainer');
+      if (filtered.length === 0) {
+        c.innerHTML = '<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼을 눌러 첫 별을 켜보세요!</div>';
+        return;
+      }
+
+      c.innerHTML = filtered.map(w => `
+        <div class="word-item-card ${w.star}" onclick="openBuilder('${w.id}')">
+          <div>
+            <div style="font-size:16px; font-weight:800;">${escapeHtml(w.word)}</div>
+            <div style="font-size:13px; color:var(--text-sub);">${escapeHtml(w.meaning)}</div>
+          </div>
+          <div>${getStarSvg(w.star, 26)}</div>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================================
+    // 3. 초고속 Gemini Flash-Lite 직접 호출 (0.4초 응답 + 수파베이스 사전 캐시)
+    // =========================================================================
+    async function callGeminiDirect(prompt, schema) {
+      const models = ['gemini-2.5-flash-lite', 'gemini-2.0-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash'];
+
+      for (const modelName of models) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
+          const genConfig = {
+            responseMimeType: 'application/json',
+            responseSchema: schema,
+            temperature: 0.2,
+            maxOutputTokens: 200
+          };
+          if (modelName.includes('2.5')) {
+            genConfig.thinkingConfig = { thinkingBudget: 0 };
+          }
+
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: genConfig
+            })
+          });
+
+          if (res.ok) {
+            const json = await res.json();
+            const rawText = json.candidates[0].content.parts[0].text;
+            const start = rawText.indexOf('{');
+            const end = rawText.lastIndexOf('}');
+            return JSON.parse(rawText.substring(start, end + 1));
+          }
+        } catch (e) {}
+      }
+      throw new Error('AI 응답 지연');
+    }
+
+    function openBuilder(wordId) {
+      curItem = wordId ? myWords.find(w => w.id === wordId) : null;
+      syncBuilder();
+      showScreen('screen-builder');
+    }
+
+    function syncBuilder() {
+      const box = document.getElementById('heroStarBox');
+      const stage = document.getElementById('heroStage');
+      const title = document.getElementById('heroTitle');
+      const del = document.getElementById('btnDel');
+
+      if (!curItem) {
+        stage.className = 'hero-star-stage stage-NONE';
+        box.innerHTML = getStarSvg('NONE', 48);
+        title.innerText = '새 단어 별 만들기';
+        del.style.visibility = 'hidden';
+
+        document.getElementById('card1').className = 'step-card current';
+        document.getElementById('form1').style.display = 'block';
+        document.getElementById('sum1').style.display = 'none';
+        document.getElementById('inpW').value = '';
+        document.getElementById('inpM').value = '';
+
+        document.getElementById('card2').className = 'step-card locked';
+        document.getElementById('form2').style.display = 'block';
+        document.getElementById('sum2').style.display = 'none';
+        document.getElementById('inpSrc').value = '';
+
+        document.getElementById('card3').className = 'step-card locked';
+        document.getElementById('form3').style.display = 'block';
+        document.getElementById('sum3').style.display = 'none';
+        document.getElementById('inpMy').value = '';
+        return;
+      }
+
+      stage.className = 'hero-star-stage stage-' + curItem.star;
+      box.innerHTML = getStarSvg(curItem.star, 48);
+      del.style.visibility = 'visible';
+
+      document.getElementById('card1').className = 'step-card';
+      document.getElementById('form1').style.display = 'none';
+      document.getElementById('sum1').style.display = 'block';
+      document.getElementById('sum1').innerHTML = `${escapeHtml(curItem.word)} : <span style="font-size:13px; color:var(--text-sub);">${escapeHtml(curItem.meaning)}</span>`;
+
+      if (curItem.star === 'BRONZE') {
+        title.innerText = '현재 등급: 동별 (10 XP)';
+        document.getElementById('card2').className = 'step-card current';
+        document.getElementById('form2').style.display = 'block';
+        document.getElementById('sum2').style.display = 'none';
+        document.getElementById('inpSrc').value = '';
+        document.getElementById('card3').className = 'step-card locked';
+        document.getElementById('sum3').style.display = 'none';
+      } else {
+        document.getElementById('card2').className = 'step-card';
+        document.getElementById('form2').style.display = 'none';
+        document.getElementById('sum2').style.display = 'block';
+        renderStep2Summary();
+
+        if (curItem.star === 'SILVER') {
+          title.innerText = '현재 등급: 은별 (30 XP)';
+          document.getElementById('card3').className = 'step-card current';
+          document.getElementById('form3').style.display = 'block';
+          document.getElementById('inpMy').value = curItem.mySentence || '';
+          if (curItem.aiFeedback) {
+            document.getElementById('sum3').style.display = 'block';
+            document.getElementById('sum3').innerHTML = `<div style="font-size:12px; color:#9a3412; background:#fff7ed; padding:8px; border-radius:8px; margin-top:6px;"><strong>💬 AI 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}</div>`;
+          } else {
+            document.getElementById('sum3').style.display = 'none';
+          }
+        } else if (curItem.star === 'GOLD') {
+          title.innerText = '🌟 금별 마스터 달성! (60 XP)';
+          document.getElementById('card3').className = 'step-card';
+          document.getElementById('form3').style.display = 'none';
+          document.getElementById('sum3').style.display = 'block';
+          document.getElementById('sum3').innerHTML = `
+            <div style="font-size:13px; font-weight:700;">내 문장: "${escapeHtml(curItem.mySentence)}"</div>
+            <div style="font-size:12px; color:#065f46; background:#ecfdf5; padding:8px; border-radius:8px; margin-top:4px;">
+              <strong>👏 AI 피드백:</strong> ${escapeHtml(curItem.aiFeedback)}
+            </div>
+          `;
+        }
+      }
+    }
+
+    function renderStep2Summary() {
+      document.getElementById('sum2').innerHTML = `
+        <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(curItem.sourceSentence)}"</div>
+        <div style="font-size:12px; background:#eef2ff; padding:8px; border-radius:8px;">
+          <strong>💡 AI 문맥 뜻:</strong> ${escapeHtml(curItem.aiMeaning)}<br>
+          <strong>유의어:</strong> ${escapeHtml(curItem.synonyms)} | <strong>반의어:</strong> ${escapeHtml(curItem.antonyms)}
+        </div>
+      `;
+    }
+
+    // 1단계: 0.05초 만에 동별 저장
+    async function doStep1() {
+      const w = document.getElementById('inpW').value.trim();
+      const m = document.getElementById('inpM').value.trim();
+      if (!w || !m) { alert('단어와 뜻을 입력하세요'); return; }
+
+      const kst = getNowKST();
+      const newId = 'W_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      const newItem = {
+        id: newId,
+        userId: myUser.userId,
+        userName: myUser.name,
+        word: w,
+        meaning: m,
+        sourceSentence: '',
+        aiMeaning: '',
+        synonyms: '',
+        antonyms: '',
+        mySentence: '',
+        aiFeedback: '',
+        star: 'BRONZE',
+        updatedAt: kst.full
+      };
+
+      // 화면 즉시 전환 (대기시간 0초)
+      myWords.unshift(newItem);
+      curItem = newItem;
+      playRewardSound('BRONZE');
+      syncBuilder();
+      document.getElementById('inpSrc').focus();
+      showToast('🥉 동별 획득 (+10 XP)! 2단계 문장을 적어보세요.');
+
+      // 백그라운드 수파베이스 저장
+      await sb.from('words').insert({
+        id: newId,
+        user_id: myUser.userId,
+        user_name: myUser.name,
+        word: w,
+        meaning: m,
+        star: 'BRONZE',
+        updated_at: kst.full
+      });
+    }
+
+    // 2단계: 누르는 즉시 은별 전환 + 수파베이스 사전 캐시 조회(0.05초) 또는 AI 호출(0.4초)
+    async function doStep2() {
+      const src = document.getElementById('inpSrc').value.trim();
+      if (!src) { alert('문장을 입력하세요'); return; }
+
+      const kst = getNowKST();
+      curItem.sourceSentence = src;
+      curItem.star = 'SILVER';
+      curItem.updatedAt = kst.full;
+      playRewardSound('SILVER');
+      fireConfetti(false);
+
+      document.getElementById('heroStage').className = 'hero-star-stage stage-SILVER';
+      document.getElementById('heroStarBox').innerHTML = getStarSvg('SILVER', 48);
+      document.getElementById('heroTitle').innerText = '현재 등급: 은별 (30 XP)';
+
+      document.getElementById('card2').className = 'step-card';
+      document.getElementById('form2').style.display = 'none';
+      document.getElementById('sum2').style.display = 'block';
+      document.getElementById('sum2').innerHTML = `
+        <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(src)}"</div>
+        <div style="font-size:12px; background:#eef2ff; padding:8px; border-radius:8px; color:#4f46e5; font-weight:700;">
+          ⚡ 초고속 AI 사전 분석 중... (바로 3단계 문장을 작성하세요!)
+        </div>
+      `;
+
+      document.getElementById('card3').className = 'step-card current';
+      document.getElementById('form3').style.display = 'block';
+      document.getElementById('inpMy').focus();
+      showToast('🥈 은별 진화 (+20 XP)! 3단계 문장을 만들어보세요.');
+
+      try {
+        let aiResult = null;
+        const { data: cached } = await sb.from('word_cache').select('*').eq('word', curItem.word).maybeSingle();
+
+        if (cached && cached.ai_meaning) {
+          aiResult = {
+            contextMeaning: cached.ai_meaning,
+            synonyms: cached.synonyms || '없음',
+            antonyms: cached.antonyms || '없음'
+          };
+        } else {
+          const prompt = `단어:"${curItem.word}"(뜻:"${curItem.meaning}")/문장:"${src}" -> 문맥뜻(짧게1줄),유의어(2개),반의어(1~2개,없으면'없음') JSON반환`;
+          const schema = {
+            type: 'OBJECT',
+            properties: {
+              contextMeaning: { type: 'STRING' },
+              synonyms: { type: 'STRING' },
+              antonyms: { type: 'STRING' }
+            },
+            required: ['contextMeaning', 'synonyms', 'antonyms']
+          };
+          aiResult = await callGeminiDirect(prompt, schema);
+          await sb.from('word_cache').upsert({
+            word: curItem.word,
+            ai_meaning: aiResult.contextMeaning,
+            synonyms: aiResult.synonyms,
+            antonyms: aiResult.antonyms,
+            updated_at: kst.full
+          });
+        }
+
+        curItem.aiMeaning = aiResult.contextMeaning || curItem.meaning;
+        curItem.synonyms = aiResult.synonyms || '없음';
+        curItem.antonyms = aiResult.antonyms || '없음';
+        renderStep2Summary();
+
+        await sb.from('words').update({
+          source_sentence: src,
+          ai_meaning: curItem.aiMeaning,
+          synonyms: curItem.synonyms,
+          antonyms: curItem.antonyms,
+          star: 'SILVER',
+          updated_at: kst.full
+        }).eq('id', curItem.id);
+      } catch (err) {
+        curItem.aiMeaning = curItem.meaning;
+        curItem.synonyms = '사전 참고';
+        curItem.antonyms = '없음';
+        renderStep2Summary();
+        await sb.from('words').update({
+          source_sentence: src,
+          ai_meaning: curItem.meaning,
+          star: 'SILVER',
+          updated_at: kst.full
+        }).eq('id', curItem.id);
+      }
+    }
+
+    // 3단계: 0.4초 만에 문장 피드백 및 금별 승급
+    async function doStep3() {
+      const my = document.getElementById('inpMy').value.trim();
+      if (!my) { alert('직접 만든 문장을 입력하세요'); return; }
+      const btn = document.getElementById('btnS3');
+      btn.disabled = true; btn.innerText = '⚡ 0.5초 AI 피드백 생성 중...';
+
+      const kst = getNowKST();
+      let evalResult = null;
+
+      try {
+        const prompt = `단어:"${curItem.word}"(뜻:"${curItem.aiMeaning || curItem.meaning}")/학생문장:"${my}" -> 단어가 문맥에 맞게 쓰였으면 isPassed:true와 다정한 칭찬(1문장), 어색하거나 단어가 빠졌으면 isPassed:false와 수정힌트(1문장) JSON반환`;
+        const schema = {
+          type: 'OBJECT',
+          properties: {
+            isPassed: { type: 'BOOLEAN' },
+            feedback: { type: 'STRING' }
+          },
+          required: ['isPassed', 'feedback']
+        };
+        evalResult = await callGeminiDirect(prompt, schema);
+      } catch (e) {
+        const rootWord = curItem.word.replace(/(하다|되다|스럽다|운|한)$/, '');
+        const hasWord = my.includes(rootWord);
+        evalResult = {
+          isPassed: hasWord,
+          feedback: hasWord
+            ? `'${curItem.word}'의 의미를 살려 문장을 훌륭하게 완성했어요!`
+            : `문장 안에 '${curItem.word}' 단어가 들어가도록 다시 작성해 볼까요?`
+        };
+      }
+
+      const newStar = evalResult.isPassed ? 'GOLD' : 'SILVER';
+      curItem.mySentence = my;
+      curItem.aiFeedback = evalResult.feedback;
+      curItem.star = newStar;
+      curItem.updatedAt = kst.full;
+
+      btn.disabled = false; btn.innerText = 'AI 피드백 받고 금별 완성하기';
+      syncBuilder();
+
+      if (evalResult.isPassed) {
+        playRewardSound('GOLD');
+        fireConfetti(true);
+        showToast('🥇 금별 마스터 달성 (+30 XP)! 축하합니다!');
+      } else {
+        showToast('💡 AI 힌트를 참고해 문장을 살짝 다듬어 보세요!');
+      }
+
+      await sb.from('words').update({
+        my_sentence: my,
+        ai_feedback: evalResult.feedback,
+        star: newStar,
+        updated_at: kst.full
+      }).eq('id', curItem.id);
+    }
+
+    async function doDelete() {
+      if (!confirm('이 단어를 삭제하시겠습니까?')) return;
+      const targetId = curItem.id;
+      myWords = myWords.filter(w => w.id !== targetId);
+      goToList();
+      await sb.from('words').delete().eq('id', targetId);
+    }
+
+    // =========================================================================
+    // 4. 도감·퀴즈 & 실시간 명예의 전당 & 관리자 대시보드
+    // =========================================================================
+    function renderBadges() {
+      const goldCnt = myWords.filter(w => w.star === 'GOLD').length;
+      const totalXp = getMyTotalXp();
+      const streak = (myUser && myUser.streak) || 1;
+
+      const badges = [
+        { icon: '🌱', name: '첫 별의 탄생', desc: '첫 단어 등록', unlocked: myWords.length >= 1 },
+        { icon: '🔥', name: '불꽃 학습러', desc: '3일 연속 학습', unlocked: streak >= 3 },
+        { icon: '🥇', name: '금별 수집가', desc: '금별 5개 달성', unlocked: goldCnt >= 5 },
+        { icon: '🧠', name: '퀴즈 챔피언', desc: '퀴즈 5회 정답', unlocked: quizSolveCount >= 5 },
+        { icon: '📚', name: '어휘 탐험가', desc: '단어 15개 등록', unlocked: myWords.length >= 15 },
+        { icon: '👑', name: '국어 마스터', desc: '500 XP 돌파', unlocked: totalXp >= 500 }
+      ];
+
+      document.getElementById('badgeCollection').innerHTML = badges.map(b => `
+        <div class="badge-card ${b.unlocked ? 'unlocked' : ''}">
+          <div style="font-size:26px; margin-bottom:4px;">${b.icon}</div>
+          <div style="font-size:12px; font-weight:800;">${b.name}</div>
+          <div style="font-size:10px; color:var(--text-sub); margin-top:2px;">${b.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    function generateQuiz() {
+      document.getElementById('btnNextQuiz').style.display = 'none';
+      const pool = myWords.map(w => ({ word: w.word, meaning: w.meaning }));
+      FALLBACK_VOCAB.forEach(fb => {
+        if (!pool.some(p => p.word === fb.word)) pool.push(fb);
+      });
+
+      const targetPool = myWords.length > 0 ? myWords : pool;
+      const answerItem = targetPool[Math.floor(Math.random() * targetPool.length)];
+      const wrongPool = pool.filter(p => p.word !== answerItem.word).sort(() => Math.random() - 0.5).slice(0, 3);
+      const choices = [answerItem, ...wrongPool].sort(() => Math.random() - 0.5);
+
+      document.getElementById('quizQuestion').innerText = `Q. "${answerItem.word}"`;
+      document.getElementById('quizSub').innerText = '이 단어의 가장 알맞은 뜻은 무엇일까요?';
+
+      document.getElementById('quizOptions').innerHTML = choices.map((c, idx) => `
+        <button class="quiz-option-btn" onclick="checkQuizAnswer(this, ${c.word === answerItem.word})">
+          ${idx + 1}. ${escapeHtml(c.meaning)}
+        </button>
+      `).join('');
+    }
+
+    async function checkQuizAnswer(btnEl, isCorrect) {
+      document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
+
+      if (isCorrect) {
+        btnEl.classList.add('correct');
+        playRewardSound('QUIZ');
+        fireConfetti(false);
+        quizSolveCount++;
+        localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
+        myUser.bonusXp = (Number(myUser.bonusXp) || 0) + 15;
+        renderMyList();
+        renderBadges();
+        showToast('🎉 정답입니다! 보너스 +15 XP 획득!');
+        await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
+      } else {
+        btnEl.classList.add('wrong');
+        showToast('아쉽네요! 다음 문제에 도전해 보세요.');
+      }
+      document.getElementById('btnNextQuiz').style.display = 'block';
+    }
+
+    async function loadRanking() {
+      const box = document.getElementById('rankingContainer');
+      box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub); font-size:13px;">실시간 순위를 불러오는 중...</div>';
+
+      const [{ data: sData }, { data: wData }] = await Promise.all([
+        sb.from('students').select('*'),
+        sb.from('words').select('user_id, user_name, star')
+      ]);
+
+      const userMap = {};
+      (sData || []).forEach(s => {
+        if (!s.user_id || s.user_id === ADMIN_EMAIL) return;
+        userMap[s.user_id] = {
+          userId: s.user_id,
+          userName: s.user_name || '익명',
+          schoolInfo: s.school_info || '',
+          streak: s.streak || 1,
+          gold: 0,
+          xp: Number(s.bonus_xp) || 0
+        };
+      });
+
+      (wData || []).forEach(w => {
+        const uid = w.user_id;
+        if (!uid || uid === ADMIN_EMAIL) return;
+        if (!userMap[uid]) {
+          userMap[uid] = { userId: uid, userName: w.user_name || '익명', schoolInfo: '', streak: 1, gold: 0, xp: 0 };
+        }
+        if (w.star === 'GOLD') { userMap[uid].gold++; userMap[uid].xp += 60; }
+        else if (w.star === 'SILVER') { userMap[uid].xp += 30; }
+        else { userMap[uid].xp += 10; }
+      });
+
+      const list = Object.values(userMap).sort((a, b) => b.xp - a.xp || b.gold - a.gold).slice(0, 50);
+
+      if (list.length === 0) {
+        box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub);">아직 랭킹 데이터가 없습니다.</div>';
+        return;
+      }
+
+      box.innerHTML = list.map((item, idx) => {
+        const rankIcon = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx + 1}`));
+        const isMe = myUser && item.userId === myUser.userId;
+        const lv = getLevelInfo(item.xp);
+        const schoolTag = item.schoolInfo ? ` (${escapeHtml(item.schoolInfo)})` : '';
+        return `
+          <div class="rank-card ${isMe ? 'me' : ''}">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="rank-num">${rankIcon}</div>
+              <div>
+                <div style="font-size:14px; font-weight:800;">
+                  ${escapeHtml(item.userName)}<span style="font-size:11px; color:var(--text-sub); font-weight:600;">${schoolTag}</span>
+                  ${isMe ? '<span style="color:var(--primary); font-size:11px;">(나)</span>' : ''}
+                </div>
+                <div style="font-size:11px; color:var(--text-sub); font-weight:700;">
+                  Lv.${lv.lv} · 🔥${item.streak}일 · 금별 ${item.gold}개
+                </div>
+              </div>
+            </div>
+            <div style="font-size:14px; font-weight:900; color:var(--primary);">${item.xp} XP</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAdminScreen() { loadAdminData(); showScreen('screen-admin'); }
+    async function loadAdminData() {
+      document.getElementById('adminStudentList').innerHTML = '<p style="text-align:center; color:var(--text-sub);">학생들 기록을 불러오는 중...</p>';
+      const { data: rows } = await sb.from('words').select('*').order('created_ts', { ascending: false });
+      const studentMap = {};
+      let totalWords = 0, goldTotal = 0;
+
+      (rows || []).forEach(r => {
+        const uId = r.user_id || '미지정';
+        const uName = r.user_name || '이름없음';
+        const star = r.star || 'BRONZE';
+
+        if (!studentMap[uId]) {
+          studentMap[uId] = { userId: uId, userName: uName, bronze: 0, silver: 0, gold: 0, total: 0, words: [] };
+        }
+        studentMap[uId].total++;
+        totalWords++;
+        if (star === 'BRONZE') studentMap[uId].bronze++;
+        else if (star === 'SILVER') studentMap[uId].silver++;
+        else if (star === 'GOLD') { studentMap[uId].gold++; goldTotal++; }
+
+        studentMap[uId].words.push({
+          word: r.word,
+          meaning: r.meaning,
+          sourceSentence: r.source_sentence || '',
+          mySentence: r.my_sentence || '',
+          aiFeedback: r.ai_feedback || '',
+          star: star
+        });
+      });
+
+      const students = Object.values(studentMap);
+      document.getElementById('admStudentCnt').innerText = students.length + '명';
+      document.getElementById('admWordCnt').innerText = totalWords + '개';
+      document.getElementById('admGoldCnt').innerText = goldTotal + '개';
+
+      const container = document.getElementById('adminStudentList');
+      if (students.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--text-sub);">아직 등록한 학생이 없습니다.</p>';
+        return;
+      }
+
+      container.innerHTML = students.map(s => `
+        <div class="student-row-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <span style="font-size:15px; font-weight:800;">${escapeHtml(s.userName)}</span>
+              <span style="font-size:12px; color:var(--text-sub); margin-left:6px;">(${escapeHtml(s.userId)})</span>
+            </div>
+            <div style="font-size:12px; font-weight:800;">
+              🥉${s.bronze} 🥈${s.silver} 🥇${s.gold} (총 ${s.total}개)
+            </div>
+          </div>
+          <details style="margin-top:10px; font-size:13px; border-top:1px dashed var(--border); padding-top:8px;">
+            <summary style="cursor:pointer; color:var(--primary); font-weight:700;">단어 및 작문 피드백 열람 (${s.words.length}개)</summary>
+            <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+              ${s.words.map(w => `
+                <div style="background:#f8fafc; border:1px solid var(--border); padding:8px 10px; border-radius:8px;">
+                  <div style="display:flex; justify-content:space-between; font-weight:800;">
+                    <span>${escapeHtml(w.word)} (${escapeHtml(w.meaning)})</span>
+                    <span>${w.star === 'GOLD' ? '🥇금별' : (w.star === 'SILVER' ? '🥈은별' : '🥉동별')}</span>
+                  </div>
+                  ${w.sourceSentence ? `<div style="font-size:11px; color:#475569; margin-top:2px;"><strong>출처:</strong> ${escapeHtml(w.sourceSentence)}</div>` : ''}
+                  ${w.mySentence ? `<div style="font-size:12px; color:#166534; font-weight:700; margin-top:4px;"><strong>학생 작문:</strong> ${escapeHtml(w.mySentence)}</div>` : ''}
+                  ${w.aiFeedback ? `<div style="font-size:11px; color:#065f46; margin-top:2px;"><strong>AI 피드백:</strong> ${escapeHtml(w.aiFeedback)}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </details>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
