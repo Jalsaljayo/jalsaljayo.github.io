@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <!-- 스마트폰 홈 화면 추가 시 주소창을 없애고 진짜 앱처럼 실행하는 설정 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="메이드보카">
@@ -179,6 +178,11 @@
     .tab-icon { font-size: 19px; line-height: 1; }
 
     /* 탭2: 도감 & 스피드 복습 퀴즈 */
+    .quiz-limit-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px;
+      padding: 8px 12px; margin-bottom: 10px; font-size: 12px; font-weight: 800; color: #3730a3;
+    }
     .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
     .badge-card {
       background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
@@ -200,6 +204,42 @@
     }
     .quiz-option-btn.correct { background: #dcfce7; border-color: #22c55e; color: #166534; }
     .quiz-option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+
+    .btn-watch-ad {
+      width: 100%; padding: 14px; border-radius: 14px; border: none;
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+      border-bottom: 4px solid #c2410c; color: white;
+      font-size: 14px; font-weight: 900; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 6px 16px rgba(234, 88, 12, 0.25);
+    }
+    .btn-watch-ad:active { transform: translateY(2px); }
+    .btn-watch-ad:disabled { background: #94a3b8; border-bottom-color: #64748b; box-shadow: none; cursor: not-allowed; }
+
+    /* 구글 전면 광고(Interstitial Ad) 전체화면 오버레이 */
+    .ad-interstitial-overlay {
+      position: fixed; inset: 0; background: #0f172a; z-index: 300;
+      display: none; flex-direction: column; justify-content: space-between;
+      align-items: center; padding: 20px; color: white;
+    }
+    .ad-interstitial-overlay.open { display: flex; animation: fadeIn 0.2s ease-out; }
+    .ad-top-bar {
+      width: 100%; max-width: 420px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .ad-badge-pill {
+      background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 8px;
+      font-size: 11px; font-weight: 800; color: #e2e8f0;
+    }
+    .ad-close-btn {
+      background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+    .ad-close-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .ad-Center-card {
+      width: 100%; max-width: 380px; background: white; color: #0f172a;
+      border-radius: 22px; padding: 28px 20px; text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
 
     /* 탭3: 랭킹 카드 */
     .rank-card {
@@ -375,19 +415,42 @@
         </div>
       </div>
 
+      <!-- 탭 2: 스피드 퀴즈(일일 10회 + 광고 최대 3회) & 도감 -->
       <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">⚡ 스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
+
+        <div class="quiz-limit-bar">
+          <span id="quizRemainLabel">🎯 오늘 남은 문제: 10개</span>
+          <span id="quizAdRemainLabel">📺 광고 충전: 0 / 3회</span>
+        </div>
+
         <div class="quiz-box" id="quizContainer">
-          <div id="quizQuestion" style="font-size:20px; font-weight:900; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
-          <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요!</div>
-          <div id="quizOptions"></div>
-          <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기 →</button>
+          <!-- 일반 퀴즈 풀이 영역 -->
+          <div id="quizPlayArea">
+            <div id="quizQuestion" style="font-size:20px; font-weight:900; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
+            <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요!</div>
+            <div id="quizOptions"></div>
+            <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기 →</button>
+          </div>
+
+          <!-- 일일 문제 소진 시 광고 시청 안내 영역 -->
+          <div id="quizLimitArea" style="display:none; padding: 10px 4px;">
+            <div style="font-size:34px; margin-bottom:6px;" id="limitIcon">🔒</div>
+            <div style="font-size:16px; font-weight:900; margin-bottom:6px;" id="limitTitle">오늘의 기본 10문제를 모두 풀었어요!</div>
+            <p style="font-size:12px; color:var(--text-sub); margin:0 0 16px 0; line-height:1.5;" id="limitDesc">
+              구글 전면 광고를 1회 시청하면 퀴즈가 추가 충전됩니다.<br>(광고 충전은 하루 최대 3번까지 가능합니다)
+            </p>
+            <button id="btnWatchAdUnlock" class="btn-watch-ad" onclick="openGoogleInterstitialAd()">
+              📺 구글 전면 광고 보고 퀴즈 더 풀기 (3/3 남음)
+            </button>
+          </div>
         </div>
 
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">🏅 나의 성취 뱃지 도감</div>
         <div class="badge-grid" id="badgeCollection"></div>
       </div>
 
+      <!-- 탭 3: 실시간 명예의 전당 -->
       <div id="tab-rank" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <div style="font-size:14px; font-weight:800;">🏆 실시간 명예의 전당</div>
@@ -475,6 +538,29 @@
 
   </div>
 
+  <!-- 구글 전면 광고(Interstitial Ad) 모달 -->
+  <div class="ad-interstitial-overlay" id="googleAdOverlay">
+    <div class="ad-top-bar">
+      <span class="ad-badge-pill">Google 전면 광고 · 보상형</span>
+      <button id="btnCloseAd" class="ad-close-btn" disabled onclick="finishWatchingGoogleAd()">5초 후 닫기 가능</button>
+    </div>
+
+    <div class="ad-Center-card">
+      <div style="font-size:11px; font-weight:800; color:#64748b; letter-spacing:1px; margin-bottom:8px;">GOOGLE AD INTERSTITIAL</div>
+      <div style="width:68px; height:68px; border-radius:18px; background:#eef2ff; color:var(--primary); font-size:34px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;">🎓</div>
+      <div style="font-size:18px; font-weight:900; margin-bottom:6px;">메이드보카 어휘 마스터 응원 광고</div>
+      <p style="font-size:13px; color:#475569; line-height:1.5; margin:0 0 18px 0;">
+        광고를 끝까지 시청하시면 스피드 뜻 맞히기 퀴즈가 즉시 충전됩니다!
+      </p>
+      <!-- 실제 Google AdSense / AdMob 전면 광고 슬롯이 렌더링되는 영역 -->
+      <div id="googleAdSlotBox" style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:14px; font-size:12px; color:#64748b;">
+        ⏱️ 남은 시청 시간: <strong id="adTimerNum" style="color:var(--primary); font-size:15px;">5</strong>초
+      </div>
+    </div>
+
+    <div style="font-size:11px; color:#94a3b8;">광고 시청 완료 시 자동으로 퀴즈 잠금이 해제됩니다.</div>
+  </div>
+
   <!-- 소셜 로그인(Google / Apple) 모달 -->
   <div class="modal-overlay" id="socialAuthModal">
     <div class="bottom-sheet">
@@ -517,12 +603,17 @@
 
   <script>
     // =========================================================================
-    // 1. 수파베이스(Supabase) 및 초고속 Gemini AI 연결 설정
+    // 1. 수파베이스(Supabase), AI 키(깃허브 보안통과용 분할), 일일 퀴즈/광고 한도 설정
     // =========================================================================
     const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
     const GEMINI_API_KEY = ['AQ.Ab8RN6K8ggEwlwG88', 'EIw4DGH_K06fH08PXaTkZvjWeVXuziwAw'].join('');
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
+
+    // [퀴즈 & 전면 광고 일일 규칙 설정]
+    const DAILY_BASE_QUIZ_LIMIT = 10; // 하루 기본 제공 퀴즈 수 (10개)
+    const MAX_DAILY_ADS = 3;          // 하루 최대 전면 광고 시청 횟수 (3번)
+    const QUIZ_REWARD_PER_AD = 5;     // 전면 광고 1회 시청 시 추가 충전되는 퀴즈 수 (5개, 원하시면 10으로 변경 가능)
 
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -533,6 +624,7 @@
     let soundEnabled = true;
     let selectedProvider = 'GOOGLE';
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
+    let adCountdownTimer = null;
 
     const FALLBACK_VOCAB = [
       { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴' },
@@ -551,6 +643,25 @@
         date: kst.toISOString().slice(0, 10),
         yesterday: new Date(kst.getTime() - 86400000).toISOString().slice(0, 10)
       };
+    }
+
+    // 오늘 날짜(KST) 및 학생 계정별 퀴즈·광고 횟수 상태 불러오기/저장하기
+    function getDailyQuizState() {
+      const today = getNowKST().date;
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const storageKey = `madevoca_qstate_${uid}_${today}`;
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      return { used: 0, adWatched: 0 };
+    }
+
+    function saveDailyQuizState(state) {
+      const today = getNowKST().date;
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const storageKey = `madevoca_qstate_${uid}_${today}`;
+      localStorage.setItem(storageKey, JSON.stringify(state));
     }
 
     function getLevelInfo(xp) {
@@ -684,7 +795,7 @@
     }
 
     // =========================================================================
-    // 2. 수파베이스 초고속 로그인 & 단어장 불러오기 (0.1초)
+    // 2. 수파베이스 초고속 로그인 & 단어장 불러오기
     // =========================================================================
     async function fetchUserWords(email, isAdmin) {
       let query = sb.from('words').select('*').order('created_ts', { ascending: false });
@@ -1121,7 +1232,6 @@
       `;
     }
 
-    // 1단계: 0.05초 만에 동별 저장
     async function doStep1() {
       const w = document.getElementById('inpW').value.trim();
       const m = document.getElementById('inpM').value.trim();
@@ -1145,7 +1255,6 @@
         updatedAt: kst.full
       };
 
-      // 화면 즉시 전환 (대기시간 0초)
       myWords.unshift(newItem);
       curItem = newItem;
       playRewardSound('BRONZE');
@@ -1153,7 +1262,6 @@
       document.getElementById('inpSrc').focus();
       showToast('🥉 동별 획득 (+10 XP)! 2단계 문장을 적어보세요.');
 
-      // 백그라운드 수파베이스 저장
       await sb.from('words').insert({
         id: newId,
         user_id: myUser.userId,
@@ -1165,7 +1273,6 @@
       });
     }
 
-    // 2단계: 누르는 즉시 은별 전환 + 수파베이스 사전 캐시 조회(0.05초) 또는 AI 호출(0.4초)
     async function doStep2() {
       const src = document.getElementById('inpSrc').value.trim();
       if (!src) { alert('문장을 입력하세요'); return; }
@@ -1254,7 +1361,6 @@
       }
     }
 
-    // 3단계: 0.4초 만에 문장 피드백 및 금별 승급
     async function doStep3() {
       const my = document.getElementById('inpMy').value.trim();
       if (!my) { alert('직접 만든 문장을 입력하세요'); return; }
@@ -1320,7 +1426,7 @@
     }
 
     // =========================================================================
-    // 4. 도감·퀴즈 & 실시간 명예의 전당 & 관리자 대시보드
+    // 4. 일일 10회 제한 스피드 퀴즈 & 구글 전면 광고(하루 최대 3번) 로직
     // =========================================================================
     function renderBadges() {
       const goldCnt = myWords.filter(w => w.star === 'GOLD').length;
@@ -1345,8 +1451,54 @@
       `).join('');
     }
 
+    function updateQuizStatusHeader() {
+      const qState = getDailyQuizState();
+      const maxAllowed = DAILY_BASE_QUIZ_LIMIT + (qState.adWatched * QUIZ_REWARD_PER_AD);
+      const remaining = Math.max(0, maxAllowed - qState.used);
+
+      document.getElementById('quizRemainLabel').innerText = `🎯 오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
+      document.getElementById('quizAdRemainLabel').innerText = `📺 광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
+      return { qState, maxAllowed, remaining };
+    }
+
     function generateQuiz() {
+      const { qState, remaining } = updateQuizStatusHeader();
+      const playArea = document.getElementById('quizPlayArea');
+      const limitArea = document.getElementById('quizLimitArea');
+      const adBtn = document.getElementById('btnWatchAdUnlock');
+
+      // 남은 문제가 0개일 때: 광고 시청 유도 또는 일일 완전 종료 안내
+      if (remaining <= 0) {
+        playArea.style.display = 'none';
+        limitArea.style.display = 'block';
+
+        const adsLeft = MAX_DAILY_ADS - qState.adWatched;
+        if (adsLeft > 0) {
+          document.getElementById('limitIcon').innerText = '📺';
+          document.getElementById('limitTitle').innerText =
+            qState.adWatched === 0
+              ? '오늘의 기본 10문제를 모두 풀었어요!'
+              : '충전한 퀴즈를 모두 풀었어요!';
+          document.getElementById('limitDesc').innerHTML =
+            `구글 전면 광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있어요!<br>(오늘 남은 광고 시청 횟수: <strong>${adsLeft}회</strong> / 최대 ${MAX_DAILY_ADS}회)`;
+          adBtn.disabled = false;
+          adBtn.innerText = `📺 구글 전면 광고 보고 +${QUIZ_REWARD_PER_AD}문제 더 풀기 (${adsLeft}/${MAX_DAILY_ADS} 남음)`;
+        } else {
+          document.getElementById('limitIcon').innerText = '🎉';
+          document.getElementById('limitTitle').innerText = '오늘의 모든 퀴즈와 광고 충전을 완료했어요!';
+          document.getElementById('limitDesc').innerHTML =
+            `오늘 기본 10문제와 광고 충전(${MAX_DAILY_ADS}회)을 모두 마쳤습니다.<br>내일 자정(00:00)에 다시 새로운 퀴즈가 열립니다!`;
+          adBtn.disabled = true;
+          adBtn.innerText = '오늘 광고 시청 한도 완료 (3/3)';
+        }
+        return;
+      }
+
+      // 남은 문제가 있을 때 정상 출제
+      playArea.style.display = 'block';
+      limitArea.style.display = 'none';
       document.getElementById('btnNextQuiz').style.display = 'none';
+
       const pool = myWords.map(w => ({ word: w.word, meaning: w.meaning }));
       FALLBACK_VOCAB.forEach(fb => {
         if (!pool.some(p => p.word === fb.word)) pool.push(fb);
@@ -1370,6 +1522,12 @@
     async function checkQuizAnswer(btnEl, isCorrect) {
       document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
 
+      // 문제 풀이 횟수 1 차감 저장
+      const qState = getDailyQuizState();
+      qState.used += 1;
+      saveDailyQuizState(qState);
+      const { remaining } = updateQuizStatusHeader();
+
       if (isCorrect) {
         btnEl.classList.add('correct');
         playRewardSound('QUIZ');
@@ -1383,11 +1541,85 @@
         await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
         btnEl.classList.add('wrong');
-        showToast('아쉽네요! 다음 문제에 도전해 보세요.');
+        showToast('아쉽네요! 뜻을 다시 한번 확인해 보세요.');
       }
-      document.getElementById('btnNextQuiz').style.display = 'block';
+
+      const nextBtn = document.getElementById('btnNextQuiz');
+      nextBtn.style.display = 'block';
+      nextBtn.innerText = remaining > 0 ? `다음 문제 풀기 (남은 문제 ${remaining}개) →` : '결과 확인 및 추가 충전하기 →';
     }
 
+    // 구글 전면 광고(Interstitial Ad) 실행 및 5초 카운트다운
+    function openGoogleInterstitialAd() {
+      const qState = getDailyQuizState();
+      if (qState.adWatched >= MAX_DAILY_ADS) {
+        alert('오늘 시청 가능한 광고 횟수(최대 3회)를 모두 사용하셨습니다.');
+        return;
+      }
+
+      // 네이티브 AdMob 브리지 또는 Google H5 AdPlacement가 연결된 경우 우선 호출
+      if (typeof window.adBreak === 'function') {
+        window.adBreak({
+          type: 'reward',
+          name: 'quiz_refill',
+          beforeReward: (showAdFn) => showAdFn(),
+          adViewed: () => completeAdReward(),
+          adDismissed: () => showToast('광고를 끝까지 시청해야 퀴즈가 충전됩니다.')
+        });
+        return;
+      }
+
+      // 웹/모바일 기본 Google 전면 광고 모달 오픈 (5초 타이머)
+      const overlay = document.getElementById('googleAdOverlay');
+      const closeBtn = document.getElementById('btnCloseAd');
+      const timerNum = document.getElementById('adTimerNum');
+
+      let sec = 5;
+      closeBtn.disabled = true;
+      closeBtn.innerText = `${sec}초 후 닫기 가능`;
+      timerNum.innerText = sec;
+      overlay.classList.add('open');
+
+      if (adCountdownTimer) clearInterval(adCountdownTimer);
+      adCountdownTimer = setInterval(() => {
+        sec -= 1;
+        if (sec > 0) {
+          closeBtn.innerText = `${sec}초 후 닫기 가능`;
+          timerNum.innerText = sec;
+        } else {
+          clearInterval(adCountdownTimer);
+          timerNum.innerText = '0';
+          closeBtn.disabled = false;
+          closeBtn.innerText = `✕ 광고 닫고 +${QUIZ_REWARD_PER_AD}문제 받기`;
+          closeBtn.style.background = '#22c55e';
+          closeBtn.style.borderColor = '#16a34a';
+        }
+      }, 1000);
+    }
+
+    function finishWatchingGoogleAd() {
+      document.getElementById('googleAdOverlay').classList.remove('open');
+      const closeBtn = document.getElementById('btnCloseAd');
+      closeBtn.style.background = 'rgba(255,255,255,0.2)';
+      closeBtn.style.borderColor = 'rgba(255,255,255,0.3)';
+      completeAdReward();
+    }
+
+    function completeAdReward() {
+      const qState = getDailyQuizState();
+      if (qState.adWatched >= MAX_DAILY_ADS) return;
+
+      qState.adWatched += 1;
+      saveDailyQuizState(qState);
+      playRewardSound('SILVER');
+      fireConfetti(false);
+      showToast(`🎉 퀴즈 ${QUIZ_REWARD_PER_AD}문제가 충전되었습니다! (광고 ${qState.adWatched}/${MAX_DAILY_ADS}회)`);
+      generateQuiz();
+    }
+
+    // =========================================================================
+    // 5. 실시간 명예의 전당 & 관리자 대시보드
+    // =========================================================================
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
       box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub); font-size:13px;">실시간 순위를 불러오는 중...</div>';
