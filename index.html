@@ -306,19 +306,12 @@
 
   <div class="app-container">
 
-    <!-- 화면 1: 정식 Google / Apple OAuth 로그인 -->
+<!-- 화면 1: 정식 Google / Apple OAuth 로그인 -->
     <section id="screen-login" class="screen active">
-      <div>
+      <div style="margin-top: 80px;">
         <div class="brand-logo-box">M</div>
         <h1 style="font-size:28px; font-weight:900; margin:0;">메이드보카</h1>
         <div style="font-size:12px; font-weight:800; color:var(--primary); letter-spacing:1px; margin-top:4px;">MADE VOCA</div>
-        <p style="font-size:14px; color:var(--text-sub); margin-top:8px;">매일 성장하는 나만의 AI 별 단어장</p>
-      </div>
-
-      <div style="width:100%;">
-        <div class="guide-card"><span id="gB"></span> 1단계: 단어·뜻 적고 <strong>동별 (+10 XP)</strong></div>
-        <div class="guide-card"><span id="gS"></span> 2단계: 출처 문장 적고 <strong>은별 (+30 XP)</strong></div>
-        <div class="guide-card"><span id="gG"></span> 3단계: 내 문장 완성해 <strong>금별 (+60 XP)</strong></div>
       </div>
 
       <div class="social-btn-group">
@@ -662,17 +655,14 @@
       `;
     }
 
-    window.onload = async function() {
-      document.getElementById('gB').innerHTML = getStarSvg('BRONZE', 16);
-      document.getElementById('gS').innerHTML = getStarSvg('SILVER', 16);
-      document.getElementById('gG').innerHTML = getStarSvg('GOLD', 16);
+window.onload = async function() {
+      // (삭제됨: gB, gS, gG 3줄 제거 완료)
       document.getElementById('sumB').innerHTML = getStarSvg('BRONZE', 15);
       document.getElementById('sumS').innerHTML = getStarSvg('SILVER', 15);
       document.getElementById('sumG').innerHTML = getStarSvg('GOLD', 15);
       document.getElementById('bStar1').innerHTML = getStarSvg('BRONZE', 14);
       document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 14);
       document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 14);
-
       // 구글/애플 로그인 후 돌아왔을 때 세션 자동 감지
       const { data: { session } } = await sb.auth.getSession();
       if (session && session.user) {
