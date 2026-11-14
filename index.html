@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="메이드보카">
@@ -41,117 +41,100 @@
       --bronze-border: #eab676;
       --silver-border: #cbd5e1;
       --gold-border: #fde047;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    * { box-sizing: border-box; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; background-color: #cbd5e1; color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* PC 화면에서는 가운데 모바일 프레임 유지, 스마트폰에서는 화면 100% 꽉 차게 표시 */
+    @media (min-width: 520px) {
+      body {
+        background-color: #cbd5e1;
+        display: flex;
+        justify-content: center;
+      }
+      .app-container {
+        max-width: 440px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.12);
+      }
+      .bottom-tab-bar, .bottom-sheet {
+        max-width: 440px !important;
+      }
+    }
 
     .app-container {
-      width: 100%; max-width: 440px; min-height: 100vh;
-      background-color: var(--bg-app); position: relative;
-      display: flex; flex-direction: column;
-      box-shadow: 0 0 25px rgba(0,0,0,0.1); overflow-x: hidden;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--bg-app);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    .screen { display: none; flex-direction: column; min-height: 100vh; width: 100%; padding-bottom: 74px; }
-    #screen-login, #screen-builder, #screen-admin { padding-bottom: 0; }
-    .screen.active { display: flex; animation: fadeIn 0.18s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .screen {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding-bottom: calc(68px + var(--safe-bottom));
+    }
+    #screen-builder, #screen-admin { padding-bottom: 24px; }
+    .screen.active { display: flex; animation: fadeIn 0.16s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .star-svg { display: inline-block; vertical-align: middle; overflow: visible; flex-shrink: 0; }
 
-    /* =====================================================================
-       마스코트 캐릭터 애니메이션 (둥실둥실, 팔 흔들기, 눈 깜빡임, 집착 모드)
-       ===================================================================== */
-    @keyframes mascotFloat {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-6px) rotate(1.5deg); }
-    }
-    @keyframes mascotIntenseShake {
-      0%, 100% { transform: scale(1.04) translate(0, 0); }
-      25% { transform: scale(1.06) translate(-1.5px, 1px); }
-      75% { transform: scale(1.06) translate(1.5px, -1px); }
-    }
-    @keyframes armWave {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(-18deg); }
-    }
-    @keyframes starPulse {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.6)); }
-      50% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.95)); }
-    }
-    .mascot-anim-float { animation: mascotFloat 2.4s ease-in-out infinite; }
-    .mascot-anim-intense { animation: mascotIntenseShake 0.35s ease-in-out infinite; }
-    .mascot-arm-wave { transform-origin: 70px 58px; animation: armWave 0.9s ease-in-out infinite; }
-    .mascot-star-glow { transform-origin: 50px 62px; animation: starPulse 1.4s ease-in-out infinite; }
-
-    /* 메인 화면 실시간 집착 잔소리 배너 */
-    .nudge-banner {
-      margin: 6px 16px 6px; padding: 10px 12px; border-radius: 16px;
-      background: #ffffff; border: 1.5px solid #c7d2fe; border-bottom-width: 3.5px;
-      display: flex; align-items: center; gap: 10px; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.07); transition: transform 0.1s;
-    }
-    .nudge-banner:active { transform: scale(0.98); }
-    .nudge-banner.obsess-mode {
-      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
-      border-color: #fda4af;
-    }
-    .nudge-avatar-wrap { width: 46px; height: 46px; flex-shrink: 0; }
-    .nudge-speech { flex: 1; font-size: 12px; line-height: 1.4; color: var(--text-main); font-weight: 700; }
-    .nudge-speaker-tag {
-      display: inline-block; font-size: 10px; font-weight: 900; padding: 1.5px 6px;
-      border-radius: 6px; margin-bottom: 3px; background: #eef2ff; color: var(--primary);
-    }
-    .nudge-banner.obsess-mode .nudge-speaker-tag { background: #fecdd3; color: #be123c; }
-
-    /* 온보딩 튜토리얼 모달 */
-    .onboard-card {
-      width: 100%; max-width: 400px; background: white; border-radius: 26px;
-      padding: 24px 20px 22px; text-align: center; position: relative;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.35); margin: auto 16px;
-      animation: fadeIn 0.22s ease-out;
-    }
-    .onboard-stage-duo {
-      display: flex; justify-content: center; align-items: center; gap: 12px;
-      margin: 8px 0 14px; min-height: 115px;
-    }
-    .onboard-bubble {
-      background: #f8fafc; border: 1.5px solid var(--border); border-radius: 16px;
-      padding: 14px; margin-bottom: 14px; text-align: left; font-size: 13px;
-      line-height: 1.55; color: var(--text-main);
-    }
-    .onboard-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
-    .onboard-dot {
-      width: 8px; height: 8px; border-radius: 99px; background: #cbd5e1; transition: 0.2s;
-    }
-    .onboard-dot.active { width: 22px; background: var(--primary); }
-
-    /* 화면 1: 로그인 화면 */
+    /* 화면 1: 로그인 화면 (스마트폰 한 화면에 정확히 맞도록 100dvh 고정) */
     #screen-login {
+      height: 100vh;
+      height: 100dvh;
+      min-height: 0;
       background: linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
-      padding: 48px 24px 36px; justify-content: space-between; align-items: center; text-align: center;
+      padding: 15vh 24px calc(32px + var(--safe-bottom));
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
     }
     .brand-logo-box {
-      width: 76px; height: 76px; border-radius: 24px;
+      width: 72px; height: 72px; border-radius: 22px;
       background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
       display: flex; align-items: center; justify-content: center;
-      font-size: 38px; font-weight: 900; color: white;
-      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.25); margin: 0 auto 14px;
+      font-size: 36px; font-weight: 900; color: white;
+      box-shadow: 0 10px 22px rgba(79, 70, 229, 0.25); margin: 0 auto 14px;
     }
 
     .social-btn-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
     .google-btn {
       width: 100%; background: #ffffff; color: #1e293b;
       border: 1.5px solid #cbd5e1; border-bottom-width: 4px;
-      padding: 15px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 800;
       display: flex; align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.1s;
     }
     .apple-btn {
       width: 100%; background: #000000; color: #ffffff;
       border: 1.5px solid #000000; border-bottom: 4px solid #334155;
-      padding: 15px 18px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 800;
       display: flex; align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: 0.1s;
     }
@@ -171,7 +154,7 @@
     }
     .btn-icon-sound {
       width: 34px; height: 34px; border-radius: 10px; background: #f1f5f9;
-      border: 1px solid var(--border); font-size: 15px; font-weight: 800; cursor: pointer;
+      border: 1px solid var(--border); font-size: 16px; cursor: pointer;
     }
     .btn-admin-pill {
       background: #fef08a; color: #854d0e; border: 1px solid #facc15;
@@ -180,11 +163,11 @@
 
     /* 게이미피케이션 히어로 배너 */
     .gamify-card {
-      margin: 10px 16px 6px; padding: 14px 16px; border-radius: 18px;
+      margin: 10px 14px 6px; padding: 13px 15px; border-radius: 16px;
       background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%);
-      color: white; box-shadow: 0 8px 18px rgba(79, 70, 229, 0.18);
+      color: white; box-shadow: 0 6px 14px rgba(79, 70, 229, 0.16);
     }
-    .gamify-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .gamify-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .level-badge {
       background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 999px;
       font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;
@@ -192,11 +175,10 @@
     .streak-pill {
       background: #fff7ed; color: #ea580c; padding: 4px 10px; border-radius: 999px;
       font-size: 12px; font-weight: 900; display: inline-flex; align-items: center; gap: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
     .xp-bar-bg {
-      width: 100%; height: 9px; background: rgba(255,255,255,0.22);
-      border-radius: 999px; overflow: hidden; margin: 6px 0 4px;
+      width: 100%; height: 8px; background: rgba(255,255,255,0.22);
+      border-radius: 999px; overflow: hidden; margin: 6px 0 2px;
     }
     .xp-bar-fill {
       height: 100%; background: linear-gradient(90deg, #fde047, #facc15);
@@ -204,7 +186,7 @@
     }
 
     .daily-quest-box {
-      margin: 6px 16px 6px; padding: 10px 14px; border-radius: 14px;
+      margin: 4px 14px 6px; padding: 9px 13px; border-radius: 13px;
       background: var(--surface); border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
@@ -212,7 +194,7 @@
     .quest-bar-fill { height: 100%; background: var(--duo-green); width: 0%; transition: width 0.4s ease; }
 
     .reward-summary {
-      padding: 4px 16px 8px;
+      padding: 2px 14px 8px;
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
     }
     .reward-pill {
@@ -222,37 +204,39 @@
     }
     .reward-pill.active-filter { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
 
-    /* 내 단어 검색창 스타일 */
-    .search-box-wrap { padding: 0 16px 8px; position: relative; }
+    /* 내 단어 검색창 스타일 (font-size: 16px로 스마트폰 자동 줌인 방지) */
+    .search-box-wrap { padding: 0 14px 8px; position: relative; }
     .search-input {
       width: 100%; padding: 10px 36px 10px 36px; border-radius: 12px;
       border: 1.5px solid var(--border); background: var(--surface);
-      font-size: 13px; font-weight: 600; outline: none; transition: 0.15s;
+      font-size: 16px; font-weight: 600; outline: none; transition: 0.15s;
     }
-    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    .search-input:focus { border-color: var(--primary); }
     .search-icon-left {
-      position: absolute; left: 28px; top: 50%; transform: translateY(-50%);
+      position: absolute; left: 26px; top: 50%; transform: translateY(-50%);
       font-size: 14px; color: var(--text-sub); pointer-events: none; margin-top: -4px;
     }
     .search-clear-btn {
-      position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
-      background: #e2e8f0; border: none; width: 20px; height: 20px; border-radius: 50%;
-      font-size: 11px; font-weight: 800; color: #475569; cursor: pointer;
+      position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+      background: #e2e8f0; border: none; width: 22px; height: 22px; border-radius: 50%;
+      font-size: 12px; font-weight: 800; color: #475569; cursor: pointer;
       display: none; align-items: center; justify-content: center; margin-top: -4px;
     }
 
-    .list-body { padding: 4px 16px 24px; flex: 1; }
+    .list-body { padding: 4px 14px 24px; flex: 1; }
     .word-item-card {
       background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
-      border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+      border-radius: 15px; padding: 13px 15px; margin-bottom: 9px; cursor: pointer;
       display: flex; justify-content: space-between; align-items: center; transition: transform 0.1s;
     }
     .word-item-card:active { transform: scale(0.98); }
     .word-item-card.GOLD { border-color: #facc15; background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%); }
 
-    /* 하단 탭 네비게이션 (4탭 구조) */
+    /* 하단 탭 네비게이션 (모바일 하단 제스처 바 안전 영역 대응) */
     .bottom-tab-bar {
-      position: fixed; bottom: 0; width: 100%; max-width: 440px; height: 64px;
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; height: calc(62px + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
       background: var(--surface); border-top: 1.5px solid var(--border);
       display: grid; grid-template-columns: repeat(4, 1fr); z-index: 40;
     }
@@ -282,7 +266,7 @@
     }
     .quiz-box {
       background: var(--surface); border: 2px solid var(--primary); border-bottom-width: 5px;
-      border-radius: 18px; padding: 18px; margin-bottom: 16px; text-align: center;
+      border-radius: 18px; padding: 16px; margin-bottom: 16px; text-align: center;
     }
     .quiz-option-btn {
       width: 100%; text-align: left; background: #f8fafc; border: 1.5px solid var(--border);
@@ -319,27 +303,28 @@
     }
 
     /* 화면 3: 단어 만들기 */
-    .builder-body { padding: 14px 16px 40px; flex: 1; }
+    .builder-body { padding: 12px 14px 36px; flex: 1; }
     .hero-star-stage {
       background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: 18px; padding: 14px 16px; margin-bottom: 14px;
+      border-radius: 16px; padding: 13px 14px; margin-bottom: 12px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
       transition: all 0.25s ease;
     }
     .hero-star-stage.stage-BRONZE { border-color: var(--bronze-border); background: #fff7ed; }
     .hero-star-stage.stage-SILVER { border-color: var(--silver-border); background: #f1f5f9; }
-    .hero-star-stage.stage-GOLD { border-color: #facc15; background: #fef9c3; transform: scale(1.01); }
+    .hero-star-stage.stage-GOLD { border-color: #facc15; background: #fef9c3; }
 
     .step-card {
       background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
-      border-radius: 16px; padding: 16px; margin-bottom: 12px;
+      border-radius: 16px; padding: 15px; margin-bottom: 11px;
     }
     .step-card.current { border-color: var(--primary); }
     .step-card.locked { opacity: 0.45; pointer-events: none; background: #f1f5f9; }
 
+    /* 스마트폰 터치 시 화면 자동 확대 방지 (font-size: 16px) */
     .input-field {
       width: 100%; padding: 11px 13px; border-radius: 11px; border: 1.5px solid var(--border);
-      font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc;
+      font-size: 16px; margin-bottom: 10px; outline: none; background: #f8fafc;
     }
     .input-field:focus { border-color: var(--primary); background: white; }
 
@@ -361,14 +346,13 @@
 
     /* 모달 */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.58); z-index: 100;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100;
       display: none; justify-content: center; align-items: flex-end;
     }
-    .modal-overlay.center-modal { align-items: center; }
     .modal-overlay.open { display: flex; }
     .bottom-sheet {
-      width: 100%; max-width: 440px; background: white;
-      border-radius: 24px 24px 0 0; padding: 24px 20px 32px;
+      width: 100%; background: white;
+      border-radius: 24px 24px 0 0; padding: 24px 20px calc(28px + var(--safe-bottom));
       animation: slideUp 0.2s ease-out;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -379,13 +363,13 @@
 
     .dict-upload-box {
       background: #eef2ff; border: 1.5px solid #c7d2fe; border-radius: 16px;
-      padding: 16px; margin-bottom: 16px;
+      padding: 15px; margin-bottom: 16px;
     }
 
     #toast {
-      visibility: hidden; background: #0f172a; color: white; padding: 12px 18px;
-      border-radius: 12px; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      z-index: 200; font-size: 13px; font-weight: 700; white-space: nowrap;
+      visibility: hidden; background: #0f172a; color: white; padding: 11px 16px;
+      border-radius: 12px; position: fixed; bottom: calc(76px + var(--safe-bottom)); left: 50%; transform: translateX(-50%);
+      z-index: 200; font-size: 13px; font-weight: 700; max-width: 90vw; text-align: center;
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
     #toast.show { visibility: visible; }
@@ -404,11 +388,11 @@
 
   <div class="app-container">
 
-    <!-- 화면 1: 정식 Google / Apple OAuth 로그인 (심플 버전) -->
+    <!-- 화면 1: 정식 Google / Apple OAuth 로그인 -->
     <section id="screen-login" class="screen active">
-      <div style="margin-top: 80px;">
+      <div>
         <div class="brand-logo-box">M</div>
-        <h1 style="font-size:28px; font-weight:900; margin:0;">메이드보카</h1>
+        <h1 style="font-size:26px; font-weight:900; margin:0;">메이드보카</h1>
         <div style="font-size:12px; font-weight:800; color:var(--primary); letter-spacing:1px; margin-top:4px;">MADE VOCA</div>
       </div>
 
@@ -444,7 +428,6 @@
           <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:800;">내 단어장 ✎</div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn-icon-sound" onclick="openOnboardingModal()" title="메이·보카의 사용법 안내">❓</button>
           <button id="btnSoundToggle" class="btn-icon-sound" onclick="toggleSound()" title="효과음 켜기/끄기">🔊</button>
           <button id="btnAdminMode" class="btn-admin-pill" style="display:none;" onclick="openAdminScreen()">👑 관리자</button>
           <button class="btn-top-plus" title="새 단어 추가" onclick="openBuilder(null)">＋</button>
@@ -461,15 +444,6 @@
           <div style="font-size:11px; opacity:0.85;" id="xpNextText">다음 레벨까지 100 XP</div>
         </div>
         <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
-      </div>
-
-      <!-- [신규] 메이 & 보카 실시간 집착 잔소리 배너 (우창윤 쌤 + 듀오링고 느낌) -->
-      <div id="mascotNudgeBanner" class="nudge-banner" onclick="cycleMascotNudge()" title="터치하면 다른 잔소리를 해줍니다">
-        <div id="nudgeMascotBox" class="nudge-avatar-wrap"></div>
-        <div class="nudge-speech">
-          <span id="nudgeSpeakerTag" class="nudge-speaker-tag">💜 주치의 메이</span>
-          <div id="nudgeText">어허... 모르는 단어 눈으로만 대충 넘기시면 수능 날 어휘 스파이크 옵니다 ^^</div>
-        </div>
       </div>
 
       <div class="daily-quest-box">
@@ -498,7 +472,7 @@
       </div>
 
       <!-- 탭 2: 스피드 퀴즈(일일 10회 + 광고 최대 3회) & 도감 -->
-      <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+      <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 14px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">⚡ 스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
 
         <div class="quiz-limit-bar">
@@ -531,7 +505,7 @@
       </div>
 
       <!-- 탭 3: 실시간 명예의 전당 -->
-      <div id="tab-rank" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+      <div id="tab-rank" class="tab-pane" style="display:none; padding: 10px 14px 24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <div style="font-size:14px; font-weight:800;">🏆 실시간 명예의 전당</div>
           <button onclick="loadRanking()" style="background:#eef2ff; color:var(--primary); border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer;">↻ 새로고침</button>
@@ -540,7 +514,7 @@
       </div>
 
       <!-- 탭 4: 내 정보 (학번 / 이름 수정 및 계정 관리) -->
-      <div id="tab-profile" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+      <div id="tab-profile" class="tab-pane" style="display:none; padding: 10px 14px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">👤 내 정보 관리</div>
 
         <div class="profile-box-card">
@@ -644,7 +618,7 @@
           <p style="font-size:11px; color:#475569; margin:0 0 10px 0; line-height:1.45;">
             국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. <strong>'뜻풀이' 열 정밀 인식(기호열 제외)</strong> 및 <strong>다의어 문맥 뜻 병합·관계어 자동 추출</strong>이 적용되어 있습니다.
           </p>
-          <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:white; padding:8px; font-size:12px; margin-bottom:8px;">
+          <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:white; padding:8px; font-size:13px; margin-bottom:8px;">
           <button id="btnUploadDict" class="action-btn btn-primary" style="padding:10px; font-size:13px;" onclick="uploadStandardDictFiles()">
             🚀 선택한 사전 엑셀 파일 수파베이스에 넣기
           </button>
@@ -661,34 +635,6 @@
       </div>
     </section>
 
-  </div>
-
-  <!-- [신규] 메이 & 보카 4컷 온보딩 튜토리얼 애니메이션 모달 -->
-  <div class="modal-overlay center-modal" id="onboardingModal">
-    <div class="onboard-card">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span id="onboardStepBadge" style="font-size:11px; font-weight:900; background:#eef2ff; color:var(--primary); padding:4px 10px; border-radius:99px;">STEP 1 / 4</span>
-        <button onclick="closeOnboardingModal()" style="background:none; border:none; font-size:18px; color:var(--text-sub); cursor:pointer; font-weight:800;">✕</button>
-      </div>
-
-      <!-- 움직이는 두 캐릭터 스테이지 -->
-      <div id="onboardMascotStage" class="onboard-stage-duo"></div>
-
-      <div id="onboardTitle" style="font-size:17px; font-weight:900; margin-bottom:8px;">어허... 거기 잠깐 멈추세요 ^^</div>
-      <div id="onboardBubble" class="onboard-bubble"></div>
-
-      <div class="onboard-dots">
-        <div class="onboard-dot active" id="obDot0"></div>
-        <div class="onboard-dot" id="obDot1"></div>
-        <div class="onboard-dot" id="obDot2"></div>
-        <div class="onboard-dot" id="obDot3"></div>
-      </div>
-
-      <div style="display:flex; gap:8px;">
-        <button id="btnObPrev" class="action-btn" style="background:#f1f5f9; color:var(--text-main); width:35%; display:none;" onclick="prevOnboardStep()">이전</button>
-        <button id="btnObNext" class="action-btn btn-primary" style="flex:1;" onclick="nextOnboardStep()">다음 (피할 수 없음) →</button>
-      </div>
-    </div>
   </div>
 
   <!-- 구글/애플 정식 로그인 후 최초 1회만 뜨는 이름·학번 설정 모달 -->
@@ -734,288 +680,6 @@
     let soundEnabled = true;
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
-    let currentOnboardStep = 0;
-    let nudgeClickIdx = 0;
-
-    // =========================================================================
-    // [마스코트 SVG 렌더러] 메이(보라색 베레모) & 보카(별 안고 있는 모찌)
-    // mood: 'normal' (기본 귀여움) | 'obsess' (맑은 눈의 광기·집착 모드)
-    // =========================================================================
-    function getMascotSvg(charType, mood = 'normal', size = 88) {
-      const isObsess = (mood === 'obsess');
-      const animClass = isObsess ? 'mascot-anim-intense' : 'mascot-anim-float';
-      const badgeStroke = isObsess ? '#fda4af' : '#e2e8f0';
-      const badgeBg = isObsess ? '#fff1f2' : '#ffffff';
-
-      // 눈 표현: 집착 모드일 때는 눈이 살짝 커지고 안광(하이라이트)과 다크서클/진지한 눈썹이 추가됨
-      const eyesSvg = isObsess
-        ? `
-          <path d="M 33 39 L 43 42" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-          <path d="M 67 39 L 57 42" stroke="#111" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="39" cy="46" r="4.2" fill="#111"/>
-          <circle cx="61" cy="46" r="4.2" fill="#111"/>
-          <circle cx="40.2" cy="44.8" r="1.3" fill="#ffffff"/>
-          <circle cx="62.2" cy="44.8" r="1.3" fill="#ffffff"/>
-        `
-        : `
-          <circle cx="39" cy="46" r="3.4" fill="#111"/>
-          <circle cx="61" cy="46" r="3.4" fill="#111"/>
-        `;
-
-      if (charType === 'MEI') {
-        // 캐릭터 2: 보라색 베레모를 쓰고 손 흔드는 '메이'
-        return `
-          <svg class="${animClass}" width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible;">
-            <circle cx="50" cy="50" r="46" fill="${badgeBg}" stroke="${badgeStroke}" stroke-width="2.5"/>
-            <!-- 찹쌀떡 몸통 & 머리 -->
-            <path d="M 33 56 C 24 48, 25 26, 48 25 C 71 24, 75 45, 67 56 C 72 67, 70 80, 63 83 C 59 84, 57 79, 55 79 L 44 79 C 42 79, 40 84, 36 83 C 29 80, 28 66, 33 56 Z"
-              fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- 왼팔 -->
-            <path d="M 33 56 C 25 60, 24 68, 31 67" fill="none" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
-            <!-- 흔드는 오른팔 (애니메이션) -->
-            <g class="mascot-arm-wave">
-              <path d="M 66 55 C 74 44, 80 45, 76 55 C 73 61, 69 62, 68 63" fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
-            </g>
-            <!-- 분홍 볼터치 -->
-            <ellipse cx="33" cy="51" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.65"/>
-            <ellipse cx="67" cy="51" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.65"/>
-            ${eyesSvg}
-            <!-- 작은 입 -->
-            <path d="M 48.5 48.5 Q 50 50.5 51.5 48.5" fill="none" stroke="#111111" stroke-width="2.8" stroke-linecap="round"/>
-            <!-- 보라색 베레모 -->
-            <g transform="rotate(18 58 24)">
-              <ellipse cx="58" cy="24" rx="14" ry="6.5" fill="#a855f7" stroke="#111111" stroke-width="3.6"/>
-              <path d="M 58 17 C 59 14, 62 14, 60 18" fill="none" stroke="#111111" stroke-width="3.2" stroke-linecap="round"/>
-            </g>
-          </svg>
-        `;
-      } else {
-        // 캐릭터 1: 반짝이는 별을 두 손으로 꼭 안고 있는 '보카'
-        return `
-          <svg class="${animClass}" width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible;">
-            <circle cx="50" cy="50" r="46" fill="${badgeBg}" stroke="${badgeStroke}" stroke-width="2.5"/>
-            <!-- 찹쌀떡 몸통 & 머리 -->
-            <path d="M 32 54 C 23 45, 25 23, 50 23 C 75 23, 77 45, 68 54 C 73 65, 71 79, 63 82 C 59 83, 57 78, 54 78 L 46 78 C 43 78, 41 83, 37 82 C 29 79, 27 65, 32 54 Z"
-              fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- 분홍 볼터치 -->
-            <ellipse cx="33" cy="50" rx="4.2" ry="2.3" fill="#fda4af" opacity="0.55"/>
-            <ellipse cx="67" cy="50" rx="4.2" ry="2.3" fill="#fda4af" opacity="0.55"/>
-            ${eyesSvg}
-            <!-- 작은 하트/점 입 -->
-            <path d="M 48.5 47.5 Q 50 50 51.5 47.5" fill="none" stroke="#111111" stroke-width="2.8" stroke-linecap="round"/>
-            <!-- 반짝이는 노란 별 -->
-            <g class="mascot-star-glow">
-              <polygon points="50,51 53.2,57.5 60,58.5 55,63.2 56.2,70 50,66.6 43.8,70 45,63.2 40,58.5 46.8,57.5"
-                fill="#fde047" stroke="#111111" stroke-width="3" stroke-linejoin="round"/>
-            </g>
-            <!-- 별을 꼭 쥐고 있는 두 손 -->
-            <path d="M 31 56 C 28 64, 38 68, 44 63 C 45 60, 42 57, 38 58" fill="#ffffff" stroke="#111111" stroke-width="3.8" stroke-linecap="round"/>
-            <path d="M 69 56 C 72 64, 62 68, 56 63 C 55 60, 58 57, 62 58" fill="#ffffff" stroke="#111111" stroke-width="3.8" stroke-linecap="round"/>
-          </svg>
-        `;
-      }
-    }
-
-    // =========================================================================
-    // [4컷 온보딩 튜토리얼 데이터] 우창윤 쌤 + 듀오링고 집착 개그 톤
-    // =========================================================================
-    const ONBOARD_STEPS = [
-      {
-        badge: 'STEP 1 / 4 · 어휘 주치의 등장',
-        title: '어허... 지금 단어 그냥 넘기셨죠? ^^',
-        meiMood: 'normal',
-        vocaMood: 'normal',
-        html: `
-          <div style="margin-bottom:8px;">
-            <strong style="color:#4f46e5;">💜 주치의 메이:</strong> "안녕하세요 여러분~ 국어 지문 읽다가 모르는 단어 눈으로만 대충 넘기시면 수능 날 <strong>어휘 스파이크</strong> 옵니다 ^^"
-          </div>
-          <div>
-            <strong style="color:#b45309;">⭐ 집착요정 보카:</strong> "제가 옆에서 24시간 지켜보고 있을 거예요. 도망갈 생각 마세요 ㅎㅎ"
-          </div>
-        `
-      },
-      {
-        badge: 'STEP 2 / 4 · 동별에서 은별로',
-        title: '동별만 켜두시면... 제 눈빛이 변합니다',
-        meiMood: 'normal',
-        vocaMood: 'obsess',
-        html: `
-          <div style="margin-bottom:8px;">
-            <strong style="color:#b45309;">⭐ 보카:</strong> "1단계로 단어·뜻을 적으면 제 손에 <strong>🥉동별(+10 XP)</strong>이 켜져요! 근데 동별만 켜두고 방치하면... 꿈에 찾아갈 거예요."
-          </div>
-          <div>
-            <strong style="color:#4f46e5;">💜 메이:</strong> "2단계 출처 문장을 적으시면 <strong>표준국어대사전 DB</strong>가 문법 규칙대로 기본형·유의어·반의어를 찾아 <strong>🥈은별(+30 XP)</strong>로 처방해 드립니다 ^^"
-          </div>
-        `
-      },
-      {
-        badge: 'STEP 3 / 4 · 대망의 금별 완성',
-        title: '직접 문장을 만드셔야 완치됩니다 ^^',
-        meiMood: 'obsess',
-        vocaMood: 'normal',
-        html: `
-          <div style="margin-bottom:8px;">
-            <strong style="color:#4f46e5;">💜 메이:</strong> "3단계에서 그 단어로 직접 짧은 문장을 만들어 보세요. AI 선생님이 0.5초 만에 첨삭해 주고 <strong>🥇금별(+60 XP)</strong>을 완성해 드립니다."
-          </div>
-          <div>
-            <strong style="color:#b45309;">⭐ 보카:</strong> "하루에 금별 3개 안 채우시고 인스타나 유튜브 켜시면... 거기 댓글창에도 제가 나타날 거예요 👁️👄👁️"
-          </div>
-        `
-      },
-      {
-        badge: 'STEP 4 / 4 · 불꽃 스트릭 & 명예의 전당',
-        title: '오늘부터 1일입니다. 약속했어요? ^^',
-        meiMood: 'obsess',
-        vocaMood: 'obsess',
-        html: `
-          <div style="margin-bottom:8px;">
-            <strong style="color:#b45309;">⭐ 보카:</strong> "매일 접속해서 <strong>🔥연속 학습 불꽃</strong>을 지키고, <strong>🏅도감·퀴즈</strong> 탭에서 하루 10문제 스피드 퀴즈로 보너스 XP를 쓸어 담으세요!"
-          </div>
-          <div>
-            <strong style="color:#4f46e5;">💜 메이:</strong> "자, 이제 우측 상단 <strong>[＋]</strong> 버튼을 눌러 첫 처방을 받아보실까요? 끝까지 지켜보고 있습니다 ^^"
-          </div>
-        `
-      }
-    ];
-
-    function openOnboardingModal() {
-      currentOnboardStep = 0;
-      renderOnboardStep();
-      document.getElementById('onboardingModal').classList.add('open');
-    }
-
-    function closeOnboardingModal() {
-      document.getElementById('onboardingModal').classList.remove('open');
-      localStorage.setItem('madevoca_onboard_seen_v1', 'Y');
-    }
-
-    function renderOnboardStep() {
-      const step = ONBOARD_STEPS[currentOnboardStep];
-      document.getElementById('onboardStepBadge').innerText = step.badge;
-      document.getElementById('onboardTitle').innerText = step.title;
-      document.getElementById('onboardBubble').innerHTML = step.html;
-      document.getElementById('onboardMascotStage').innerHTML =
-        getMascotSvg('MEI', step.meiMood, 92) + getMascotSvg('VOCA', step.vocaMood, 92);
-
-      for (let i = 0; i < 4; i++) {
-        document.getElementById('obDot' + i).className = 'onboard-dot' + (i === currentOnboardStep ? ' active' : '');
-      }
-
-      document.getElementById('btnObPrev').style.display = currentOnboardStep > 0 ? 'block' : 'none';
-      const nextBtn = document.getElementById('btnObNext');
-      if (currentOnboardStep === ONBOARD_STEPS.length - 1) {
-        nextBtn.innerText = '네, 지금 바로 첫 별 켤게요! 🚀';
-      } else {
-        nextBtn.innerText = '다음 (피할 수 없음) →';
-      }
-    }
-
-    function nextOnboardStep() {
-      playRewardSound('BRONZE');
-      if (currentOnboardStep < ONBOARD_STEPS.length - 1) {
-        currentOnboardStep++;
-        renderOnboardStep();
-      } else {
-        closeOnboardingModal();
-        fireConfetti(false);
-        showToast('💜 메이 & ⭐ 보카가 단어장 위에서 지켜보고 있습니다 ^^');
-      }
-    }
-
-    function prevOnboardStep() {
-      if (currentOnboardStep > 0) {
-        currentOnboardStep--;
-        renderOnboardStep();
-      }
-    }
-
-    // =========================================================================
-    // [메인 화면 실시간 집착 잔소리 엔진] 학생의 단어 상태에 따라 자동 변화
-    // =========================================================================
-    function updateMascotNudgeBanner(todayGoldCount, bronzeCount, totalCount) {
-      const banner = document.getElementById('mascotNudgeBanner');
-      const avatarBox = document.getElementById('nudgeMascotBox');
-      const tagEl = document.getElementById('nudgeSpeakerTag');
-      const textEl = document.getElementById('nudgeText');
-
-      const dynamicLines = [];
-
-      if (totalCount === 0) {
-        dynamicLines.push({
-          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이',
-          text: '어허... 단어장이 텅 비어 있네요? 우측 상단 [＋] 버튼 안 누르시면 어휘 스파이크 옵니다 ^^'
-        });
-        dynamicLines.push({
-          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
-          text: '첫 단어 등록할 때까지 여기서 눈 안 감고 기다릴 거예요. 진짜 안 감음 👁️👄👁️'
-        });
-      } else if (todayGoldCount === 0) {
-        dynamicLines.push({
-          char: 'MEI', mood: 'obsess', tag: '💜 주치의 메이 (정색)',
-          text: '잠깐만요... 오늘 금별이 0개인데 설마 유튜브나 인스타 켜실 생각은 아니시죠? 제가 다 보고 있습니다 ^^'
-        });
-        dynamicLines.push({
-          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
-          text: '오늘 금별 1개도 안 만들고 주무시면... 오늘 밤 꿈에 제가 별 들고 찾아갑니다 ㅎㅎ'
-        });
-      } else if (bronzeCount >= 2) {
-        dynamicLines.push({
-          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
-          text: `동별만 켜두고 방치된 단어가 ${bronzeCount}개나 있어요... 은별·금별로 안 키워주면 삐뚤어질 거예요!`
-        });
-        dynamicLines.push({
-          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이',
-          text: `어허... 동별 ${bronzeCount}개는 아직 반쪽짜리 기억입니다. 눌러서 2단계 문장까지 처방받으세요 ^^`
-        });
-      } else if (todayGoldCount < 3) {
-        dynamicLines.push({
-          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이',
-          text: `오호, 오늘 금별 ${todayGoldCount}개! 목표까지 ${3 - todayGoldCount}개 남았습니다. 여기서 멈추시면 아쉬워서 잠이 오실까요? ^^`
-        });
-        dynamicLines.push({
-          char: 'VOCA', mood: 'normal', tag: '⭐ 집착요정 보카',
-          text: `금별 ${3 - todayGoldCount}개만 더 채우면 오늘 미션 클리어예요! 저 지금 굉장히 기대 중입니다 ⭐`
-        });
-      } else {
-        dynamicLines.push({
-          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이 (감동)',
-          text: `오늘 금별 ${todayGoldCount}개 달성! 아주 훌륭합니다. 이 기세로 도감·퀴즈 탭에서 보너스 XP까지 챙기시죠 ^^`
-        });
-        dynamicLines.push({
-          char: 'VOCA', mood: 'normal', tag: '⭐ 행복요정 보카',
-          text: '우와아!! 오늘 금별 미션 완벽 클리어! 내일도 안 오시면... 어떻게 되는지 아시죠? ㅎㅎ'
-        });
-      }
-
-      // 공통 유머 대사 풀 추가 (터치할 때마다 순환)
-      dynamicLines.push(
-        {
-          char: 'MEI', mood: 'obsess', tag: '💜 주치의 메이',
-          text: '방금 "아 귀찮은데 이따 할까" 생각하셨죠? 뇌파가 여기까지 다 들립니다. 딱 1단어만 더 하시죠 ^^'
-        },
-        {
-          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
-          text: '명예의 전당 순위 보셨어요? 지금 딴짓하는 사이에 친구가 내 순위 추월하고 있어요!! 🚨'
-        }
-      );
-
-      const picked = dynamicLines[nudgeClickIdx % dynamicLines.length];
-      banner.className = 'nudge-banner' + (picked.mood === 'obsess' ? ' obsess-mode' : '');
-      avatarBox.innerHTML = getMascotSvg(picked.char, picked.mood, 46);
-      tagEl.innerText = picked.tag;
-      textEl.innerText = picked.text;
-    }
-
-    function cycleMascotNudge() {
-      nudgeClickIdx++;
-      let b = 0, todayGold = 0;
-      const todayPrefix = getNowKST().date;
-      myWords.forEach(w => {
-        if (w.star === 'BRONZE') b++;
-        else if (w.star === 'GOLD' && w.updatedAt && w.updatedAt.indexOf(todayPrefix) === 0) todayGold++;
-      });
-      updateMascotNudgeBanner(todayGold, b, myWords.length);
-    }
 
     // [내장 다의어·문맥 사전]
     const CORE_SYN_ANT_MAP = {
@@ -1429,10 +1093,7 @@
         };
         myWords = await fetchUserWords(email, isAdmin);
         setupUserView();
-        // 아직 튜토리얼을 안 본 기기면 4컷 캐릭터 안내 자동 오픈
-        if (!localStorage.getItem('madevoca_onboard_seen_v1')) {
-          openOnboardingModal();
-        }
+        showToast(`반갑습니다, ${myUser.name}님!`);
       } else {
         pendingOAuthSession = { email, provider, defaultName, isAdmin };
         document.getElementById('regStudentName').value = defaultName;
@@ -1481,8 +1142,7 @@
       document.getElementById('firstProfileModal').classList.remove('open');
       setupUserView();
       fireConfetti(true);
-      // 신규 가입 완료 즉시 메이·보카 4컷 튜토리얼 애니메이션 오픈!
-      openOnboardingModal();
+      showToast(`환영합니다, ${myUser.name}님!`);
     }
 
     function loadMyProfileTab() {
@@ -1646,9 +1306,6 @@
       document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
       document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료! 🎉' : `${todayGold} / 3`;
 
-      // 메이 & 보카 실시간 잔소리 배너 업데이트
-      updateMascotNudgeBanner(todayGold, b, myWords.length);
-
       const filtered = myWords.filter(w => {
         const matchStar = (starFilter === 'ALL') || (w.star === starFilter);
         if (!matchStar) return false;
@@ -1772,7 +1429,7 @@
 
       const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
 
-      // 1-A. '르' 불규칙 복원 (몰라/몰랐다 -> 모르다, 달라 -> 다르다, 빨라 -> 빠르다, 불러 -> 부르다 등)
+      // 1-A. '르' 불규칙 복원 (몰라 -> 모르다, 달라 -> 다르다, 빨라 -> 빠르다, 불러 -> 부르다 등)
       const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
       if (reuTarget.length >= 2) {
         const prevCh = reuTarget.slice(-2, -1);
@@ -2273,7 +1930,7 @@
       playRewardSound('BRONZE');
       syncBuilder();
       document.getElementById('inpSrc').focus();
-      showToast('🥉 동별 획득 (+10 XP)! 동별만 켜두고 가시면 보카가 쫓아갑니다 ^^');
+      showToast('🥉 동별 획득 (+10 XP)! 2단계 문장을 적어보세요.');
 
       await sb.from('words').insert({
         id: newId,
@@ -2314,7 +1971,7 @@
       document.getElementById('card3').className = 'step-card current';
       document.getElementById('form3').style.display = 'block';
       document.getElementById('inpMy').focus();
-      showToast('🥈 은별 진화 (+20 XP)! 이제 3단계 문장으로 금별을 완성하세요!');
+      showToast('🥈 은별 진화 (+20 XP)! 3단계 문장을 만들어보세요.');
 
       const res = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, src);
       curItem.aiMeaning = res.contextMeaning;
@@ -2377,9 +2034,9 @@
       if (evalResult.isPassed) {
         playRewardSound('GOLD');
         fireConfetti(true);
-        showToast('🥇 금별 마스터 달성 (+30 XP)! 메이 쌤이 뿌듯해합니다 ^^');
+        showToast('🥇 금별 마스터 달성 (+30 XP)! 축하합니다!');
       } else {
-        showToast('💡 어허... 단어가 문맥에 맞게 들어가야 금별 처방이 나옵니다 ^^');
+        showToast('💡 AI 힌트를 참고해 문장을 살짝 다듬어 보세요!');
       }
 
       await sb.from('words').update({
@@ -2511,7 +2168,7 @@
         await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
         btnEl.classList.add('wrong');
-        showToast('어허... 틀리셨네요? 뜻을 다시 한번 눈여겨보세요 ^^');
+        showToast('아쉽네요! 뜻을 다시 한번 확인해 보세요.');
       }
 
       const nextBtn = document.getElementById('btnNextQuiz');
