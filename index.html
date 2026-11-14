@@ -13,11 +13,13 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- 국립국어원 .xls / .xlsx 파일을 브라우저에서 바로 읽는 SheetJS 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <!-- [구글 애드센스 H5 전면/보상형 광고 공식 스크립트] -->
   <script async
     data-adbreak-test="on"
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000"
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8140838569673931"
     crossorigin="anonymous">
   </script>
   <script>
@@ -155,9 +157,7 @@
     .reward-pill.active-filter { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
 
     /* 내 단어 검색창 스타일 */
-    .search-box-wrap {
-      padding: 0 16px 8px; position: relative;
-    }
+    .search-box-wrap { padding: 0 16px 8px; position: relative; }
     .search-input {
       width: 100%; padding: 10px 36px 10px 36px; border-radius: 12px;
       border: 1.5px solid var(--border); background: var(--surface);
@@ -310,6 +310,11 @@
     .admin-stat-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; text-align: center; }
     .student-row-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
 
+    .dict-upload-box {
+      background: #eef2ff; border: 1.5px solid #c7d2fe; border-radius: 16px;
+      padding: 16px; margin-bottom: 16px;
+    }
+
     #toast {
       visibility: hidden; background: #0f172a; color: white; padding: 12px 18px;
       border-radius: 12px; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
@@ -404,7 +409,6 @@
           <div class="reward-pill" id="filterG" onclick="toggleStarFilter('GOLD')"><span id="sumG"></span> 금별 <span id="cntG">0</span></div>
         </div>
 
-        <!-- 내가 만든 단어 실시간 검색창 -->
         <div class="search-box-wrap">
           <span class="search-icon-left">🔍</span>
           <input type="text" id="inpWordSearch" class="search-input" placeholder="내가 만든 단어나 뜻 검색..." oninput="onSearchWordInput()">
@@ -546,7 +550,7 @@
       </div>
     </section>
 
-    <!-- 화면 4: 관리자 모드 -->
+    <!-- 화면 4: 관리자 모드 (표준국어대사전 .xls 자동 업로더 포함) -->
     <section id="screen-admin" class="screen">
       <header class="top-navbar">
         <button class="action-btn" style="width:auto; padding:6px 12px; background:#f1f5f9; color:var(--text-main);" onclick="goToList()">← 내 단어장</button>
@@ -555,6 +559,22 @@
       </header>
 
       <div class="list-body">
+        <!-- [신규 기능] 국립국어원 표준국어대사전 .xls 파일 원클릭 자동 정제 및 수파베이스 업로더 -->
+        <div class="dict-upload-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <div style="font-size:14px; font-weight:900; color:#312e81;">📖 표준국어대사전 엑셀(.xls) 일괄 등록</div>
+            <span id="dictCountBadge" style="font-size:11px; font-weight:800; background:white; color:var(--primary); padding:3px 8px; border-radius:99px;">DB 확인 중...</span>
+          </div>
+          <p style="font-size:11px; color:#475569; margin:0 0 10px 0; line-height:1.45;">
+            국립국어원에서 내려받은 <strong>.xls / .xlsx / .csv</strong> 파일을 여러 개 한꺼번에 선택하세요. 기호(-, ^, 숫자) 제거와 중복 정리를 자동으로 처리해 수파베이스 사전 DB에 업로드합니다.
+          </p>
+          <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:white; padding:8px; font-size:12px; margin-bottom:8px;">
+          <button id="btnUploadDict" class="action-btn btn-primary" style="padding:10px; font-size:13px;" onclick="uploadStandardDictFiles()">
+            🚀 선택한 사전 엑셀 파일 수파베이스에 넣기
+          </button>
+          <div id="dictUploadStatus" style="font-size:12px; font-weight:800; color:#1e40af; margin-top:8px; display:none;"></div>
+        </div>
+
         <div class="admin-stat-grid">
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">참여 학생</div><div id="admStudentCnt" style="font-size:18px; font-weight:900; color:var(--primary); margin-top:4px;">0명</div></div>
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">총 등록 단어</div><div id="admWordCnt" style="font-size:18px; font-weight:900; color:var(--primary); margin-top:4px;">0개</div></div>
@@ -869,7 +889,6 @@
       showToast(`환영합니다, ${myUser.name}님!`);
     }
 
-    // [신규 기능 1] 내 정보 탭 불러오기 및 학번/이름 수정 저장
     function loadMyProfileTab() {
       if (!myUser) return;
       const pBadge = myUser.provider === 'APPLE' ? ' Apple 계정' : 'G Google 계정';
@@ -894,7 +913,6 @@
 
       try {
         const kst = getNowKST();
-        // 1. students 표의 이름과 학번/학교 업데이트
         const { error: sErr } = await sb.from('students').update({
           user_name: newName,
           school_info: newSchool,
@@ -902,7 +920,6 @@
         }).eq('user_id', myUser.userId);
         if (sErr) throw sErr;
 
-        // 2. 내가 등록한 단어들(words 표)의 작성자 이름도 일괄 업데이트 (관리자/랭킹 동기화)
         await sb.from('words').update({
           user_name: newName
         }).eq('user_id', myUser.userId);
@@ -971,7 +988,6 @@
       showScreen('screen-list');
     }
 
-    // [신규 기능 2] 내 단어 실시간 검색 및 별 등급 필터
     function onSearchWordInput() {
       const inp = document.getElementById('inpWordSearch');
       searchQuery = inp.value.trim().toLowerCase();
@@ -1035,7 +1051,6 @@
       document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
       document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료! 🎉' : `${todayGold} / 3`;
 
-      // 별 등급 필터 + 검색어 필터 동시 적용
       const filtered = myWords.filter(w => {
         const matchStar = (starFilter === 'ALL') || (w.star === starFilter);
         if (!matchStar) return false;
@@ -1107,7 +1122,6 @@
       throw new Error('AI 응답 지연');
     }
 
-    // 어미(하다/되다/적 등)를 뗀 표제어 추출 함수
     function getRootDictionaryWord(rawWord) {
       return rawWord.trim().replace(/(하다|되다|시키다|스럽다|롭다|적)$/, '');
     }
@@ -1249,7 +1263,7 @@
       });
     }
 
-    // [핵심 기능 3 & 4] 2단계: 유의어/반의어는 수파베이스 표준국어대사전(std_dict)에서 먼저 찾고, AI는 문맥 뜻만 초저비용 분석!
+    // 2단계: 표준국어대사전 DB(std_dict)에 유의어/반의어가 이미 있으면 AI는 문맥 뜻 1줄만 분석!
     async function doStep2() {
       const src = document.getElementById('inpSrc').value.trim();
       if (!src) { alert('문장을 입력하세요'); return; }
@@ -1285,7 +1299,6 @@
         const rootWord = getRootDictionaryWord(cleanWord);
         const searchTerms = cleanWord === rootWord ? [cleanWord] : [cleanWord, rootWord];
 
-        // 1) 수파베이스 표준국어대사전 DB (std_dict)에서 유의어·반의어 우선 검색
         const { data: dictRows } = await sb.from('std_dict').select('*').in('word', searchTerms);
         const dictHit = (dictRows && dictRows.length > 0) ? dictRows[0] : null;
 
@@ -1293,12 +1306,12 @@
         let finalSynonyms = '없음';
         let finalAntonyms = '없음';
 
-        if (dictHit) {
-          // [AI 비용 절감] 유의어·반의어는 표준국어대사전 DB에서 100% 그대로 가져오고, AI는 문맥 뜻 1줄만 생성!
-          finalSynonyms = dictHit.synonyms || '없음';
+        // 표준국어대사전 DB에 유의어가 이미 채워져 있는 경우 -> AI는 문맥 뜻만 초저비용 분석
+        if (dictHit && dictHit.synonyms && dictHit.synonyms !== '없음' && dictHit.synonyms !== '') {
+          finalSynonyms = dictHit.synonyms;
           finalAntonyms = dictHit.antonyms || '없음';
 
-          const prompt = `단어:"${cleanWord}"(사전뜻:"${dictHit.definition || curItem.meaning}")/문장:"${src}" -> 문맥상 정확한 뜻만 1줄로 짧게 JSON반환`;
+          const prompt = `단어:"${cleanWord}"(표준국어대사전 뜻:"${dictHit.definition || curItem.meaning}")/문장:"${src}" -> 문맥상 정확한 뜻만 1줄로 짧게 JSON반환`;
           const schema = {
             type: 'OBJECT',
             properties: { contextMeaning: { type: 'STRING' } },
@@ -1307,8 +1320,9 @@
           const aiOnlyContext = await callGeminiDirect(prompt, schema);
           finalContextMeaning = aiOnlyContext.contextMeaning || dictHit.definition || curItem.meaning;
         } else {
-          // 표준국어대사전 DB에 아직 없는 단어일 경우: AI로 분석 후 표준국어대사전 DB(std_dict)에 자동 등록!
-          const prompt = `단어:"${cleanWord}"(뜻:"${curItem.meaning}")/문장:"${src}" -> 문맥뜻(짧게1줄),유의어(2개),반의어(1~2개,없으면'없음') JSON반환`;
+          // 사전 DB에 뜻풀이만 있고 유의어가 아직 없거나 미등록 단어인 경우 -> 최초 1회 추출 후 사전 DB 영구 업데이트
+          const baseDef = (dictHit && dictHit.definition) ? dictHit.definition : curItem.meaning;
+          const prompt = `단어:"${cleanWord}"(사전기본뜻:"${baseDef}")/문장:"${src}" -> 문맥뜻(짧게1줄),유의어(2개),반의어(1~2개,없으면'없음') JSON반환`;
           const schema = {
             type: 'OBJECT',
             properties: {
@@ -1319,14 +1333,13 @@
             required: ['contextMeaning', 'synonyms', 'antonyms']
           };
           const aiFull = await callGeminiDirect(prompt, schema);
-          finalContextMeaning = aiFull.contextMeaning || curItem.meaning;
+          finalContextMeaning = aiFull.contextMeaning || baseDef;
           finalSynonyms = aiFull.synonyms || '없음';
           finalAntonyms = aiFull.antonyms || '없음';
 
-          // 다음 학생부터는 AI 비용이 들지 않도록 std_dict 표에 자동 축적
           await sb.from('std_dict').upsert({
-            word: rootWord || cleanWord,
-            definition: finalContextMeaning,
+            word: (dictHit && dictHit.word) ? dictHit.word : (rootWord || cleanWord),
+            definition: baseDef,
             synonyms: finalSynonyms,
             antonyms: finalAntonyms,
             updated_at: kst.full
@@ -1584,7 +1597,7 @@
     }
 
     // =========================================================================
-    // 5. 실시간 명예의 전당 & 관리자 대시보드
+    // 5. 실시간 명예의 전당 & 관리자 대시보드 & 표준국어대사전 .xls 자동 업로더
     // =========================================================================
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
@@ -1651,7 +1664,107 @@
       }).join('');
     }
 
-    function openAdminScreen() { loadAdminData(); showScreen('screen-admin'); }
+    function openAdminScreen() {
+      loadAdminData();
+      refreshStdDictCount();
+      showScreen('screen-admin');
+    }
+
+    async function refreshStdDictCount() {
+      const { count } = await sb.from('std_dict').select('*', { count: 'exact', head: true });
+      document.getElementById('dictCountBadge').innerText = `등록 어휘: ${(count || 0).toLocaleString()}개`;
+    }
+
+    // [핵심 기능] 국립국어원 표준국어대사전 .xls 파일 자동 정제 및 수파베이스 일괄 업로드
+    async function uploadStandardDictFiles() {
+      const fileInput = document.getElementById('inpDictFiles');
+      const files = fileInput.files;
+      if (!files || files.length === 0) {
+        alert('업로드할 표준국어대사전 엑셀(.xls, .xlsx, .csv) 파일을 먼저 선택해 주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('btnUploadDict');
+      const statusBox = document.getElementById('dictUploadStatus');
+      btn.disabled = true;
+      statusBox.style.display = 'block';
+
+      const kst = getNowKST();
+      const wordMap = new Map();
+
+      try {
+        for (let fIdx = 0; fIdx < files.length; fIdx++) {
+          const file = files[fIdx];
+          statusBox.innerText = `📂 파일 읽는 중 (${fIdx + 1}/${files.length}): ${file.name}...`;
+
+          const buffer = await file.arrayBuffer();
+          const wb = XLSX.read(buffer, { type: 'array' });
+          const firstSheet = wb.Sheets[wb.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+          rows.forEach(r => {
+            const keys = Object.keys(r);
+            // 국립국어원 표준국어대사전 열 이름 자동 매칭 (어휘/표제어/단어, 뜻풀이/의미/정의)
+            const wKey = keys.find(k => k.includes('어휘') || k.includes('표제어') || k.includes('단어') || k.toLowerCase() === 'word') || keys[0];
+            const dKey = keys.find(k => k.includes('뜻') || k.includes('풀이') || k.includes('의미') || k.includes('정의') || k.toLowerCase() === 'definition') || keys[1];
+            const sKey = keys.find(k => k.includes('유의') || k.includes('비슷') || k.toLowerCase() === 'synonyms');
+            const aKey = keys.find(k => k.includes('반의') || k.includes('반대') || k.toLowerCase() === 'antonyms');
+
+            let rawWord = String(r[wKey] || '').trim();
+            let rawDef = String(r[dKey] || '').trim();
+            if (!rawWord || !rawDef) return;
+
+            // 기호(-, ^, 동음이의어 숫자, 괄호) 자동 제거
+            let cleanWord = rawWord.replace(/[-^0-9\s\(\)\[\]]/g, '').trim();
+            if (!cleanWord || cleanWord.length > 15) return;
+
+            // 뜻풀이 줄바꿈 정리 및 길이 최적화
+            let cleanDef = rawDef.replace(/\s+/g, ' ').slice(0, 180);
+            let cleanSyn = sKey ? String(r[sKey] || '없음').trim() : '없음';
+            let cleanAnt = aKey ? String(r[aKey] || '없음').trim() : '없음';
+
+            // 중복 어휘는 첫 번째 대표 뜻풀이 유지
+            if (!wordMap.has(cleanWord)) {
+              wordMap.set(cleanWord, {
+                word: cleanWord,
+                definition: cleanDef,
+                synonyms: cleanSyn || '없음',
+                antonyms: cleanAnt || '없음',
+                updated_at: kst.full
+              });
+            }
+          });
+        }
+
+        const allItems = Array.from(wordMap.values());
+        if (allItems.length === 0) {
+          alert('엑셀 파일에서 어휘와 뜻풀이 열을 찾지 못했습니다.');
+          btn.disabled = false;
+          return;
+        }
+
+        // 500개씩 나누어 수파베이스 std_dict 표에 고속 저장
+        const BATCH_SIZE = 500;
+        for (let i = 0; i < allItems.length; i += BATCH_SIZE) {
+          const chunk = allItems.slice(i, i + BATCH_SIZE);
+          statusBox.innerText = `🚀 수파베이스 업로드 중: ${Math.min(i + BATCH_SIZE, allItems.length).toLocaleString()} / ${allItems.length.toLocaleString()}개 완료...`;
+          const { error } = await sb.from('std_dict').upsert(chunk);
+          if (error) throw error;
+        }
+
+        statusBox.innerText = `✅ 총 ${allItems.length.toLocaleString()}개의 표준국어대사전 어휘가 성공적으로 등록되었습니다!`;
+        fileInput.value = '';
+        btn.disabled = false;
+        refreshStdDictCount();
+        fireConfetti(true);
+        showToast(`🎉 사전 어휘 ${allItems.length.toLocaleString()}개 업로드 완료!`);
+      } catch (err) {
+        btn.disabled = false;
+        statusBox.innerText = `❌ 오류 발생: ${err.message}`;
+        alert('업로드 중 오류가 발생했습니다: ' + err.message);
+      }
+    }
+
     async function loadAdminData() {
       document.getElementById('adminStudentList').innerHTML = '<p style="text-align:center; color:var(--text-sub);">학생들 기록을 불러오는 중...</p>';
       const [{ data: sRows }, { data: rows }] = await Promise.all([
