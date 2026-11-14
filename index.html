@@ -60,6 +60,73 @@
 
     .star-svg { display: inline-block; vertical-align: middle; overflow: visible; flex-shrink: 0; }
 
+    /* =====================================================================
+       마스코트 캐릭터 애니메이션 (둥실둥실, 팔 흔들기, 눈 깜빡임, 집착 모드)
+       ===================================================================== */
+    @keyframes mascotFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(1.5deg); }
+    }
+    @keyframes mascotIntenseShake {
+      0%, 100% { transform: scale(1.04) translate(0, 0); }
+      25% { transform: scale(1.06) translate(-1.5px, 1px); }
+      75% { transform: scale(1.06) translate(1.5px, -1px); }
+    }
+    @keyframes armWave {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-18deg); }
+    }
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.6)); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.95)); }
+    }
+    .mascot-anim-float { animation: mascotFloat 2.4s ease-in-out infinite; }
+    .mascot-anim-intense { animation: mascotIntenseShake 0.35s ease-in-out infinite; }
+    .mascot-arm-wave { transform-origin: 70px 58px; animation: armWave 0.9s ease-in-out infinite; }
+    .mascot-star-glow { transform-origin: 50px 62px; animation: starPulse 1.4s ease-in-out infinite; }
+
+    /* 메인 화면 실시간 집착 잔소리 배너 */
+    .nudge-banner {
+      margin: 6px 16px 6px; padding: 10px 12px; border-radius: 16px;
+      background: #ffffff; border: 1.5px solid #c7d2fe; border-bottom-width: 3.5px;
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.07); transition: transform 0.1s;
+    }
+    .nudge-banner:active { transform: scale(0.98); }
+    .nudge-banner.obsess-mode {
+      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+      border-color: #fda4af;
+    }
+    .nudge-avatar-wrap { width: 46px; height: 46px; flex-shrink: 0; }
+    .nudge-speech { flex: 1; font-size: 12px; line-height: 1.4; color: var(--text-main); font-weight: 700; }
+    .nudge-speaker-tag {
+      display: inline-block; font-size: 10px; font-weight: 900; padding: 1.5px 6px;
+      border-radius: 6px; margin-bottom: 3px; background: #eef2ff; color: var(--primary);
+    }
+    .nudge-banner.obsess-mode .nudge-speaker-tag { background: #fecdd3; color: #be123c; }
+
+    /* 온보딩 튜토리얼 모달 */
+    .onboard-card {
+      width: 100%; max-width: 400px; background: white; border-radius: 26px;
+      padding: 24px 20px 22px; text-align: center; position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35); margin: auto 16px;
+      animation: fadeIn 0.22s ease-out;
+    }
+    .onboard-stage-duo {
+      display: flex; justify-content: center; align-items: center; gap: 12px;
+      margin: 8px 0 14px; min-height: 115px;
+    }
+    .onboard-bubble {
+      background: #f8fafc; border: 1.5px solid var(--border); border-radius: 16px;
+      padding: 14px; margin-bottom: 14px; text-align: left; font-size: 13px;
+      line-height: 1.55; color: var(--text-main);
+    }
+    .onboard-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+    .onboard-dot {
+      width: 8px; height: 8px; border-radius: 99px; background: #cbd5e1; transition: 0.2s;
+    }
+    .onboard-dot.active { width: 22px; background: var(--primary); }
+
     /* 화면 1: 로그인 화면 */
     #screen-login {
       background: linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
@@ -104,7 +171,7 @@
     }
     .btn-icon-sound {
       width: 34px; height: 34px; border-radius: 10px; background: #f1f5f9;
-      border: 1px solid var(--border); font-size: 16px; cursor: pointer;
+      border: 1px solid var(--border); font-size: 15px; font-weight: 800; cursor: pointer;
     }
     .btn-admin-pill {
       background: #fef08a; color: #854d0e; border: 1px solid #facc15;
@@ -113,7 +180,7 @@
 
     /* 게이미피케이션 히어로 배너 */
     .gamify-card {
-      margin: 12px 16px 6px; padding: 14px 16px; border-radius: 18px;
+      margin: 10px 16px 6px; padding: 14px 16px; border-radius: 18px;
       background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%);
       color: white; box-shadow: 0 8px 18px rgba(79, 70, 229, 0.18);
     }
@@ -137,7 +204,7 @@
     }
 
     .daily-quest-box {
-      margin: 6px 16px 8px; padding: 10px 14px; border-radius: 14px;
+      margin: 6px 16px 6px; padding: 10px 14px; border-radius: 14px;
       background: var(--surface); border: 1.5px solid var(--border);
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
@@ -294,9 +361,10 @@
 
     /* 모달 */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.58); z-index: 100;
       display: none; justify-content: center; align-items: flex-end;
     }
+    .modal-overlay.center-modal { align-items: center; }
     .modal-overlay.open { display: flex; }
     .bottom-sheet {
       width: 100%; max-width: 440px; background: white;
@@ -376,6 +444,7 @@
           <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:800;">내 단어장 ✎</div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-icon-sound" onclick="openOnboardingModal()" title="메이·보카의 사용법 안내">❓</button>
           <button id="btnSoundToggle" class="btn-icon-sound" onclick="toggleSound()" title="효과음 켜기/끄기">🔊</button>
           <button id="btnAdminMode" class="btn-admin-pill" style="display:none;" onclick="openAdminScreen()">👑 관리자</button>
           <button class="btn-top-plus" title="새 단어 추가" onclick="openBuilder(null)">＋</button>
@@ -392,6 +461,15 @@
           <div style="font-size:11px; opacity:0.85;" id="xpNextText">다음 레벨까지 100 XP</div>
         </div>
         <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
+      </div>
+
+      <!-- [신규] 메이 & 보카 실시간 집착 잔소리 배너 (우창윤 쌤 + 듀오링고 느낌) -->
+      <div id="mascotNudgeBanner" class="nudge-banner" onclick="cycleMascotNudge()" title="터치하면 다른 잔소리를 해줍니다">
+        <div id="nudgeMascotBox" class="nudge-avatar-wrap"></div>
+        <div class="nudge-speech">
+          <span id="nudgeSpeakerTag" class="nudge-speaker-tag">💜 주치의 메이</span>
+          <div id="nudgeText">어허... 모르는 단어 눈으로만 대충 넘기시면 수능 날 어휘 스파이크 옵니다 ^^</div>
+        </div>
       </div>
 
       <div class="daily-quest-box">
@@ -585,6 +663,34 @@
 
   </div>
 
+  <!-- [신규] 메이 & 보카 4컷 온보딩 튜토리얼 애니메이션 모달 -->
+  <div class="modal-overlay center-modal" id="onboardingModal">
+    <div class="onboard-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span id="onboardStepBadge" style="font-size:11px; font-weight:900; background:#eef2ff; color:var(--primary); padding:4px 10px; border-radius:99px;">STEP 1 / 4</span>
+        <button onclick="closeOnboardingModal()" style="background:none; border:none; font-size:18px; color:var(--text-sub); cursor:pointer; font-weight:800;">✕</button>
+      </div>
+
+      <!-- 움직이는 두 캐릭터 스테이지 -->
+      <div id="onboardMascotStage" class="onboard-stage-duo"></div>
+
+      <div id="onboardTitle" style="font-size:17px; font-weight:900; margin-bottom:8px;">어허... 거기 잠깐 멈추세요 ^^</div>
+      <div id="onboardBubble" class="onboard-bubble"></div>
+
+      <div class="onboard-dots">
+        <div class="onboard-dot active" id="obDot0"></div>
+        <div class="onboard-dot" id="obDot1"></div>
+        <div class="onboard-dot" id="obDot2"></div>
+        <div class="onboard-dot" id="obDot3"></div>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button id="btnObPrev" class="action-btn" style="background:#f1f5f9; color:var(--text-main); width:35%; display:none;" onclick="prevOnboardStep()">이전</button>
+        <button id="btnObNext" class="action-btn btn-primary" style="flex:1;" onclick="nextOnboardStep()">다음 (피할 수 없음) →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 구글/애플 정식 로그인 후 최초 1회만 뜨는 이름·학번 설정 모달 -->
   <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
@@ -628,8 +734,290 @@
     let soundEnabled = true;
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
+    let currentOnboardStep = 0;
+    let nudgeClickIdx = 0;
 
-    // [내장 다의어·문맥 사전] 용언 기본형('-다') 및 체언의 문맥별 뜻풀이·유의어·반의어
+    // =========================================================================
+    // [마스코트 SVG 렌더러] 메이(보라색 베레모) & 보카(별 안고 있는 모찌)
+    // mood: 'normal' (기본 귀여움) | 'obsess' (맑은 눈의 광기·집착 모드)
+    // =========================================================================
+    function getMascotSvg(charType, mood = 'normal', size = 88) {
+      const isObsess = (mood === 'obsess');
+      const animClass = isObsess ? 'mascot-anim-intense' : 'mascot-anim-float';
+      const badgeStroke = isObsess ? '#fda4af' : '#e2e8f0';
+      const badgeBg = isObsess ? '#fff1f2' : '#ffffff';
+
+      // 눈 표현: 집착 모드일 때는 눈이 살짝 커지고 안광(하이라이트)과 다크서클/진지한 눈썹이 추가됨
+      const eyesSvg = isObsess
+        ? `
+          <path d="M 33 39 L 43 42" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 67 39 L 57 42" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="39" cy="46" r="4.2" fill="#111"/>
+          <circle cx="61" cy="46" r="4.2" fill="#111"/>
+          <circle cx="40.2" cy="44.8" r="1.3" fill="#ffffff"/>
+          <circle cx="62.2" cy="44.8" r="1.3" fill="#ffffff"/>
+        `
+        : `
+          <circle cx="39" cy="46" r="3.4" fill="#111"/>
+          <circle cx="61" cy="46" r="3.4" fill="#111"/>
+        `;
+
+      if (charType === 'MEI') {
+        // 캐릭터 2: 보라색 베레모를 쓰고 손 흔드는 '메이'
+        return `
+          <svg class="${animClass}" width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible;">
+            <circle cx="50" cy="50" r="46" fill="${badgeBg}" stroke="${badgeStroke}" stroke-width="2.5"/>
+            <!-- 찹쌀떡 몸통 & 머리 -->
+            <path d="M 33 56 C 24 48, 25 26, 48 25 C 71 24, 75 45, 67 56 C 72 67, 70 80, 63 83 C 59 84, 57 79, 55 79 L 44 79 C 42 79, 40 84, 36 83 C 29 80, 28 66, 33 56 Z"
+              fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 왼팔 -->
+            <path d="M 33 56 C 25 60, 24 68, 31 67" fill="none" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+            <!-- 흔드는 오른팔 (애니메이션) -->
+            <g class="mascot-arm-wave">
+              <path d="M 66 55 C 74 44, 80 45, 76 55 C 73 61, 69 62, 68 63" fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+            </g>
+            <!-- 분홍 볼터치 -->
+            <ellipse cx="33" cy="51" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.65"/>
+            <ellipse cx="67" cy="51" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.65"/>
+            ${eyesSvg}
+            <!-- 작은 입 -->
+            <path d="M 48.5 48.5 Q 50 50.5 51.5 48.5" fill="none" stroke="#111111" stroke-width="2.8" stroke-linecap="round"/>
+            <!-- 보라색 베레모 -->
+            <g transform="rotate(18 58 24)">
+              <ellipse cx="58" cy="24" rx="14" ry="6.5" fill="#a855f7" stroke="#111111" stroke-width="3.6"/>
+              <path d="M 58 17 C 59 14, 62 14, 60 18" fill="none" stroke="#111111" stroke-width="3.2" stroke-linecap="round"/>
+            </g>
+          </svg>
+        `;
+      } else {
+        // 캐릭터 1: 반짝이는 별을 두 손으로 꼭 안고 있는 '보카'
+        return `
+          <svg class="${animClass}" width="${size}" height="${size}" viewBox="0 0 100 100" style="overflow:visible;">
+            <circle cx="50" cy="50" r="46" fill="${badgeBg}" stroke="${badgeStroke}" stroke-width="2.5"/>
+            <!-- 찹쌀떡 몸통 & 머리 -->
+            <path d="M 32 54 C 23 45, 25 23, 50 23 C 75 23, 77 45, 68 54 C 73 65, 71 79, 63 82 C 59 83, 57 78, 54 78 L 46 78 C 43 78, 41 83, 37 82 C 29 79, 27 65, 32 54 Z"
+              fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 분홍 볼터치 -->
+            <ellipse cx="33" cy="50" rx="4.2" ry="2.3" fill="#fda4af" opacity="0.55"/>
+            <ellipse cx="67" cy="50" rx="4.2" ry="2.3" fill="#fda4af" opacity="0.55"/>
+            ${eyesSvg}
+            <!-- 작은 하트/점 입 -->
+            <path d="M 48.5 47.5 Q 50 50 51.5 47.5" fill="none" stroke="#111111" stroke-width="2.8" stroke-linecap="round"/>
+            <!-- 반짝이는 노란 별 -->
+            <g class="mascot-star-glow">
+              <polygon points="50,51 53.2,57.5 60,58.5 55,63.2 56.2,70 50,66.6 43.8,70 45,63.2 40,58.5 46.8,57.5"
+                fill="#fde047" stroke="#111111" stroke-width="3" stroke-linejoin="round"/>
+            </g>
+            <!-- 별을 꼭 쥐고 있는 두 손 -->
+            <path d="M 31 56 C 28 64, 38 68, 44 63 C 45 60, 42 57, 38 58" fill="#ffffff" stroke="#111111" stroke-width="3.8" stroke-linecap="round"/>
+            <path d="M 69 56 C 72 64, 62 68, 56 63 C 55 60, 58 57, 62 58" fill="#ffffff" stroke="#111111" stroke-width="3.8" stroke-linecap="round"/>
+          </svg>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // [4컷 온보딩 튜토리얼 데이터] 우창윤 쌤 + 듀오링고 집착 개그 톤
+    // =========================================================================
+    const ONBOARD_STEPS = [
+      {
+        badge: 'STEP 1 / 4 · 어휘 주치의 등장',
+        title: '어허... 지금 단어 그냥 넘기셨죠? ^^',
+        meiMood: 'normal',
+        vocaMood: 'normal',
+        html: `
+          <div style="margin-bottom:8px;">
+            <strong style="color:#4f46e5;">💜 주치의 메이:</strong> "안녕하세요 여러분~ 국어 지문 읽다가 모르는 단어 눈으로만 대충 넘기시면 수능 날 <strong>어휘 스파이크</strong> 옵니다 ^^"
+          </div>
+          <div>
+            <strong style="color:#b45309;">⭐ 집착요정 보카:</strong> "제가 옆에서 24시간 지켜보고 있을 거예요. 도망갈 생각 마세요 ㅎㅎ"
+          </div>
+        `
+      },
+      {
+        badge: 'STEP 2 / 4 · 동별에서 은별로',
+        title: '동별만 켜두시면... 제 눈빛이 변합니다',
+        meiMood: 'normal',
+        vocaMood: 'obsess',
+        html: `
+          <div style="margin-bottom:8px;">
+            <strong style="color:#b45309;">⭐ 보카:</strong> "1단계로 단어·뜻을 적으면 제 손에 <strong>🥉동별(+10 XP)</strong>이 켜져요! 근데 동별만 켜두고 방치하면... 꿈에 찾아갈 거예요."
+          </div>
+          <div>
+            <strong style="color:#4f46e5;">💜 메이:</strong> "2단계 출처 문장을 적으시면 <strong>표준국어대사전 DB</strong>가 문법 규칙대로 기본형·유의어·반의어를 찾아 <strong>🥈은별(+30 XP)</strong>로 처방해 드립니다 ^^"
+          </div>
+        `
+      },
+      {
+        badge: 'STEP 3 / 4 · 대망의 금별 완성',
+        title: '직접 문장을 만드셔야 완치됩니다 ^^',
+        meiMood: 'obsess',
+        vocaMood: 'normal',
+        html: `
+          <div style="margin-bottom:8px;">
+            <strong style="color:#4f46e5;">💜 메이:</strong> "3단계에서 그 단어로 직접 짧은 문장을 만들어 보세요. AI 선생님이 0.5초 만에 첨삭해 주고 <strong>🥇금별(+60 XP)</strong>을 완성해 드립니다."
+          </div>
+          <div>
+            <strong style="color:#b45309;">⭐ 보카:</strong> "하루에 금별 3개 안 채우시고 인스타나 유튜브 켜시면... 거기 댓글창에도 제가 나타날 거예요 👁️👄👁️"
+          </div>
+        `
+      },
+      {
+        badge: 'STEP 4 / 4 · 불꽃 스트릭 & 명예의 전당',
+        title: '오늘부터 1일입니다. 약속했어요? ^^',
+        meiMood: 'obsess',
+        vocaMood: 'obsess',
+        html: `
+          <div style="margin-bottom:8px;">
+            <strong style="color:#b45309;">⭐ 보카:</strong> "매일 접속해서 <strong>🔥연속 학습 불꽃</strong>을 지키고, <strong>🏅도감·퀴즈</strong> 탭에서 하루 10문제 스피드 퀴즈로 보너스 XP를 쓸어 담으세요!"
+          </div>
+          <div>
+            <strong style="color:#4f46e5;">💜 메이:</strong> "자, 이제 우측 상단 <strong>[＋]</strong> 버튼을 눌러 첫 처방을 받아보실까요? 끝까지 지켜보고 있습니다 ^^"
+          </div>
+        `
+      }
+    ];
+
+    function openOnboardingModal() {
+      currentOnboardStep = 0;
+      renderOnboardStep();
+      document.getElementById('onboardingModal').classList.add('open');
+    }
+
+    function closeOnboardingModal() {
+      document.getElementById('onboardingModal').classList.remove('open');
+      localStorage.setItem('madevoca_onboard_seen_v1', 'Y');
+    }
+
+    function renderOnboardStep() {
+      const step = ONBOARD_STEPS[currentOnboardStep];
+      document.getElementById('onboardStepBadge').innerText = step.badge;
+      document.getElementById('onboardTitle').innerText = step.title;
+      document.getElementById('onboardBubble').innerHTML = step.html;
+      document.getElementById('onboardMascotStage').innerHTML =
+        getMascotSvg('MEI', step.meiMood, 92) + getMascotSvg('VOCA', step.vocaMood, 92);
+
+      for (let i = 0; i < 4; i++) {
+        document.getElementById('obDot' + i).className = 'onboard-dot' + (i === currentOnboardStep ? ' active' : '');
+      }
+
+      document.getElementById('btnObPrev').style.display = currentOnboardStep > 0 ? 'block' : 'none';
+      const nextBtn = document.getElementById('btnObNext');
+      if (currentOnboardStep === ONBOARD_STEPS.length - 1) {
+        nextBtn.innerText = '네, 지금 바로 첫 별 켤게요! 🚀';
+      } else {
+        nextBtn.innerText = '다음 (피할 수 없음) →';
+      }
+    }
+
+    function nextOnboardStep() {
+      playRewardSound('BRONZE');
+      if (currentOnboardStep < ONBOARD_STEPS.length - 1) {
+        currentOnboardStep++;
+        renderOnboardStep();
+      } else {
+        closeOnboardingModal();
+        fireConfetti(false);
+        showToast('💜 메이 & ⭐ 보카가 단어장 위에서 지켜보고 있습니다 ^^');
+      }
+    }
+
+    function prevOnboardStep() {
+      if (currentOnboardStep > 0) {
+        currentOnboardStep--;
+        renderOnboardStep();
+      }
+    }
+
+    // =========================================================================
+    // [메인 화면 실시간 집착 잔소리 엔진] 학생의 단어 상태에 따라 자동 변화
+    // =========================================================================
+    function updateMascotNudgeBanner(todayGoldCount, bronzeCount, totalCount) {
+      const banner = document.getElementById('mascotNudgeBanner');
+      const avatarBox = document.getElementById('nudgeMascotBox');
+      const tagEl = document.getElementById('nudgeSpeakerTag');
+      const textEl = document.getElementById('nudgeText');
+
+      const dynamicLines = [];
+
+      if (totalCount === 0) {
+        dynamicLines.push({
+          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이',
+          text: '어허... 단어장이 텅 비어 있네요? 우측 상단 [＋] 버튼 안 누르시면 어휘 스파이크 옵니다 ^^'
+        });
+        dynamicLines.push({
+          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
+          text: '첫 단어 등록할 때까지 여기서 눈 안 감고 기다릴 거예요. 진짜 안 감음 👁️👄👁️'
+        });
+      } else if (todayGoldCount === 0) {
+        dynamicLines.push({
+          char: 'MEI', mood: 'obsess', tag: '💜 주치의 메이 (정색)',
+          text: '잠깐만요... 오늘 금별이 0개인데 설마 유튜브나 인스타 켜실 생각은 아니시죠? 제가 다 보고 있습니다 ^^'
+        });
+        dynamicLines.push({
+          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
+          text: '오늘 금별 1개도 안 만들고 주무시면... 오늘 밤 꿈에 제가 별 들고 찾아갑니다 ㅎㅎ'
+        });
+      } else if (bronzeCount >= 2) {
+        dynamicLines.push({
+          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
+          text: `동별만 켜두고 방치된 단어가 ${bronzeCount}개나 있어요... 은별·금별로 안 키워주면 삐뚤어질 거예요!`
+        });
+        dynamicLines.push({
+          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이',
+          text: `어허... 동별 ${bronzeCount}개는 아직 반쪽짜리 기억입니다. 눌러서 2단계 문장까지 처방받으세요 ^^`
+        });
+      } else if (todayGoldCount < 3) {
+        dynamicLines.push({
+          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이',
+          text: `오호, 오늘 금별 ${todayGoldCount}개! 목표까지 ${3 - todayGoldCount}개 남았습니다. 여기서 멈추시면 아쉬워서 잠이 오실까요? ^^`
+        });
+        dynamicLines.push({
+          char: 'VOCA', mood: 'normal', tag: '⭐ 집착요정 보카',
+          text: `금별 ${3 - todayGoldCount}개만 더 채우면 오늘 미션 클리어예요! 저 지금 굉장히 기대 중입니다 ⭐`
+        });
+      } else {
+        dynamicLines.push({
+          char: 'MEI', mood: 'normal', tag: '💜 주치의 메이 (감동)',
+          text: `오늘 금별 ${todayGoldCount}개 달성! 아주 훌륭합니다. 이 기세로 도감·퀴즈 탭에서 보너스 XP까지 챙기시죠 ^^`
+        });
+        dynamicLines.push({
+          char: 'VOCA', mood: 'normal', tag: '⭐ 행복요정 보카',
+          text: '우와아!! 오늘 금별 미션 완벽 클리어! 내일도 안 오시면... 어떻게 되는지 아시죠? ㅎㅎ'
+        });
+      }
+
+      // 공통 유머 대사 풀 추가 (터치할 때마다 순환)
+      dynamicLines.push(
+        {
+          char: 'MEI', mood: 'obsess', tag: '💜 주치의 메이',
+          text: '방금 "아 귀찮은데 이따 할까" 생각하셨죠? 뇌파가 여기까지 다 들립니다. 딱 1단어만 더 하시죠 ^^'
+        },
+        {
+          char: 'VOCA', mood: 'obsess', tag: '⭐ 집착요정 보카',
+          text: '명예의 전당 순위 보셨어요? 지금 딴짓하는 사이에 친구가 내 순위 추월하고 있어요!! 🚨'
+        }
+      );
+
+      const picked = dynamicLines[nudgeClickIdx % dynamicLines.length];
+      banner.className = 'nudge-banner' + (picked.mood === 'obsess' ? ' obsess-mode' : '');
+      avatarBox.innerHTML = getMascotSvg(picked.char, picked.mood, 46);
+      tagEl.innerText = picked.tag;
+      textEl.innerText = picked.text;
+    }
+
+    function cycleMascotNudge() {
+      nudgeClickIdx++;
+      let b = 0, todayGold = 0;
+      const todayPrefix = getNowKST().date;
+      myWords.forEach(w => {
+        if (w.star === 'BRONZE') b++;
+        else if (w.star === 'GOLD' && w.updatedAt && w.updatedAt.indexOf(todayPrefix) === 0) todayGold++;
+      });
+      updateMascotNudgeBanner(todayGold, b, myWords.length);
+    }
+
+    // [내장 다의어·문맥 사전]
     const CORE_SYN_ANT_MAP = {
       '모르다': {
         senses: [
@@ -1041,7 +1429,10 @@
         };
         myWords = await fetchUserWords(email, isAdmin);
         setupUserView();
-        showToast(`반갑습니다, ${myUser.name}님!`);
+        // 아직 튜토리얼을 안 본 기기면 4컷 캐릭터 안내 자동 오픈
+        if (!localStorage.getItem('madevoca_onboard_seen_v1')) {
+          openOnboardingModal();
+        }
       } else {
         pendingOAuthSession = { email, provider, defaultName, isAdmin };
         document.getElementById('regStudentName').value = defaultName;
@@ -1090,7 +1481,8 @@
       document.getElementById('firstProfileModal').classList.remove('open');
       setupUserView();
       fireConfetti(true);
-      showToast(`환영합니다, ${myUser.name}님!`);
+      // 신규 가입 완료 즉시 메이·보카 4컷 튜토리얼 애니메이션 오픈!
+      openOnboardingModal();
     }
 
     function loadMyProfileTab() {
@@ -1254,6 +1646,9 @@
       document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
       document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료! 🎉' : `${todayGold} / 3`;
 
+      // 메이 & 보카 실시간 잔소리 배너 업데이트
+      updateMascotNudgeBanner(todayGold, b, myWords.length);
+
       const filtered = myWords.filter(w => {
         const matchStar = (starFilter === 'ALL') || (w.star === starFilter);
         if (!matchStar) return false;
@@ -1322,7 +1717,6 @@
       throw new Error('AI 응답 지연');
     }
 
-    // [기호 오염 검증기] '[1] [2]「1」, [2]「2」, [3]' 같은 의미 번호열 데이터는 뜻풀이로 절대 인정하지 않음!
     function isValidKoreanDefinition(str) {
       if (!str) return false;
       const cleaned = String(str)
@@ -1356,14 +1750,6 @@
       return { cho, jung, jong };
     }
 
-    // =========================================================================
-    // [국어 사전 기본형(표제어) 찾기 전체 문법 규칙 엔진]
-    // 우선순위:
-    //   1순위: 7대 불규칙 활용 (르/ㅂ/ㄷ/ㅅ/ㅎ/러/여 불규칙) 및 모음 축약/탈락 복원
-    //   2순위: 선어말어미(-으시-/-시-/-었-/-았-/-겠-/-더-) 제외 후 종결어미 '-다' 결합
-    //   3순위: 어말어미(종결·연결·전성어미) 제외 후 종결어미 '-다' 결합
-    //   4순위: 파생 용언(-하다/-되다/-시키다) 및 체언(명사) 조사 분리
-    // =========================================================================
     function getKoreanGrammarBaseCandidates(rawInput) {
       const w = (rawInput || '').trim().replace(/[.?!~,"']/g, '');
       if (!w) return [];
@@ -1384,25 +1770,19 @@
         }
       };
 
-      // -----------------------------------------------------------------------
-      // [규칙 1] 7대 불규칙 활용 및 대표 모음 축약/탈락 직접 복원 사전 (최우선 순위!)
-      // -----------------------------------------------------------------------
-      // 먼저 끝에 붙은 보조사/종결보조('요', '서', '도', '지', '고', '네', '구나') 및 과거/추측('았/었/겠 + 다/어/어요/니/면')을 벗긴 활용핵심어 추출
       const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
 
       // 1-A. '르' 불규칙 복원 (몰라/몰랐다 -> 모르다, 달라 -> 다르다, 빨라 -> 빠르다, 불러 -> 부르다 등)
-      // 조건: 어간 끝이 '앞음절(받침 ㄹ) + 뒷음절(초성 ㄹ, 중성 ㅏ/ㅓ, 받침 없거나 ㅆ)' 형태일 때 -> '모르다'가 '몰다'보다 무조건 우선!
       const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
       if (reuTarget.length >= 2) {
         const prevCh = reuTarget.slice(-2, -1);
         const lastCh = reuTarget.slice(-1);
         const decPrev = decomposeHangulSyllable(prevCh);
         const decLast = decomposeHangulSyllable(lastCh);
-        // decPrev 받침이 ㄹ(8)이고, decLast 초성이 ㄹ(5)이며 중성이 ㅏ(0) 또는 ㅓ(4), 종성이 없거나(0) ㅆ(20)인 경우
         if (decPrev && decPrev.jong === 8 && decLast && decLast.cho === 5 && (decLast.jung === 0 || decLast.jung === 4) && (decLast.jong === 0 || decLast.jong === 20)) {
-          const restoredFirst = combineJamoToSyllable(decPrev.cho, decPrev.jung, 0); // 받침 ㄹ 제거 (몰 -> 모)
-          const reuStem = reuTarget.slice(0, -2) + restoredFirst + '르'; // 모 + 르 = 모르
-          addVerbAndRoot(reuStem); // '모르다' 최우선 등록!
+          const restoredFirst = combineJamoToSyllable(decPrev.cho, decPrev.jung, 0);
+          const reuStem = reuTarget.slice(0, -2) + restoredFirst + '르';
+          addVerbAndRoot(reuStem);
         }
       }
 
@@ -1413,18 +1793,17 @@
         const endingPart = bMatch[2];
         const lastSyll = stemPrefix.slice(-1);
         const dec = decomposeHangulSyllable(lastSyll);
-        // '도와/고와'처럼 1음절 어간에서 분리된 경우 처리
         if (w.startsWith('도와') || w.startsWith('도왔') || w.startsWith('도우') || w === '도운') {
           addVerbAndRoot('돕');
         } else if (w.startsWith('고와') || w.startsWith('고왔') || w === '고운') {
           addVerbAndRoot('곱');
         } else if (dec && dec.jong === 0 && !endingPart.startsWith('와') && !endingPart.startsWith('왔')) {
-          const withB = combineJamoToSyllable(dec.cho, dec.jung, 17); // 종성 17 = 'ㅂ'
+          const withB = combineJamoToSyllable(dec.cho, dec.jung, 17);
           addVerbAndRoot(stemPrefix.slice(0, -1) + withB);
         }
       }
 
-      // 1-C. 'ㄷ' 불규칙 복원 (걸어/걸었다/걸으니 -> 걷다, 들어/들었다 -> 듣다, 물어/물었다 -> 묻다, 깨달아 -> 깨닫다, 실어 -> 싣다)
+      // 1-C. 'ㄷ' 불규칙 복원 (걸어 -> 걷다, 들어 -> 듣다, 물어 -> 묻다, 깨달아 -> 깨닫다, 실어 -> 싣다)
       const dIrregRules = [
         { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
         { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
@@ -1438,14 +1817,14 @@
         }
       }
 
-      // 1-D. 'ㅅ' 불규칙 복원 (지어/지었다/지은 -> 짓다, 나아/나은 -> 낫다, 이어/이은 -> 잇다, 부어 -> 붓다, 그어 -> 긋다, 저어 -> 젓다)
+      // 1-D. 'ㅅ' 불규칙 복원 (지어 -> 짓다, 나아 -> 낫다, 이어 -> 잇다, 부어 -> 붓다, 그어 -> 긋다)
       const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
       if (sIrregMatch) {
         const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
         if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
       }
 
-      // 1-E. 'ㅎ' 불규칙 복원 (그래/그랬다/그런 -> 그렇다, 어때/어떤 -> 어떻다, 하얘/하얀 -> 하얗다, 까매/까만 -> 까맣다 등)
+      // 1-E. 'ㅎ' 불규칙 복원 (그래 -> 그렇다, 어때 -> 어떻다, 하얘 -> 하얗다, 까매 -> 까맣다 등)
       const hIrregRules = [
         { regex: /^그(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '그렇' },
         { regex: /^이(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '이렇' },
@@ -1463,7 +1842,7 @@
         if (rule.regex.test(w)) addVerbAndRoot(rule.stem);
       }
 
-      // 1-F. '러' 불규칙 (이르러/이르렀다 -> 이르다, 푸르러/푸르렀다 -> 푸르다)
+      // 1-F. '러' 불규칙 (이르러 -> 이르다, 푸르러 -> 푸르다)
       const reoMatch = w.match(/^(이르|푸르|누르)(러|렀|러서|렀다|러요)$/);
       if (reoMatch) addVerbAndRoot(reoMatch[1]);
 
@@ -1474,70 +1853,49 @@
       const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
       if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
 
-      // -----------------------------------------------------------------------
-      // [규칙 2] 모음 축약(ㅘ, ㅝ, ㅕ, ㅙ) 및 음운 탈락('ㅡ' 탈락, '우' 탈락, 'ㄹ' 탈락) 복원
-      // -----------------------------------------------------------------------
+      // [규칙 2] 모음 축약(ㅘ, ㅝ, ㅕ, ㅙ) 및 음운 탈락('ㅡ' 탈락, '우' 탈락) 복원
       if (strippedCore.length >= 1) {
         const lastSyll = strippedCore.slice(-1);
         const prefix = strippedCore.slice(0, -1);
         const dec = decomposeHangulSyllable(lastSyll);
 
         if (dec && (dec.jong === 0 || dec.jong === 20 || dec.jong === 4 || dec.jong === 8)) {
-          // (1) 'ㅘ'(중성 9) 또는 'ㅏ'(중성 0, 초성 ㅇ/ㅂ/ㅅ/ㄴ/ㅈ/ㅊ) 축약 복원 -> 'ㅗ'(중성 8)
-          // 예: 와/왔다 -> 오다, 봐/봤다 -> 보다, 쏴/쐈다 -> 쏘다, 놔/놨다 -> 놓다
           if (dec.jung === 9) {
-            if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓'); // 놔/놨 -> 놓다
+            if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓');
             const restoredO = prefix + combineJamoToSyllable(dec.cho, 8, 0);
             addVerbAndRoot(restoredO);
           }
-
-          // (2) 'ㅝ'(중성 14) 축약 복원 -> 'ㅜ'(중성 13)
-          // 예: 줘/줬다 -> 주다, 배워/배웠다 -> 배우다, 싸워 -> 싸우다, 비워 -> 비우다, 바꿔 -> 바꾸다, 나눠 -> 나누다
           if (dec.jung === 14) {
             const restoredU = prefix + combineJamoToSyllable(dec.cho, 13, 0);
             addVerbAndRoot(restoredU);
           }
-
-          // (3) 'ㅕ'(중성 6) 축약 복원 -> 'ㅣ'(중성 20)
-          // 예: 마셔/마셨다 -> 마시다, 다녀 -> 다니다, 기다려 -> 기다리다, 내려 -> 내리다, 느껴 -> 느끼다, 지켜 -> 지키다
           if (dec.jung === 6) {
             const restoredI = prefix + combineJamoToSyllable(dec.cho, 20, 0);
             addVerbAndRoot(restoredI);
           }
-
-          // (4) 'ㅙ'(중성 10) 축약 복원 -> 'ㅚ'(중성 11)
-          // 예: 돼/됐다 -> 되다, 봬/뵀다 -> 뵈다, 쫴 -> 쬐다
           if (dec.jung === 10) {
             const restoredOe = prefix + combineJamoToSyllable(dec.cho, 11, 0);
             addVerbAndRoot(restoredOe);
           }
-
-          // (5) 'ㅡ' 탈락 복원 (중성 ㅏ(0) 또는 ㅓ(4)일 때 -> 중성 'ㅡ'(18) 복원)
-          // 예: 써/썼다 -> 쓰다, 커/컸다 -> 크다, 기뻐 -> 기쁘다, 슬퍼 -> 슬프다, 예뻐 -> 예쁘다, 바빠 -> 바쁘다, 아파 -> 아프다
           if ((dec.jung === 0 || dec.jung === 4) && (dec.jong === 0 || dec.jong === 20)) {
-            if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸'); // '우' 탈락 (퍼 -> 푸다)
+            if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸');
             const restoredEu = prefix + combineJamoToSyllable(dec.cho, 18, 0);
             addVerbAndRoot(restoredEu);
           }
         }
       }
 
-      // -----------------------------------------------------------------------
       // [규칙 3] 선어말어미(-으시-, -시-, -었-, -았-, -겠-, -더-) 제외 및 'ㄹ' 탈락 복원
-      // 예: '가시다'/'가셨다' -> '가다', '읽으시다' -> '읽다', '사시다'/'사니' -> '살다', '아시다'/'아니' -> '알다'
-      // -----------------------------------------------------------------------
       const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
       const preMatch = w.match(preFinalPattern);
       if (preMatch && preMatch[1]) {
         const rawStem = preMatch[1];
         const preEnding = preMatch[2];
-        // '시' 앞에서 어간 받침 'ㄹ'이 탈락한 경우 복원 후보 생성 (예: 사시다 -> 살다, 아시다 -> 알다, 만드시다 -> 만들다, 머시다 -> 멀다)
         if (preEnding.startsWith('시') || preEnding.startsWith('셨')) {
           const lastCh = rawStem.slice(-1);
           const dec = decomposeHangulSyllable(lastCh);
           if (dec && dec.jong === 0) {
-            const withRieul = rawStem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8); // 종성 8 = 'ㄹ'
-            // 대표 ㄹ 탈락 어간이면 우선 추가
+            const withRieul = rawStem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8);
             if (['살', '알', '만들', '길', '멀', '달', '울', '열', '팔', '놀', '돌', '불', '줄', '걸', '밀', '날'].includes(withRieul)) {
               addVerbAndRoot(withRieul);
             }
@@ -1551,19 +1909,15 @@
         }
       }
 
-      // -----------------------------------------------------------------------
-      // [규칙 4] 일반 어말어미(종결·연결·전성어미) 분리 후 종결어미 '-다' 결합
-      // 예: '싫어', '싫어요', '싫지', '싫고', '싫은' -> '싫다'
-      // -----------------------------------------------------------------------
+      // [규칙 4] 일반 어말어미 분리 후 종결어미 '-다' 결합
       const generalEndingPattern = /^(.+?)(습니다|ㅂ니다|소서|어라|아라|어요|아요|여요|구나|구먼|는데|은데|지만|건만|아도|어도|더라도|아서|어서|여서|니까|으니까|므로|으므로|거든|려면|으려면|려고|으려고|고자|도록|듯이|어|아|여|지|고|며|면서|면|으면|니|으니|네|군|자|세|다|기|음|는|은|던|을)$/;
       const endMatch = w.match(generalEndingPattern);
       if (endMatch && endMatch[1]) {
         let stem = endMatch[1].replace(/(으시|시|었|았|겠|더)$/, '');
         if (stem) {
-          // '-니/-는/-면/-ㅂ니다' 앞에서 'ㄹ'이 탈락했거나 받침 'ㄴ/ㅂ/ㄹ'이 결합한 경우 복원 (예: 산다/사니/삽니다 -> 살다, 안다/아니/압니다 -> 알다)
           const lastCh = stem.slice(-1);
           const dec = decomposeHangulSyllable(lastCh);
-          if (dec && (dec.jong === 4 || dec.jong === 17 || dec.jong === 8)) { // 종성 ㄴ(4), ㅂ(17), ㄹ(8)
+          if (dec && (dec.jong === 4 || dec.jong === 17 || dec.jong === 8)) {
             const withoutJong = stem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 0);
             const withRieul = stem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8);
             addVerbAndRoot(stem);
@@ -1575,9 +1929,7 @@
         }
       }
 
-      // -----------------------------------------------------------------------
-      // [규칙 5] 체언(명사) 원형 및 격조사·보조사·서술격조사 분리
-      // -----------------------------------------------------------------------
+      // [규칙 5] 체언(명사) 원형 및 조사 분리
       pushUnique(w);
       if (!w.endsWith('다')) {
         pushUnique(w + '다');
@@ -1600,14 +1952,12 @@
       return candidates;
     }
 
-    // [문맥 의미 선택기] 다의어의 여러 뜻풀이 중 출처 문장(sourceSentence) 및 1단계 학생 뜻(studentMeaning)과 가장 관련된 단일 뜻만 선택!
     function selectBestContextualMeaning(rawDefinitionText, studentMeaning, sourceSentence, fallbackMeaning) {
       if (!isValidKoreanDefinition(rawDefinitionText)) {
         return isValidKoreanDefinition(fallbackMeaning) ? cleanSenseMarkers(fallbackMeaning) : studentMeaning;
       }
 
       const cleanedRaw = cleanSenseMarkers(rawDefinitionText);
-      // '||' 또는 줄바꿈, 번호('1.', '①')로 구분된 다의어 뜻풀이 분리
       const senseList = cleanedRaw
         .split(/\s*\|\|\s*|\s*(?:^|\s)[①②③④⑤1-5]\.\s*/)
         .map(s => s.trim())
@@ -1616,7 +1966,6 @@
       if (senseList.length === 0) return studentMeaning;
       if (senseList.length === 1) return senseList[0];
 
-      // 학생이 적은 1단계 뜻과 2단계 출처 문장에서 2글자 이상 어절/어근 키워드 추출
       const contextText = `${studentMeaning || ''} ${sourceSentence || ''}`;
       const keywords = contextText
         .replace(/[^가-힣\s]/g, ' ')
@@ -1628,7 +1977,7 @@
       let bestScore = -1;
 
       senseList.forEach((sense, idx) => {
-        let score = (idx === 0) ? 0.5 : 0; // 동점일 때는 1번 중심 의미 우선
+        let score = (idx === 0) ? 0.5 : 0;
         keywords.forEach(kw => {
           if (kw.length >= 2 && sense.includes(kw)) {
             score += 3;
@@ -1645,15 +1994,12 @@
       return bestSense;
     }
 
-    // [2단계 1회 영구 분석 함수]
     async function analyzeAndSaveStep2Once(rawWord, studentMeaning, sourceSentence) {
       const cleanWord = rawWord.trim();
       const candidates = getKoreanGrammarBaseCandidates(cleanWord);
 
-      // 1) 후보 기본형들로 수파베이스 std_dict 조회
       const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
 
-      // 기호('[1] [2]「1」')만 들어있는 오염된 행은 제외하고, 후보 순서대로 가장 정확한 표제어 선택
       let dictHit = null;
       let matchedBaseWord = candidates[0] || cleanWord;
 
@@ -1666,7 +2012,6 @@
             break;
           }
         }
-        // 만약 std_dict에 표제어는 있으나 뜻풀이가 기호로 오염된 경우 표제어만 인정
         if (!dictHit) {
           for (const cand of candidates) {
             const foundAny = dictRows.find(r => r.word === cand);
@@ -1679,12 +2024,10 @@
         }
       }
 
-      // 2) 내장 다의어·문맥 사전(CORE_SYN_ANT_MAP) 확인 (불규칙 활용/다빈도 용언 정확도 100% 보장)
       let coreHit = null;
       for (const cand of candidates) {
         if (CORE_SYN_ANT_MAP[cand]) {
           coreHit = CORE_SYN_ANT_MAP[cand];
-          // 만약 std_dict에서 못 찾았거나 std_dict 뜻이 기호로 오염되어 있다면 내장 사전의 정확한 기본형 채택
           if (!dictHit || !isValidKoreanDefinition(dictHit.definition)) {
             matchedBaseWord = cand;
           }
@@ -1692,7 +2035,6 @@
         }
       }
 
-      // 3) 문맥에 맞는 단일 뜻풀이 선택 (기호 오염 시 즉시 차단 및 내장 사전/학생 뜻으로 대체)
       const coreSensesJoined = coreHit
         ? (coreHit.senses ? coreHit.senses.join(' || ') : coreHit.def)
         : '';
@@ -1714,7 +2056,6 @@
         ? dictHit.antonyms
         : ((coreHit && coreHit.ant) || '');
 
-      // 4) AI 호출이 가능한 경우 문맥 의미를 더욱 정교하게 다듬기 (실패해도 위에서 찾은 문맥 사전 뜻 100% 보존)
       try {
         const prompt =
           `입력단어:"${cleanWord}"(기본형후보:"${matchedBaseWord}", 사전뜻:"${finalContextMeaning}")/출처문장:"${sourceSentence}"\n` +
@@ -1747,7 +2088,6 @@
         }
       } catch (e) {}
 
-      // 5) 유의어가 아직 비어 있다면 수파베이스 std_dict에서 뜻풀이 키워드로 유사 어휘 역검색
       if (!finalSynonyms || finalSynonyms === '없음' || finalSynonyms === '유사 어휘 없음') {
         const searchRoot = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
         if (searchRoot.length >= 2) {
@@ -1772,7 +2112,6 @@
       const cleanFinalMeaning = cleanSenseMarkers(finalContextMeaning.replace(/^\[기본형:[^\]]+\]\s*/, ''));
       const savedMeaningText = basePrefix + (cleanFinalMeaning || studentMeaning);
 
-      // 6) std_dict에도 깨끗하게 정제된 뜻과 유의어·반의어로 업데이트하여 기호 오염 데이터 자동 치료
       const kst = getNowKST();
       await sb.from('std_dict').upsert({
         word: matchedBaseWord || cleanWord,
@@ -1789,7 +2128,6 @@
       };
     }
 
-    // 단어 카드를 열 때: 정상 저장된 단어는 즉시 보여주고, 이전에 '[1] [2]「1」' 기호나 잘못된 기본형('몰다')으로 오염된 단어만 1회 자동 치료 후 영구 저장!
     async function openBuilder(wordId) {
       curItem = wordId ? myWords.find(w => w.id === wordId) : null;
       syncBuilder();
@@ -1935,7 +2273,7 @@
       playRewardSound('BRONZE');
       syncBuilder();
       document.getElementById('inpSrc').focus();
-      showToast('🥉 동별 획득 (+10 XP)! 2단계 문장을 적어보세요.');
+      showToast('🥉 동별 획득 (+10 XP)! 동별만 켜두고 가시면 보카가 쫓아갑니다 ^^');
 
       await sb.from('words').insert({
         id: newId,
@@ -1976,7 +2314,7 @@
       document.getElementById('card3').className = 'step-card current';
       document.getElementById('form3').style.display = 'block';
       document.getElementById('inpMy').focus();
-      showToast('🥈 은별 진화 (+20 XP)! 3단계 문장을 만들어보세요.');
+      showToast('🥈 은별 진화 (+20 XP)! 이제 3단계 문장으로 금별을 완성하세요!');
 
       const res = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, src);
       curItem.aiMeaning = res.contextMeaning;
@@ -2039,9 +2377,9 @@
       if (evalResult.isPassed) {
         playRewardSound('GOLD');
         fireConfetti(true);
-        showToast('🥇 금별 마스터 달성 (+30 XP)! 축하합니다!');
+        showToast('🥇 금별 마스터 달성 (+30 XP)! 메이 쌤이 뿌듯해합니다 ^^');
       } else {
-        showToast('💡 AI 힌트를 참고해 문장을 살짝 다듬어 보세요!');
+        showToast('💡 어허... 단어가 문맥에 맞게 들어가야 금별 처방이 나옵니다 ^^');
       }
 
       await sb.from('words').update({
@@ -2173,7 +2511,7 @@
         await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
         btnEl.classList.add('wrong');
-        showToast('아쉽네요! 뜻을 다시 한번 확인해 보세요.');
+        showToast('어허... 틀리셨네요? 뜻을 다시 한번 눈여겨보세요 ^^');
       }
 
       const nextBtn = document.getElementById('btnNextQuiz');
@@ -2323,7 +2661,6 @@
       };
     }
 
-    // [정밀 엑셀 업로더] '의미 번호([1] [2]「1」)' 열을 절대 가져오지 않고 실제 '뜻풀이' 열만 정확히 찾아 다의어 의미를 병합 저장!
     async function uploadStandardDictFiles() {
       const fileInput = document.getElementById('inpDictFiles');
       const files = fileInput.files;
@@ -2357,12 +2694,10 @@
             keys.find(k => k.includes('어휘') || k.includes('표제어') || k.includes('단어')) ||
             keys[0];
 
-          // '뜻풀이' 열 최우선 매칭 ('의미 번호' 열 배제!)
           let dKey =
             keys.find(k => k.trim() === '뜻풀이' || k.toLowerCase() === 'definition') ||
             keys.find(k => k.includes('뜻풀이') || (k.includes('뜻') && !k.includes('번호')) || (k.includes('정의') && !k.includes('번호')));
 
-          // 만약 열 이름이 다르다면 실제 데이터 행에서 한글 설명문이 가장 긴 열(용례 제외)을 자동 탐지
           if (!dKey) {
             let bestCol = null;
             let maxAvgLen = 0;
@@ -2389,7 +2724,6 @@
           rows.forEach(r => {
             let rawWord = String(r[wKey] || '').trim();
             let rawDef = cleanSenseMarkers(r[dKey]);
-            // 기호('[1] [2]「1」')만 있는 행은 건너뜀
             if (!rawWord || !isValidKoreanDefinition(rawDef)) return;
 
             let cleanWord = rawWord.replace(/[-^0-9\s\(\)\[\]]/g, '').trim();
@@ -2414,7 +2748,6 @@
                 updated_at: kst.full
               });
             } else {
-              // 다의어의 경우 문맥 매칭을 위해 서로 다른 뜻풀이를 최대 3개까지 ' || '로 병합 저장
               const prev = wordMap.get(cleanWord);
               const existingSenses = prev.definition.split(' || ');
               if (existingSenses.length < 3 && !existingSenses.includes(cleanDef) && (prev.definition.length + cleanDef.length < 280)) {
