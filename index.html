@@ -44,14 +44,15 @@
 
   <style>
     :root {
-      /* 첫 번째 이미지: 따뜻한 미색(웜 화이트) 배경 */
       --bg-app: #FAF9F6;
       --surface: #FFFFFF;
-      /* 두 번째 이미지: 차분한 스틸 블루 (아이콘 선 색상 & 포인트 컬러) */
       --primary: #3B82A6;
       --primary-dark: #2C6786;
       --primary-soft: #EBF3F7;
       --icon-stroke: #3B82A6;
+      --star-bronze: #E19973;
+      --star-silver: #E0E6ED;
+      --star-gold: #FDE28A;
       --text-main: #1E293B;
       --text-sub: #64748B;
       --border: #E6E4DD;
@@ -121,7 +122,7 @@
       flex-shrink: 0;
     }
 
-    /* 화면 1: 로그인 화면 (미니멀 플랫 톤) */
+    /* 화면 1: 로그인 화면 */
     #screen-login {
       height: 100vh;
       height: 100dvh;
@@ -181,7 +182,7 @@
       display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
     }
 
-    /* 상단 레벨·경험치 카드 (과한 그라데이션 제거, 모던한 카드 스타일) */
+    /* 상단 레벨·경험치 카드 */
     .gamify-card {
       margin: 12px 16px 8px; padding: 16px; border-radius: 16px;
       background: var(--surface);
@@ -217,14 +218,15 @@
     .quest-bar-bg { flex: 1; height: 6px; background: #EDEBE4; border-radius: 99px; overflow: hidden; }
     .quest-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
 
+    /* 별 필터 버튼 (동별·은별·금별 텍스트 제거, 별 아이콘 + 숫자만 깔끔하게 배치) */
     .reward-summary {
       padding: 2px 16px 8px;
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
     }
     .reward-pill {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 9px 6px; display: flex; align-items: center; justify-content: center; gap: 6px;
-      font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.15s;
+      border-radius: 12px; padding: 10px 6px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.15s;
     }
     .reward-pill.active-filter {
       border-color: var(--primary); background: var(--primary-soft); color: var(--primary);
@@ -256,9 +258,8 @@
       display: flex; justify-content: space-between; align-items: center; transition: background 0.12s;
     }
     .word-item-card:active { background: #F4F2EC; }
-    .word-item-card.GOLD { border-color: #93BDDA; background: #F7FAFC; }
 
-    /* 하단 탭 네비게이션 (단순화된 블루 라인 아이콘) */
+    /* 하단 탭 네비게이션 */
     .bottom-tab-bar {
       position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
       width: 100%; height: calc(64px + var(--safe-bottom));
@@ -337,9 +338,6 @@
       display: flex; flex-direction: column; align-items: center; text-align: center;
       transition: all 0.2s ease;
     }
-    .hero-star-stage.stage-BRONZE { border-color: var(--border); }
-    .hero-star-stage.stage-SILVER { border-color: #93BDDA; background: #F7FAFC; }
-    .hero-star-stage.stage-GOLD { border-color: var(--primary); background: var(--primary-soft); }
 
     .step-card {
       background: var(--surface); border: 1px solid var(--border);
@@ -356,13 +354,10 @@
 
     .action-btn {
       width: 100%; padding: 13px; border-radius: 11px; border: none;
-      font-size: 14px; font-weight: 700; color: white; cursor: pointer; transition: opacity 0.12s;
+      font-size: 14px; font-weight: 700; color: white; background: var(--primary); cursor: pointer; transition: opacity 0.12s;
     }
     .action-btn:active { opacity: 0.85; }
     .action-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-bronze { background: #5B768A; }
-    .btn-silver { background: #466C85; }
-    .btn-gold { background: var(--primary); color: #FFFFFF; }
     .btn-primary { background: var(--primary); }
 
     .dict-badge {
@@ -467,18 +462,18 @@
 
       <div class="daily-quest-box">
         <div style="font-size:12px; font-weight:700; white-space:nowrap; display:flex; align-items:center; gap:6px;">
-          <span id="questIconBox"></span> 오늘 금별 목표
+          <span id="questIconBox"></span> 오늘의 목표
         </div>
         <div class="quest-bar-bg"><div class="quest-bar-fill" id="dailyQuestFill"></div></div>
         <div style="font-size:12px; font-weight:800; color:var(--primary);" id="dailyQuestText">0 / 3</div>
       </div>
 
-      <!-- 탭 1: 내 단어장 -->
+      <!-- 탭 1: 내 단어장 (동별·은별·금별 텍스트 없이 색상 별 아이콘만 표시) -->
       <div id="tab-words" class="tab-pane">
         <div class="reward-summary">
-          <div class="reward-pill" id="filterB" onclick="toggleStarFilter('BRONZE')"><span id="sumB"></span> 동별 <span id="cntB">0</span></div>
-          <div class="reward-pill" id="filterS" onclick="toggleStarFilter('SILVER')"><span id="sumS"></span> 은별 <span id="cntS">0</span></div>
-          <div class="reward-pill" id="filterG" onclick="toggleStarFilter('GOLD')"><span id="sumG"></span> 금별 <span id="cntG">0</span></div>
+          <div class="reward-pill" id="filterB" onclick="toggleStarFilter('BRONZE')"><span id="sumB"></span><span id="cntB">0</span></div>
+          <div class="reward-pill" id="filterS" onclick="toggleStarFilter('SILVER')"><span id="sumS"></span><span id="cntS">0</span></div>
+          <div class="reward-pill" id="filterG" onclick="toggleStarFilter('GOLD')"><span id="sumG"></span><span id="cntG">0</span></div>
         </div>
 
         <div class="search-box-wrap">
@@ -560,7 +555,7 @@
         </div>
       </div>
 
-      <!-- 하단 4탭 네비게이션 바 (#3B82A6 미니멀 라인 아이콘) -->
+      <!-- 하단 4탭 네비게이션 바 -->
       <nav class="bottom-tab-bar">
         <button class="tab-btn active" id="navBtnWords" onclick="switchMainTab('words')">
           <span class="tab-icon" id="navIconWords"></span><span>내 단어장</span>
@@ -577,19 +572,19 @@
       </nav>
     </section>
 
-    <!-- 화면 3: 단어 만들기 -->
+    <!-- 화면 3: 단어 학습 -->
     <section id="screen-builder" class="screen">
       <header class="top-navbar">
         <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 목록</button>
-        <div style="font-size:15px; font-weight:800;">단어 별 키우기</div>
+        <div style="font-size:15px; font-weight:800;">단어 학습</div>
         <button id="btnDel" style="background:var(--surface); color:#B91C1C; border:1px solid #FECACA; padding:6px 10px; border-radius:8px; font-size:12px; font-weight:700; visibility:hidden; cursor:pointer;" onclick="doDelete()">삭제</button>
       </header>
 
       <div class="builder-body">
-        <div id="heroStage" class="hero-star-stage stage-NONE">
+        <div id="heroStage" class="hero-star-stage">
           <div id="heroStarBox" style="margin-bottom:6px;"></div>
-          <div id="heroTitle" style="font-size:15px; font-weight:800;">아직 빛나지 않은 별</div>
-          <div id="heroDesc" style="font-size:12px; color:var(--text-sub); margin-top:2px;">1단계 단어와 뜻을 저장하면 동별(+10 XP)이 켜집니다</div>
+          <div id="heroTitle" style="font-size:15px; font-weight:800;">새 단어 추가</div>
+          <div id="heroDesc" style="font-size:12px; color:var(--text-sub); margin-top:2px;">1단계부터 순서대로 작성해 별을 채워보세요</div>
         </div>
 
         <div id="card1" class="step-card current">
@@ -597,7 +592,7 @@
           <div id="form1">
             <input type="text" id="inpW" class="input-field" placeholder="모르는 단어 (예: 배양, 몰라, 가시다)">
             <input type="text" id="inpM" class="input-field" placeholder="단어의 뜻">
-            <button id="btnS1" class="action-btn btn-bronze" onclick="doStep1()">저장하고 동별 켜기</button>
+            <button id="btnS1" class="action-btn" onclick="doStep1()">1단계 저장하기</button>
           </div>
           <div id="sum1" style="display:none; font-weight:700;"></div>
         </div>
@@ -606,7 +601,7 @@
           <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar2"></span> 2단계. 출처 문장 & 유의어·반의어 (+20 XP)</div>
           <div id="form2">
             <input type="text" id="inpSrc" class="input-field" placeholder="단어가 쓰인 출처 문장 입력">
-            <button id="btnS2" class="action-btn btn-silver" onclick="doStep2()">은별 켜고 3단계 열기</button>
+            <button id="btnS2" class="action-btn" onclick="doStep2()">2단계 저장하기</button>
           </div>
           <div id="sum2" style="display:none;"></div>
         </div>
@@ -615,7 +610,7 @@
           <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar3"></span> 3단계. 나만의 문장 만들기 (+30 XP)</div>
           <div id="form3">
             <input type="text" id="inpMy" class="input-field" placeholder="단어를 활용해 직접 문장 작성">
-            <button id="btnS3" class="action-btn btn-gold" onclick="doStep3()">AI 피드백 받고 금별 완성하기</button>
+            <button id="btnS3" class="action-btn" onclick="doStep3()">AI 피드백 받고 완성하기</button>
           </div>
           <div id="sum3" style="display:none;"></div>
         </div>
@@ -649,7 +644,7 @@
         <div class="admin-stat-grid">
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">참여 학생</div><div id="admStudentCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0명</div></div>
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">총 등록 단어</div><div id="admWordCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
-          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">금별 완성수</div><div id="admGoldCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">3단계 완성</div><div id="admGoldCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
         </div>
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">학생별 단어장 학습 현황</div>
         <div id="adminStudentList">불러오는 중...</div>
@@ -686,7 +681,7 @@
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
     const GEMINI_API_KEY = ['AQ.Ab8RN6K8ggEwlwG88', 'EIw4DGH_K06fH08PXaTkZvjWeVXuziwAw'].join('');
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
-    const ICON_COLOR = '#3B82A6'; // 두 번째 사진의 스틸 블루 선 색상
+    const ICON_COLOR = '#3B82A6';
 
     const DAILY_BASE_QUIZ_LIMIT = 10;
     const MAX_DAILY_ADS = 3;
@@ -736,22 +731,18 @@
       }
     }
 
-    // [단순화된 별 아이콘 - 선 색상을 #3B82A6으로 통일하고 내부 채움만 단계별 구분]
-    function getStarSvg(tier, size = 16) {
+    // [사용자 지정 3단계 별 아이콘 - 선 색상 #3B82A6 / 채움색 #E19973, #E0E6ED, #FDE28A]
+    function getStarSvg(tier, size = 18) {
       const fillMap = {
         'NONE': 'none',
-        'BRONZE': '#DFECE6',
-        'SILVER': '#C5DFEE',
-        'GOLD': '#3B82A6'
+        'BRONZE': '#E19973',
+        'SILVER': '#E0E6ED',
+        'GOLD': '#FDE28A'
       };
-      const innerDot = (tier === 'GOLD')
-        ? `<circle cx="12" cy="12.5" r="2" fill="#FAF9F6"/>`
-        : '';
       return `
         <svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;">
           <polygon points="12 2.5 14.9 8.6 21.6 9.5 16.7 14.2 17.9 20.9 12 17.7 6.1 20.9 7.3 14.2 2.4 9.5 9.1 8.6"
             fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" />
-          ${innerDot}
         </svg>
       `;
     }
@@ -1057,16 +1048,16 @@
     }
 
     window.onload = async function() {
-      // 모든 UI 아이콘을 #3B82A6 선 아이콘으로 초기화
-      document.getElementById('sumB').innerHTML = getStarSvg('BRONZE', 15);
-      document.getElementById('sumS').innerHTML = getStarSvg('SILVER', 15);
-      document.getElementById('sumG').innerHTML = getStarSvg('GOLD', 15);
-      document.getElementById('bStar1').innerHTML = getStarSvg('BRONZE', 15);
-      document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 15);
-      document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 15);
+      // 필터 탭 및 학습 단계의 별 아이콘 초기화
+      document.getElementById('sumB').innerHTML = getStarSvg('BRONZE', 18);
+      document.getElementById('sumS').innerHTML = getStarSvg('SILVER', 18);
+      document.getElementById('sumG').innerHTML = getStarSvg('GOLD', 18);
+      document.getElementById('bStar1').innerHTML = getStarSvg('BRONZE', 16);
+      document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 16);
+      document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 16);
 
       document.getElementById('btnSoundToggle').innerHTML = getLineIcon('soundOn', 18);
-      document.getElementById('questIconBox').innerHTML = getLineIcon('target', 15);
+      document.getElementById('questIconBox').innerHTML = getStarSvg('GOLD', 16);
       document.getElementById('searchIconBox').innerHTML = getLineIcon('search', 16);
       document.getElementById('navIconWords').innerHTML = getLineIcon('book', 20);
       document.getElementById('navIconQuiz').innerHTML = getLineIcon('award', 20);
@@ -1403,12 +1394,12 @@
       }
 
       c.innerHTML = filtered.map(w => `
-        <div class="word-item-card ${w.star}" onclick="openBuilder('${w.id}')">
+        <div class="word-item-card" onclick="openBuilder('${w.id}')">
           <div>
             <div style="font-size:16px; font-weight:700; color:var(--text-main);">${escapeHtml(w.word)}</div>
             <div style="font-size:13px; color:var(--text-sub); margin-top:2px;">${escapeHtml(w.meaning)}</div>
           </div>
-          <div>${getStarSvg(w.star, 22)}</div>
+          <div>${getStarSvg(w.star, 24)}</div>
         </div>
       `).join('');
     }
@@ -1886,14 +1877,14 @@
 
     function syncBuilder() {
       const box = document.getElementById('heroStarBox');
-      const stage = document.getElementById('heroStage');
       const title = document.getElementById('heroTitle');
+      const desc = document.getElementById('heroDesc');
       const del = document.getElementById('btnDel');
 
       if (!curItem) {
-        stage.className = 'hero-star-stage stage-NONE';
         box.innerHTML = getStarSvg('NONE', 42);
-        title.innerText = '새 단어 별 만들기';
+        title.innerText = '새 단어 추가';
+        desc.innerText = '1단계부터 순서대로 작성해 별을 채워보세요';
         del.style.visibility = 'hidden';
 
         document.getElementById('card1').className = 'step-card current';
@@ -1914,7 +1905,6 @@
         return;
       }
 
-      stage.className = 'hero-star-stage stage-' + curItem.star;
       box.innerHTML = getStarSvg(curItem.star, 42);
       del.style.visibility = 'visible';
 
@@ -1924,7 +1914,8 @@
       document.getElementById('sum1').innerHTML = `${escapeHtml(curItem.word)} : <span style="font-size:13px; color:var(--text-sub);">${escapeHtml(curItem.meaning)}</span>`;
 
       if (curItem.star === 'BRONZE') {
-        title.innerText = '현재 등급: 동별 (10 XP)';
+        title.innerText = '1단계 완료 (+10 XP)';
+        desc.innerText = '2단계 출처 문장을 입력해 다음 별을 채워보세요';
         document.getElementById('card2').className = 'step-card current';
         document.getElementById('form2').style.display = 'block';
         document.getElementById('sum2').style.display = 'none';
@@ -1938,7 +1929,8 @@
         renderStep2Summary();
 
         if (curItem.star === 'SILVER') {
-          title.innerText = '현재 등급: 은별 (30 XP)';
+          title.innerText = '2단계 완료 (+30 XP)';
+          desc.innerText = '3단계 나만의 문장을 만들어 학습을 완성하세요';
           document.getElementById('card3').className = 'step-card current';
           document.getElementById('form3').style.display = 'block';
           document.getElementById('inpMy').value = curItem.mySentence || '';
@@ -1949,7 +1941,8 @@
             document.getElementById('sum3').style.display = 'none';
           }
         } else if (curItem.star === 'GOLD') {
-          title.innerText = '금별 마스터 달성 (60 XP)';
+          title.innerText = '마스터 완성 (+60 XP)';
+          desc.innerText = '3단계 문장 작성까지 모두 마친 단어입니다';
           document.getElementById('card3').className = 'step-card';
           document.getElementById('form3').style.display = 'none';
           document.getElementById('sum3').style.display = 'block';
@@ -2006,7 +1999,7 @@
       playRewardSound('BRONZE');
       syncBuilder();
       document.getElementById('inpSrc').focus();
-      showToast('동별 획득 (+10 XP). 2단계 문장을 적어보세요.');
+      showToast('1단계 저장 완료 (+10 XP). 2단계 문장을 적어보세요.');
 
       await sb.from('words').insert({
         id: newId,
@@ -2030,9 +2023,9 @@
       playRewardSound('SILVER');
       fireConfetti(false);
 
-      document.getElementById('heroStage').className = 'hero-star-stage stage-SILVER';
       document.getElementById('heroStarBox').innerHTML = getStarSvg('SILVER', 42);
-      document.getElementById('heroTitle').innerText = '현재 등급: 은별 (30 XP)';
+      document.getElementById('heroTitle').innerText = '2단계 완료 (+30 XP)';
+      document.getElementById('heroDesc').innerText = '3단계 나만의 문장을 만들어 학습을 완성하세요';
 
       document.getElementById('card2').className = 'step-card';
       document.getElementById('form2').style.display = 'none';
@@ -2047,7 +2040,7 @@
       document.getElementById('card3').className = 'step-card current';
       document.getElementById('form3').style.display = 'block';
       document.getElementById('inpMy').focus();
-      showToast('은별 진화 (+20 XP). 3단계 문장을 만들어보세요.');
+      showToast('2단계 완료 (+20 XP). 3단계 문장을 만들어보세요.');
 
       const res = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, src);
       curItem.aiMeaning = res.contextMeaning;
@@ -2104,13 +2097,13 @@
       curItem.star = newStar;
       curItem.updatedAt = kst.full;
 
-      btn.disabled = false; btn.innerText = 'AI 피드백 받고 금별 완성하기';
+      btn.disabled = false; btn.innerText = 'AI 피드백 받고 완성하기';
       syncBuilder();
 
       if (evalResult.isPassed) {
         playRewardSound('GOLD');
         fireConfetti(true);
-        showToast('금별 마스터 달성 (+30 XP). 축하합니다!');
+        showToast('마스터 완성 (+30 XP)! 축하합니다.');
       } else {
         showToast('AI 힌트를 참고해 문장을 다듬어 보세요.');
       }
@@ -2140,9 +2133,9 @@
       const streak = (myUser && myUser.streak) || 1;
 
       const badges = [
-        { icon: 'spark', name: '첫 별의 탄생', desc: '첫 단어 등록', unlocked: myWords.length >= 1 },
+        { icon: 'spark', name: '첫 단어의 시작', desc: '첫 단어 등록', unlocked: myWords.length >= 1 },
         { icon: 'flame', name: '꾸준한 학습', desc: '3일 연속 학습', unlocked: streak >= 3 },
-        { icon: 'award', name: '금별 수집가', desc: '금별 5개 달성', unlocked: goldCnt >= 5 },
+        { icon: 'award', name: '마스터 수집가', desc: '3단계 완성 5개', unlocked: goldCnt >= 5 },
         { icon: 'target', name: '퀴즈 챔피언', desc: '퀴즈 5회 정답', unlocked: quizSolveCount >= 5 },
         { icon: 'book', name: '어휘 탐험가', desc: '단어 15개 등록', unlocked: myWords.length >= 15 },
         { icon: 'trophy', name: '국어 마스터', desc: '500 XP 돌파', unlocked: totalXp >= 500 }
@@ -2346,8 +2339,8 @@
                   ${escapeHtml(item.userName)}<span style="font-size:11px; color:var(--text-sub); font-weight:500;">${schoolTag}</span>
                   ${isMe ? '<span style="color:var(--primary); font-size:11px; font-weight:700;"> (나)</span>' : ''}
                 </div>
-                <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-top:2px;">
-                  Lv.${lv.lv} · ${item.streak}일 연속 · 금별 ${item.gold}개
+                <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-top:2px; display:flex; align-items:center; gap:4px;">
+                  <span>Lv.${lv.lv} · ${item.streak}일 연속 ·</span> ${getStarSvg('GOLD', 13)} <span>${item.gold}</span>
                 </div>
               </div>
             </div>
@@ -2577,8 +2570,10 @@
               <span style="font-size:15px; font-weight:700;">${escapeHtml(s.userName)}</span>
               <span style="font-size:11px; color:var(--text-sub); margin-left:4px;">(${escapeHtml(s.userId)})</span>
             </div>
-            <div style="font-size:12px; font-weight:700; color:var(--primary);">
-              동 ${s.bronze} · 은 ${s.silver} · 금 ${s.gold} (총 ${s.total})
+            <div style="font-size:12px; font-weight:700; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+              ${getStarSvg('BRONZE', 14)}<span>${s.bronze}</span>
+              ${getStarSvg('SILVER', 14)}<span>${s.silver}</span>
+              ${getStarSvg('GOLD', 14)}<span>${s.gold}</span>
             </div>
           </div>
           <details style="margin-top:10px; font-size:13px; border-top:1px solid var(--border); padding-top:8px;">
@@ -2586,9 +2581,9 @@
             <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
               ${s.words.map(w => `
                 <div style="background:var(--bg-app); border:1px solid var(--border); padding:9px 11px; border-radius:8px;">
-                  <div style="display:flex; justify-content:space-between; font-weight:700;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700;">
                     <span>${escapeHtml(w.word)} (${escapeHtml(w.meaning)})</span>
-                    <span style="color:var(--primary); font-size:12px;">${w.star === 'GOLD' ? '금별' : (w.star === 'SILVER' ? '은별' : '동별')}</span>
+                    <span>${getStarSvg(w.star, 16)}</span>
                   </div>
                   ${w.sourceSentence ? `<div style="font-size:11px; color:#475569; margin-top:3px;"><strong>출처:</strong> ${escapeHtml(w.sourceSentence)}</div>` : ''}
                   ${w.mySentence ? `<div style="font-size:12px; color:var(--text-main); font-weight:600; margin-top:4px;"><strong>학생 작문:</strong> ${escapeHtml(w.mySentence)}</div>` : ''}
