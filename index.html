@@ -522,7 +522,7 @@
         <div id="card1" class="step-card current">
           <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar1"></span> 1단계. 단어와 뜻 (+10 XP)</div>
           <div id="form1">
-            <input type="text" id="inpW" class="input-field" placeholder="모르는 단어 (예: 배양)">
+            <input type="text" id="inpW" class="input-field" placeholder="모르는 단어 (예: 배양, 싫어, 가시다)">
             <input type="text" id="inpM" class="input-field" placeholder="단어의 뜻">
             <button id="btnS1" class="action-btn btn-bronze" onclick="doStep1()">저장하고 동별 켜기</button>
           </div>
@@ -629,23 +629,40 @@
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
 
-    // [내장 핵심 유의어·반의어 사전] 표준국어대사전 .xls에 관계어가 비어 있는 다빈도 일상어·수능어 즉시 대응
+    // [내장 핵심 유의어·반의어 사전 (명사 + 용언 기본형 '-다' 포함)]
     const CORE_SYN_ANT_MAP = {
       '집': { def: '사람이나 동물이 추위, 더위, 비바람 따위를 막고 들어 살기 위하여 지은 건물.', syn: '가옥, 주택, 거처', ant: '바깥, 외부, 타향' },
-      '학교': { def: '일정한 목적·교과 과정·설비·제도 및 법규에 의하여 교사가 계속적으로 학생에게 교육을 실시하는 기관.', syn: '교정, 배움터, 학원', ant: '가정, 사회' },
+      '학교': { def: '교사가 계속적으로 학생에게 교육을 실시하는 기관.', syn: '교정, 배움터, 학원', ant: '가정, 사회' },
       '친구': { def: '가깝게 오래 사귄 사람.', syn: '벗, 동무, 교우', ant: '원수, 적' },
       '마음': { def: '사람이 본래부터 지닌 성격이나 품성.', syn: '심성, 정신, 내면', ant: '육체, 겉모습' },
       '생각': { def: '사물을 헤아리고 판단하는 작용.', syn: '사고, 사유, 궁리', ant: '무념, 망각' },
       '사랑': { def: '어떤 사람이나 존재를 몹시 아끼고 귀중히 여기는 마음.', syn: '애정, 연정, 자애', ant: '미움, 증오, 혐오' },
       '행복': { def: '생활에서 충분한 만족과 기쁨을 느끼어 흐뭇함.', syn: '복락, 다행, 기쁨', ant: '불행, 비운, 고통' },
-      '시간': { def: '어떤 시각에서 어떤 시각까지의 사이.', syn: '세월, 광음, 겨를', ant: '영원, 찰나' },
       '노력': { def: '목적을 이루기 위하여 몸과 마음을 다하여 애를 씀.', syn: '분투, 정진, 노고', ant: '나태, 게으름, 태만' },
       '성공': { def: '목적하는 바를 이룸.', syn: '성취, 달성, 결실', ant: '실패, 좌절, 패배' },
       '실패': { def: '일을 잘못하여 뜻한 대로 되지 아니하거나 그르침.', syn: '패배, 좌절, 낙방', ant: '성공, 성취, 승리' },
+      '싫다': { def: '마음에 들지 아니하여 좋지 아니하다.', syn: '미운듯하다, 마땅찮다, 꺼리다', ant: '좋다, 반갑다, 기쁘다' },
+      '좋다': { def: '대상의 성질이나 내용이 마음에 들 만한 가치가 있다.', syn: '훌륭하다, 마땅하다, 반갑다', ant: '싫다, 나쁘다, 밉다' },
+      '가다': { def: '한 곳에서 다른 곳으로 장소를 이동하다.', syn: '이동하다, 나아가다, 향하다', ant: '오다, 머무르다, 멈추다' },
+      '오다': { def: '다른 곳에서 이곳으로 장소를 이동하다.', syn: '도착하다, 찾아오다, 닥치다', ant: '가다, 떠나다' },
+      '크다': { def: '길이, 넓이, 부피 따위가 보통 정도를 넘다.', syn: '거대하다, 넓다, 막대하다', ant: '작다, 좁다, 적다' },
+      '작다': { def: '길이, 넓이, 부피 따위가 다른 것이나 보통 정도에 미치지 못하다.', syn: '자그마하다, 왜소하다, 협소하다', ant: '크다, 거대하다' },
+      '많다': { def: '수효나 분량, 정도 따위가 일정한 기준을 넘다.', syn: '풍부하다, 허다하다, 넉넉하다', ant: '적다, 부족하다, 드물다' },
+      '적다': { def: '수효나 분량, 정도가 일정한 기준에 미치지 못하다.', syn: '모자라다, 부족하다, 희소하다', ant: '많다, 풍부하다' },
+      '아름답다': { def: '보거나 듣기에 흐뭇하고 훌륭하다.', syn: '곱다, 수려하다, 어여쁘다', ant: '추하다, 미운듯하다' },
+      '어렵다': { def: '하기가 까다로워 힘에 겹다.', syn: '난해하다, 곤란하다, 버겁다', ant: '쉽다, 수월하다, 용이하다' },
+      '쉽다': { def: '하기에 까다롭거나 힘들지 아니하다.', syn: '수월하다, 용이하다, 간단하다', ant: '어렵다, 난해하다, 힘들다' },
+      '기쁘다': { def: '욕구가 충족되어 마음이 흐뭇하고 흡족하다.', syn: '즐겁다, 유쾌하다, 반갑다', ant: '슬프다, 괴롭다, 서글프다' },
+      '슬프다': { def: '마음이 아프고 괴롭다.', syn: '서글프다, 애통하다, 비통하다', ant: '기쁘다, 즐겁다, 유쾌하다' },
+      '빠르다': { def: '어떤 동작이나 일에 걸리는 시간이 짧다.', syn: '신속하다, 재빠르다, 민첩하다', ant: '느리다, 더디다' },
+      '느리다': { def: '어떤 동작이나 일에 걸리는 시간이 길다.', syn: '더디다, 완만하다, 굼뜨다', ant: '빠르다, 신속하다' },
       '배양': { def: '실력이나 품성 따위를 기르고 발전시킴.', syn: '함양, 양성', ant: '소멸, 파괴' },
+      '배양하다': { def: '실력이나 품성 따위를 기르고 발전시키다.', syn: '함양하다, 양성하다, 기르다', ant: '소멸하다, 파괴하다' },
       '고찰': { def: '사물이나 현상을 깊이 생각하여 살핌.', syn: '탐구, 성찰', ant: '간과, 무시' },
+      '고찰하다': { def: '사물이나 현상을 깊이 생각하여 살피다.', syn: '탐구하다, 성찰하다, 살피다', ant: '간과하다, 무시하다' },
       '역설': { def: '겉으로는 모순되나 그 속에 중요한 진리가 함축된 표현.', syn: '패러독스, 모순어법', ant: '정설, 직설' },
       '간과': { def: '큰 관심 없이 대강 보아 넘김.', syn: '묵과, 외면', ant: '주목, 중시' },
+      '간과하다': { def: '큰 관심 없이 대강 보아 넘기다.', syn: '묵과하다, 외면하다, 지나치다', ant: '주목하다, 중시하다' },
       '귀결': { def: '어떤 결말이나 결과에 이르게 됨.', syn: '결론, 종결', ant: '발단, 시작' },
       '사상': { def: '공통점만 취하고 차이점을 버림.', syn: '추상, 배제', ant: '구체화, 포괄' },
       '함양': { def: '능력이나 품성 따위를 오래도록 길러 키움.', syn: '배양, 도야', ant: '소모, 상실' },
@@ -1117,7 +1134,7 @@
     }
 
     // =========================================================================
-    // 3. 표준국어대사전 DB(std_dict) 역검색 엔진 + AI 문맥 해석
+    // 3. 국어 문법 규칙 기반 기본형(표제어) 변환 엔진 + 표준국어대사전 1회 영구 저장
     // =========================================================================
     async function callGeminiDirect(prompt, schema) {
       const models = ['gemini-2.5-flash-lite', 'gemini-2.0-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash'];
@@ -1128,8 +1145,8 @@
           const genConfig = {
             responseMimeType: 'application/json',
             responseSchema: schema,
-            temperature: 0.2,
-            maxOutputTokens: 150
+            temperature: 0.1,
+            maxOutputTokens: 160
           };
           if (modelName.includes('2.5')) {
             genConfig.thinkingConfig = { thinkingBudget: 0 };
@@ -1156,90 +1173,245 @@
       throw new Error('AI 응답 지연');
     }
 
-    function getRootDictionaryWord(rawWord) {
-      return rawWord.trim().replace(/(하다|되다|시키다|스럽다|롭다|적)$/, '');
+    // 한글 음절 조합 도우미 (불규칙 활용/모음 축약 복원용)
+    function combineJamoToSyllable(choIdx, jungIdx, jongIdx) {
+      return String.fromCharCode(0xAC00 + (choIdx * 588) + (jungIdx * 28) + jongIdx);
     }
 
-    // [핵심 엔진] 표준국어대사전 DB 조회 + 뜻풀이 역검색으로 유의어·반의어를 빈칸 없이 추출
-    async function lookupStdDictWithReverseSearch(rawWord, studentMeaning, sourceSentence) {
+    function decomposeHangulSyllable(ch) {
+      const code = ch.charCodeAt(0);
+      if (code < 0xAC00 || code > 0xD7A3) return null;
+      const offset = code - 0xAC00;
+      const cho = Math.floor(offset / 588);
+      const jung = Math.floor((offset % 588) / 28);
+      const jong = offset % 28;
+      return { cho, jung, jong };
+    }
+
+    // [국어 문법 형태소 분석기]
+    // 1) 용언의 어말어미(-어/-아/-지/-고/-는 등)와 선어말어미(-으시-/-시-/-었-/-았-/-겠-)를 분리하고 종결어미 '-다'를 결합하여 기본형 생성
+    // 2) 모음 축약(왔->오다, 했->하다) 및 불규칙 활용(아름다워->아름답다, 예뻐->예쁘다, 몰라->모르다) 복원
+    // 3) 체언+조사 또는 파생접미사(-하다/-되다)에서 명사 어근과 용언 기본형을 모두 추출
+    function getKoreanGrammarBaseCandidates(rawInput) {
+      const w = (rawInput || '').trim();
+      if (!w) return [];
+
+      const candidates = new Set();
+
+      const addVerbAndRoot = (stem) => {
+        if (!stem) return;
+        candidates.add(stem + '다');
+        if (stem.endsWith('하') || stem.endsWith('되') || stem.endsWith('시키')) {
+          const nounRoot = stem.replace(/(하|되|시키)$/, '');
+          if (nounRoot) candidates.add(nounRoot);
+        }
+      };
+
+      // A. 불규칙 활용 및 모음 축약 대표 어간 매핑 (최우선 처리)
+      const irregularPrefixMap = [
+        { pattern: /^(.*?)하(였|했|여|야|니|고|지|면|는|던|기|다|시다|셨다|시어|셔)?(요)?$/, restore: '$1하', isVerb: true },
+        { pattern: /^(.*?)해(요|서|도|야|봤자|버리다)?$/, restore: '$1하', isVerb: true },
+        { pattern: /^(.*?)했(다|어|어요|습니다|지|고|는데|으니)?$/, restore: '$1하', isVerb: true },
+        { pattern: /^(.*?)되(었|어|니|고|지|면|는|던|기|다|시다|셨다)?(요)?$/, restore: '$1되', isVerb: true },
+        { pattern: /^(.*?)돼(요|서|도|야)?$/, restore: '$1되', isVerb: true },
+        { pattern: /^(.*?)됐(다|어|어요|습니다|지|고)?$/, restore: '$1되', isVerb: true },
+        { pattern: /^(.*?)가(시|셨|았|겠|더)*(다|어|아|요|지|고|니|면|는|네|구나)?$/, restore: '$1가', isVerb: true },
+        { pattern: /^(.*?)갔(다|어|어요|습니다|지|고)?$/, restore: '$1가', isVerb: true },
+        { pattern: /^(.*?)오(시|셨|았|겠|더)*(다|아|요|지|고|니|면|는|네|구나)?$/, restore: '$1오', isVerb: true },
+        { pattern: /^(.*?)왔(다|어|어요|습니다|지|고)?$/, restore: '$1오', isVerb: true },
+        { pattern: /^(.*?)보(시|셨|았|겠|더)*(다|아|요|지|고|니|면|는|네)?$/, restore: '$1보', isVerb: true },
+        { pattern: /^(.*?)봤(다|어|어요|습니다|지|고)?$/, restore: '$1보', isVerb: true }
+      ];
+
+      for (const rule of irregularPrefixMap) {
+        if (rule.pattern.test(w)) {
+          const stem = w.replace(rule.pattern, rule.restore);
+          if (stem) addVerbAndRoot(stem);
+        }
+      }
+
+      // B. 선어말어미(-으시-, -시-, -으셨-, -셨-, -었-, -았-, -겠-, -더-)가 포함된 활용형 정밀 분석
+      // 예: '가시다' -> 어간 '가' + 선어말어미 '시' + 어말어미 '다' -> 기본형 '가다'
+      // 예: '읽으시다' -> 어간 '읽' + 선어말어미 '으시' + 어말어미 '다' -> 기본형 '읽다'
+      const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던)?$/;
+      const preMatch = w.match(preFinalPattern);
+      if (preMatch && preMatch[1]) {
+        addVerbAndRoot(preMatch[1]);
+      }
+
+      // C. 일반 어말어미(종결·연결·전성어미) 분리 후 종결어미 '-다' 결합
+      // 예: '싫어', '싫어요', '싫지', '싫고', '싫은' -> 어간 '싫' + '다' = '싫다'
+      const endingPattern = /^(.+?)(습니다|ㅂ니다|어요|아요|여요|어라|아라|구나|구먼|는데|은데|지만|아서|어서|여서|니까|으니까|므로|으므로|어|아|여|지|고|며|면|니|네|군|자|라|다|기|음|는|은|던|을)$/;
+      const endMatch = w.match(endingPattern);
+      if (endMatch && endMatch[1]) {
+        let stem = endMatch[1];
+        // 어간 끝에 남아 있을 수 있는 선어말어미(-으시, -시, -었, -았, -겠) 추가 제거
+        stem = stem.replace(/(으시|시|었|았|겠)$/, '');
+        if (stem) addVerbAndRoot(stem);
+
+        // 'ㅂ' 불규칙 복원: '아름다워' / '무서워' / '어려워' (stem이 '...우' 또는 w가 '...워/웠/운'으로 끝날 때 -> 받침 'ㅂ' 복원)
+        const bIrregMatch = w.match(/^(.+?)(워|웠|워요|웠다|운|우니|우면|우시다|우셨다)$/);
+        if (bIrregMatch && bIrregMatch[1]) {
+          const prevChar = bIrregMatch[1].slice(-1);
+          const dec = decomposeHangulSyllable(prevChar);
+          if (dec && dec.jong === 0) {
+            const restoredChar = combineJamoToSyllable(dec.cho, dec.jung, 17); // 종성 17 = 'ㅂ'
+            const restoredStem = bIrregMatch[1].slice(0, -1) + restoredChar;
+            addVerbAndRoot(restoredStem);
+          }
+        }
+      }
+
+      // D. 모음 축약/탈락 단음절·다음절 활용형 복원 (예: '예뻐'->'예쁘다', '슬퍼'->'슬프다', '몰라'->'모르다', '달라'->'다르다')
+      const lastChar = w.replace(/(요|다|지|고|서)$/, '').slice(-1);
+      const prefix = w.replace(/(요|다|지|고|서)$/, '').slice(0, -1);
+      const decLast = decomposeHangulSyllable(lastChar);
+      if (decLast && (decLast.jung === 4 || decLast.jung === 0)) { // 'ㅓ'(4) 또는 'ㅏ'(0)
+        // 'ㅡ' 탈락 복원 후보 (jung = 18 'ㅡ', jong = 0)
+        const euRestored = prefix + combineJamoToSyllable(decLast.cho, 18, 0);
+        addVerbAndRoot(euRestored);
+
+        // '르' 불규칙 복원 후보 (앞 글자 받침 'ㄹ'(8)을 떼고 뒷글자를 '르'로 복원)
+        if (decLast.cho === 5 && prefix.length > 0) { // 초성 'ㄹ'(5)
+          const prevDec = decomposeHangulSyllable(prefix.slice(-1));
+          if (prevDec && prevDec.jong === 8) { // 종성 'ㄹ'(8)
+            const prevWithoutL = combineJamoToSyllable(prevDec.cho, prevDec.jung, 0);
+            const reuRestored = prefix.slice(0, -1) + prevWithoutL + '르';
+            addVerbAndRoot(reuRestored);
+          }
+        }
+      }
+
+      // E. 입력 단어 자체 및 체언(명사) 어근/조사 분리형 추가
+      candidates.add(w);
+      if (!w.endsWith('다')) {
+        candidates.add(w + '다');
+      }
+      const rootNoun = w.replace(/(하다|되다|시키다|스럽다|롭다|적|에서|에게|으로|로|은|는|이|가|을|를|의|에|도|만)$/, '');
+      if (rootNoun && rootNoun.length >= 1) {
+        candidates.add(rootNoun);
+        candidates.add(rootNoun + '다');
+        candidates.add(rootNoun + '하다');
+      }
+
+      return Array.from(candidates).filter(Boolean);
+    }
+
+    // [2단계 1회 영구 분석 함수]
+    // 문법 규칙대로 기본형(용언은 선어말어미 제외 + '-다', 체언은 원형)을 찾아 std_dict에서 유의어·반의어를 가져오고 영구 저장!
+    async function analyzeAndSaveStep2Once(rawWord, studentMeaning, sourceSentence) {
       const cleanWord = rawWord.trim();
-      const rootWord = getRootDictionaryWord(cleanWord);
-      const searchTerms = cleanWord === rootWord ? [cleanWord] : [cleanWord, rootWord];
+      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
 
-      // 1) 내장 핵심 사전에 있는 단어면 기본값 우선 확보
-      const coreHit = CORE_SYN_ANT_MAP[cleanWord] || CORE_SYN_ANT_MAP[rootWord] || null;
+      // 1) 후보 기본형들로 수파베이스 std_dict 일괄 조회
+      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
 
-      // 2) 수파베이스 std_dict에서 표제어 정확 일치 조회
-      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', searchTerms);
-      const dictHit = (dictRows && dictRows.length > 0) ? dictRows[0] : null;
+      // 후보 우선순위에 맞춰 가장 정확한 사전 표제어 선택 (용언 기본형 '-다' 또는 정확 일치 우선)
+      let dictHit = null;
+      if (dictRows && dictRows.length > 0) {
+        for (const cand of candidates) {
+          const found = dictRows.find(r => r.word === cand);
+          if (found) {
+            dictHit = found;
+            break;
+          }
+        }
+        if (!dictHit) dictHit = dictRows[0];
+      }
+
+      // 내장 핵심 사전(CORE_SYN_ANT_MAP)에서도 후보 기본형 매칭 확인
+      let coreHit = null;
+      let matchedBaseWord = dictHit ? dictHit.word : candidates[0];
+      for (const cand of candidates) {
+        if (CORE_SYN_ANT_MAP[cand]) {
+          coreHit = CORE_SYN_ANT_MAP[cand];
+          if (!dictHit) matchedBaseWord = cand;
+          break;
+        }
+      }
 
       let finalContextMeaning = (dictHit && dictHit.definition) || (coreHit && coreHit.def) || studentMeaning;
       let finalSynonyms = (dictHit && dictHit.synonyms && dictHit.synonyms !== '없음') ? dictHit.synonyms : ((coreHit && coreHit.syn) || '');
       let finalAntonyms = (dictHit && dictHit.antonyms && dictHit.antonyms !== '없음') ? dictHit.antonyms : ((coreHit && coreHit.ant) || '');
 
-      // 3) 만약 사전에 유의어가 비어 있다면 -> 수파베이스 std_dict 뜻풀이 역검색으로 유의어 자동 발굴 (AI 비용 0원!)
+      // 2) AI를 통해 (a) 국어 문법 규칙에 따른 정확한 사전 기본형(baseForm) 검증 및 (b) 문맥 뜻 추출
+      try {
+        const prompt =
+          `입력단어:"${cleanWord}"(학생뜻:"${studentMeaning}")/출처문장:"${sourceSentence}"\n` +
+          `[국어문법 규칙]\n` +
+          `1. baseForm: 동사·형용사(용언)는 선어말어미(-시-,-으시-,-었-,-았-,-겠- 등)를 모두 제외하고 어간에 종결어미 '-다'를 붙인 사전 기본형(예: '싫어'->'싫다', '가시다'->'가다', '아름다운'->'아름답다'), 명사(체언)는 조사를 뗀 기본형.\n` +
+          `2. contextMeaning: 문장 속 문맥적 뜻(1줄).\n` +
+          `3. synonyms: 기본형의 유의어 2개(쉼표 구분).\n` +
+          `4. antonyms: 기본형의 반의어 1~2개(없으면 '없음'). JSON 반환`;
+
+        const schema = {
+          type: 'OBJECT',
+          properties: {
+            baseForm: { type: 'STRING' },
+            contextMeaning: { type: 'STRING' },
+            synonyms: { type: 'STRING' },
+            antonyms: { type: 'STRING' }
+          },
+          required: ['baseForm', 'contextMeaning', 'synonyms', 'antonyms']
+        };
+
+        const aiRes = await callGeminiDirect(prompt, schema);
+        if (aiRes) {
+          const aiBase = (aiRes.baseForm || '').trim();
+          // 만약 AI가 찾은 문법적 기본형(예: 불규칙 활용 복원형)이 기존 후보와 다르면 수파베이스 std_dict에서 한 번 더 정확히 조회!
+          if (aiBase && !dictHit) {
+            matchedBaseWord = aiBase;
+            const { data: retryRow } = await sb.from('std_dict').select('*').eq('word', aiBase).maybeSingle();
+            if (retryRow) {
+              dictHit = retryRow;
+              if (retryRow.synonyms && retryRow.synonyms !== '없음') finalSynonyms = retryRow.synonyms;
+              if (retryRow.antonyms && retryRow.antonyms !== '없음') finalAntonyms = retryRow.antonyms;
+            }
+            if (CORE_SYN_ANT_MAP[aiBase]) {
+              if (!finalSynonyms) finalSynonyms = CORE_SYN_ANT_MAP[aiBase].syn;
+              if (!finalAntonyms) finalAntonyms = CORE_SYN_ANT_MAP[aiBase].ant;
+            }
+          } else if (aiBase) {
+            matchedBaseWord = aiBase;
+          }
+
+          if (aiRes.contextMeaning) finalContextMeaning = aiRes.contextMeaning;
+          if (!finalSynonyms || finalSynonyms === '없음') finalSynonyms = aiRes.synonyms || '';
+          if (!finalAntonyms || finalAntonyms === '없음') finalAntonyms = aiRes.antonyms || '';
+        }
+      } catch (e) {
+        // AI 지연 시에도 로컬 국어 문법 엔진이 찾은 기본형과 표준국어대사전 뜻/유의어를 그대로 사용
+      }
+
+      // 3) 만약 여전히 유의어가 비어 있다면 std_dict 뜻풀이 역검색으로 유사 표제어 보완
       if (!finalSynonyms || finalSynonyms === '없음') {
-        const targetTerm = rootWord || cleanWord;
+        const searchRoot = matchedBaseWord.replace(/다$/, '') || cleanWord;
         const { data: relRows } = await sb
           .from('std_dict')
           .select('word')
-          .ilike('definition', `%${targetTerm}%`)
-          .neq('word', cleanWord)
-          .limit(6);
+          .ilike('definition', `%${searchRoot}%`)
+          .neq('word', matchedBaseWord)
+          .limit(5);
 
         if (relRows && relRows.length > 0) {
-          const foundSyns = relRows
-            .map(r => r.word)
-            .filter(w => w && w !== cleanWord && w !== rootWord && w.length <= 6)
-            .slice(0, 3);
-          if (foundSyns.length > 0) {
-            finalSynonyms = foundSyns.join(', ');
-          }
+          const foundSyns = relRows.map(r => r.word).filter(w => w && w !== cleanWord).slice(0, 3);
+          if (foundSyns.length > 0) finalSynonyms = foundSyns.join(', ');
         }
-      }
-
-      // 4) AI 호출 (내부 try-catch로 감싸서 AI가 실패해도 사전 데이터는 절대 날아가지 않게 보호)
-      try {
-        if (finalSynonyms && finalSynonyms !== '없음') {
-          const prompt = `단어:"${cleanWord}"(사전뜻:"${finalContextMeaning}")/문장:"${sourceSentence}" -> 문맥상 정확한 뜻만 1줄로 짧게 JSON반환`;
-          const schema = {
-            type: 'OBJECT',
-            properties: { contextMeaning: { type: 'STRING' } },
-            required: ['contextMeaning']
-          };
-          const aiContext = await callGeminiDirect(prompt, schema);
-          if (aiContext && aiContext.contextMeaning) {
-            finalContextMeaning = aiContext.contextMeaning;
-          }
-        } else {
-          const prompt = `단어:"${cleanWord}"(사전뜻:"${finalContextMeaning}")/문장:"${sourceSentence}" -> 문맥뜻(짧게1줄),유의어(2개),반의어(1~2개,없으면'없음') JSON반환`;
-          const schema = {
-            type: 'OBJECT',
-            properties: {
-              contextMeaning: { type: 'STRING' },
-              synonyms: { type: 'STRING' },
-              antonyms: { type: 'STRING' }
-            },
-            required: ['contextMeaning', 'synonyms', 'antonyms']
-          };
-          const aiFull = await callGeminiDirect(prompt, schema);
-          if (aiFull) {
-            if (aiFull.contextMeaning) finalContextMeaning = aiFull.contextMeaning;
-            if (aiFull.synonyms && !finalSynonyms) finalSynonyms = aiFull.synonyms;
-            if (aiFull.antonyms && !finalAntonyms) finalAntonyms = aiFull.antonyms;
-          }
-        }
-      } catch (aiErr) {
-        // AI 키 오류나 지연이 발생해도 표준국어대사전 뜻풀이와 역검색 유의어를 그대로 유지!
       }
 
       if (!finalSynonyms) finalSynonyms = '유사 어휘 없음';
       if (!finalAntonyms) finalAntonyms = '없음';
 
-      // 5) 찾아낸 유의어·반의어를 std_dict에 영구 업데이트해 다음 조회 시 0.05초 응답 보장
+      // 학생이 활용형(예: '싫어', '가시다')을 입력했을 때 기본형(예: '싫다', '가다')을 뜻 앞에 명시하여 한눈에 보이게 저장
+      const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
+      const savedMeaningText = finalContextMeaning.startsWith('[기본형:')
+        ? finalContextMeaning
+        : (basePrefix + finalContextMeaning);
+
+      // 4) 기본형 표제어로 std_dict에도 영구 저장하여 다음 학생부터는 즉시 조회되도록 캐싱
       const kst = getNowKST();
       await sb.from('std_dict').upsert({
-        word: (dictHit && dictHit.word) ? dictHit.word : (rootWord || cleanWord),
+        word: matchedBaseWord || cleanWord,
         definition: finalContextMeaning,
         synonyms: finalSynonyms,
         antonyms: finalAntonyms,
@@ -1247,42 +1419,17 @@
       });
 
       return {
-        contextMeaning: finalContextMeaning,
+        contextMeaning: savedMeaningText,
         synonyms: finalSynonyms,
         antonyms: finalAntonyms
       };
     }
 
-    async function openBuilder(wordId) {
+    // 단어 카드를 열 때는 재검색하지 않고 저장된 데이터를 즉시 그대로 표시!
+    function openBuilder(wordId) {
       curItem = wordId ? myWords.find(w => w.id === wordId) : null;
       syncBuilder();
       showScreen('screen-builder');
-
-      // [자동 복구] 이전에 빈칸으로 저장된 2단계(은별/금별) 단어를 열면 즉시 유의어·반의어를 자동으로 채워줌!
-      if (curItem && curItem.star !== 'BRONZE' && (!curItem.synonyms || curItem.synonyms.trim() === '' || curItem.synonyms === '사전 참고')) {
-        await refreshStep2DictData();
-      }
-    }
-
-    async function refreshStep2DictData() {
-      if (!curItem) return;
-      document.getElementById('sum2').innerHTML = `
-        <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(curItem.sourceSentence)}"</div>
-        <div style="font-size:12px; background:#eef2ff; padding:8px; border-radius:8px; color:#4f46e5; font-weight:700;">
-          📖 표준국어대사전 DB에서 유의어·반의어를 불러오는 중...
-        </div>
-      `;
-      const res = await lookupStdDictWithReverseSearch(curItem.word, curItem.meaning, curItem.sourceSentence || curItem.word);
-      curItem.aiMeaning = res.contextMeaning;
-      curItem.synonyms = res.synonyms;
-      curItem.antonyms = res.antonyms;
-      renderStep2Summary();
-
-      await sb.from('words').update({
-        ai_meaning: curItem.aiMeaning,
-        synonyms: curItem.synonyms,
-        antonyms: curItem.antonyms
-      }).eq('id', curItem.id);
     }
 
     function syncBuilder() {
@@ -1364,6 +1511,7 @@
       }
     }
 
+    // 2단계 결과 표시 (번거로운 '다시 찾기' 버튼 제거, 영구 저장된 값 즉시 출력)
     function renderStep2Summary() {
       const synText = (curItem.synonyms && curItem.synonyms.trim() !== '') ? curItem.synonyms : '없음';
       const antText = (curItem.antonyms && curItem.antonyms.trim() !== '') ? curItem.antonyms : '없음';
@@ -1371,11 +1519,8 @@
 
       document.getElementById('sum2').innerHTML = `
         <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(curItem.sourceSentence)}"</div>
-        <div style="font-size:12px; background:#eef2ff; padding:8px 10px; border-radius:8px; line-height:1.5;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
-            <span class="dict-badge">📖 표준국어대사전 DB + AI 문맥 분석</span>
-            <button onclick="refreshStep2DictData()" style="background:none; border:none; color:var(--primary); font-size:11px; font-weight:800; cursor:pointer; padding:0;">🔄 다시 찾기</button>
-          </div>
+        <div style="font-size:12px; background:#eef2ff; padding:8px 10px; border-radius:8px; line-height:1.55;">
+          <span class="dict-badge">📖 표준국어대사전 기본형 DB + 문맥 뜻</span><br>
           <strong>💡 문맥·사전 뜻:</strong> ${escapeHtml(meanText)}<br>
           <strong>유의어(사전DB):</strong> <span style="color:#1e40af; font-weight:700;">${escapeHtml(synText)}</span> | <strong>반의어(사전DB):</strong> <span style="color:#9a3412; font-weight:700;">${escapeHtml(antText)}</span>
         </div>
@@ -1423,6 +1568,7 @@
       });
     }
 
+    // 2단계: 기본형 변환 + 표준국어대사전 조회 후 학생의 words 테이블에 한 번에 영구 저장!
     async function doStep2() {
       const src = document.getElementById('inpSrc').value.trim();
       if (!src) { alert('문장을 입력하세요'); return; }
@@ -1444,7 +1590,7 @@
       document.getElementById('sum2').innerHTML = `
         <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(src)}"</div>
         <div style="font-size:12px; background:#eef2ff; padding:8px; border-radius:8px; color:#4f46e5; font-weight:700;">
-          📖 표준국어대사전 DB 조회 및 AI 문맥 분석 중... (바로 3단계 문장을 작성하세요!)
+          📖 국어 문법 기본형 변환 및 표준국어대사전 DB 저장 중... (바로 3단계 문장을 작성하세요!)
         </div>
       `;
 
@@ -1453,12 +1599,13 @@
       document.getElementById('inpMy').focus();
       showToast('🥈 은별 진화 (+20 XP)! 3단계 문장을 만들어보세요.');
 
-      const res = await lookupStdDictWithReverseSearch(curItem.word, curItem.meaning, src);
+      const res = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, src);
       curItem.aiMeaning = res.contextMeaning;
       curItem.synonyms = res.synonyms;
       curItem.antonyms = res.antonyms;
       renderStep2Summary();
 
+      // 수파베이스 words 테이블에 영구 저장 (다음에 열 때는 이 값을 그대로 사용)
       await sb.from('words').update({
         source_sentence: src,
         ai_meaning: curItem.aiMeaning,
@@ -1490,13 +1637,14 @@
         };
         evalResult = await callGeminiDirect(prompt, schema);
       } catch (e) {
-        const rootWord = getRootDictionaryWord(curItem.word);
-        const hasWord = my.includes(rootWord);
+        const cands = getKoreanGrammarBaseCandidates(curItem.word);
+        const stem = (cands[0] || curItem.word).replace(/다$/, '');
+        const hasWord = my.includes(stem);
         evalResult = {
           isPassed: hasWord,
           feedback: hasWord
             ? `'${curItem.word}'의 의미를 살려 문장을 훌륭하게 완성했어요!`
-            : `문장 안에 '${curItem.word}' 단어가 들어가도록 다시 작성해 볼까요?`
+            : `문장 안에 '${curItem.word}'(기본형: ${cands[0] || curItem.word})의 어간이 들어가도록 다시 작성해 볼까요?`
         };
       }
 
@@ -1693,7 +1841,7 @@
     }
 
     // =========================================================================
-    // 5. 실시간 명예의 전당 & 관리자 대시보드 & 표준국어대사전 .xls(관계어 포함) 업로더
+    // 5. 실시간 명예의 전당 & 관리자 대시보드 & 표준국어대사전 .xls 업로더
     // =========================================================================
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
@@ -1771,7 +1919,6 @@
       document.getElementById('dictCountBadge').innerText = `등록 어휘: ${(count || 0).toLocaleString()}개`;
     }
 
-    // 국립국어원 .xls의 '관계어' 열에서 비슷한말(유의어)과 반대말(반의어)을 분리 추출하는 함수
     function extractSynAntFromRelationText(relText) {
       if (!relText) return { syn: '', ant: '' };
       const clean = String(relText).replace(/[-^0-9]/g, '');
@@ -1857,7 +2004,6 @@
                 updated_at: kst.full
               });
             } else {
-              // 동음이의어 행에 유의어·반의어가 있으면 기존 항목에 병합 보존
               const prev = wordMap.get(cleanWord);
               if (prev.synonyms === '없음' && cleanSyn) prev.synonyms = cleanSyn;
               if (prev.antonyms === '없음' && cleanAnt) prev.antonyms = cleanAnt;
