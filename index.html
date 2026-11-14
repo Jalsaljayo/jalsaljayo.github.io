@@ -2,21 +2,37 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta id="metaViewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="메이드보카">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#FAF9F6">
   <title>메이드보카 (MadeVoca)</title>
+
+  <script>
+    // 모바일 화면 100% 자동 맞춤 스크립트 (데스크톱 사이트 보기 대응)
+    function fitMobileScreen() {
+      var isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
+      if (isMobileDevice && window.innerWidth > 500) {
+        var scaleRatio = window.innerWidth / 412;
+        document.documentElement.style.zoom = scaleRatio;
+      } else {
+        document.documentElement.style.zoom = 1;
+      }
+    }
+    fitMobileScreen();
+    window.addEventListener('resize', fitMobileScreen);
+  </script>
 
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- [구글 애드센스 H5 전면/보상형 광고 공식 스크립트 - ca-pub-8140838569673931 고정] -->
+  <!-- 구글 애드센스 H5 전면/보상형 광고 공식 스크립트 - ca-pub-8140838569673931 고정 -->
   <script async
+    data-adbreak-test="on"
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8140838569673931"
     crossorigin="anonymous">
   </script>
@@ -28,18 +44,17 @@
 
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-dark: #3730a3;
-      --duo-green: #58cc02;
-      --duo-green-dark: #46a302;
-      --bg-app: #f8fafc;
-      --surface: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #64748b;
-      --border: #e2e8f0;
-      --bronze-border: #eab676;
-      --silver-border: #cbd5e1;
-      --gold-border: #fde047;
+      /* 첫 번째 이미지: 따뜻한 미색(웜 화이트) 배경 */
+      --bg-app: #FAF9F6;
+      --surface: #FFFFFF;
+      /* 두 번째 이미지: 차분한 스틸 블루 (아이콘 선 색상 & 포인트 컬러) */
+      --primary: #3B82A6;
+      --primary-dark: #2C6786;
+      --primary-soft: #EBF3F7;
+      --icon-stroke: #3B82A6;
+      --text-main: #1E293B;
+      --text-sub: #64748B;
+      --border: #E6E4DD;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
@@ -61,19 +76,18 @@
       overflow-x: hidden;
     }
 
-    /* PC 화면에서는 가운데 모바일 프레임 유지, 스마트폰에서는 화면 100% 꽉 차게 표시 */
-    @media (min-width: 520px) {
+    @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
       body {
-        background-color: #cbd5e1;
+        background-color: #EFECE6;
         display: flex;
         justify-content: center;
       }
       .app-container {
-        max-width: 440px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.12);
+        max-width: 460px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.05);
       }
       .bottom-tab-bar, .bottom-sheet {
-        max-width: 440px !important;
+        max-width: 460px !important;
       }
     }
 
@@ -94,296 +108,300 @@
       width: 100%;
       min-height: 100vh;
       min-height: 100dvh;
-      padding-bottom: calc(68px + var(--safe-bottom));
+      padding-bottom: calc(72px + var(--safe-bottom));
     }
-    #screen-builder, #screen-admin { padding-bottom: 24px; }
-    .screen.active { display: flex; animation: fadeIn 0.16s ease-out; }
+    #screen-builder, #screen-admin { padding-bottom: 28px; }
+    .screen.active { display: flex; animation: fadeIn 0.15s ease-out; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .star-svg { display: inline-block; vertical-align: middle; overflow: visible; flex-shrink: 0; }
+    .star-svg, .line-icon {
+      display: inline-block;
+      vertical-align: middle;
+      overflow: visible;
+      flex-shrink: 0;
+    }
 
-    /* 화면 1: 로그인 화면 (스마트폰 한 화면에 정확히 맞도록 100dvh 고정) */
+    /* 화면 1: 로그인 화면 (미니멀 플랫 톤) */
     #screen-login {
       height: 100vh;
       height: 100dvh;
       min-height: 0;
-      background: linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
-      padding: 15vh 24px calc(32px + var(--safe-bottom));
+      background-color: var(--bg-app);
+      padding: 16vh 24px calc(36px + var(--safe-bottom));
       justify-content: space-between;
       align-items: center;
       text-align: center;
       overflow: hidden;
     }
     .brand-logo-box {
-      width: 72px; height: 72px; border-radius: 22px;
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      width: 68px; height: 68px; border-radius: 20px;
+      background-color: var(--surface);
+      border: 2px solid var(--icon-stroke);
       display: flex; align-items: center; justify-content: center;
-      font-size: 36px; font-weight: 900; color: white;
-      box-shadow: 0 10px 22px rgba(79, 70, 229, 0.25); margin: 0 auto 14px;
+      font-size: 32px; font-weight: 800; color: var(--icon-stroke);
+      margin: 0 auto 16px;
     }
 
     .social-btn-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
     .google-btn {
-      width: 100%; background: #ffffff; color: #1e293b;
-      border: 1.5px solid #cbd5e1; border-bottom-width: 4px;
-      padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      width: 100%; background: var(--surface); color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 15px 16px; border-radius: 14px; font-size: 15px; font-weight: 700;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.1s;
+      cursor: pointer; transition: background 0.15s;
     }
     .apple-btn {
-      width: 100%; background: #000000; color: #ffffff;
-      border: 1.5px solid #000000; border-bottom: 4px solid #334155;
-      padding: 14px 16px; border-radius: 16px; font-size: 15px; font-weight: 800;
+      width: 100%; background: #1E293B; color: #FFFFFF;
+      border: 1px solid #1E293B;
+      padding: 15px 16px; border-radius: 14px; font-size: 15px; font-weight: 700;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: 0.1s;
+      cursor: pointer; transition: opacity 0.15s;
     }
-    .google-btn:active, .apple-btn:active { transform: translateY(2px); }
-    .google-btn:disabled, .apple-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .google-btn:active, .apple-btn:active { opacity: 0.8; }
 
     /* 상단 네비바 */
     .top-navbar {
-      position: sticky; top: 0; z-index: 30; background: var(--surface);
-      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 30; background: var(--bg-app);
+      padding: 14px 16px 12px; border-bottom: 1px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
     }
     .btn-top-plus {
-      width: 38px; height: 38px; border-radius: 11px;
-      background: var(--primary); color: white; border: none; border-bottom: 3px solid var(--primary-dark);
-      font-size: 22px; font-weight: 700; line-height: 1; cursor: pointer;
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--primary); color: white; border: none;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .btn-icon-sound {
-      width: 34px; height: 34px; border-radius: 10px; background: #f1f5f9;
-      border: 1px solid var(--border); font-size: 16px; cursor: pointer;
+      width: 36px; height: 36px; border-radius: 10px; background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .btn-admin-pill {
-      background: #fef08a; color: #854d0e; border: 1px solid #facc15;
-      padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;
+      background: var(--primary-soft); color: var(--primary); border: 1px solid #C5DDEC;
+      padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
     }
 
-    /* 게이미피케이션 히어로 배너 */
+    /* 상단 레벨·경험치 카드 (과한 그라데이션 제거, 모던한 카드 스타일) */
     .gamify-card {
-      margin: 10px 14px 6px; padding: 13px 15px; border-radius: 16px;
-      background: linear-gradient(135deg, #312e81 0%, #4f46e5 100%);
-      color: white; box-shadow: 0 6px 14px rgba(79, 70, 229, 0.16);
+      margin: 12px 16px 8px; padding: 16px; border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-main);
     }
-    .gamify-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .gamify-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .level-badge {
-      background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 999px;
-      font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;
+      background: var(--primary-soft); color: var(--primary);
+      padding: 4px 10px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
     }
     .streak-pill {
-      background: #fff7ed; color: #ea580c; padding: 4px 10px; border-radius: 999px;
-      font-size: 12px; font-weight: 900; display: inline-flex; align-items: center; gap: 4px;
+      background: var(--bg-app); color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
     }
     .xp-bar-bg {
-      width: 100%; height: 8px; background: rgba(255,255,255,0.22);
-      border-radius: 999px; overflow: hidden; margin: 6px 0 2px;
+      width: 100%; height: 6px; background: #EDEBE4;
+      border-radius: 999px; overflow: hidden; margin: 8px 0 2px;
     }
     .xp-bar-fill {
-      height: 100%; background: linear-gradient(90deg, #fde047, #facc15);
+      height: 100%; background: var(--primary);
       border-radius: 999px; width: 0%; transition: width 0.4s ease;
     }
 
     .daily-quest-box {
-      margin: 4px 14px 6px; padding: 9px 13px; border-radius: 13px;
-      background: var(--surface); border: 1.5px solid var(--border);
+      margin: 0 16px 8px; padding: 11px 14px; border-radius: 14px;
+      background: var(--surface); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
-    .quest-bar-bg { flex: 1; height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
-    .quest-bar-fill { height: 100%; background: var(--duo-green); width: 0%; transition: width 0.4s ease; }
+    .quest-bar-bg { flex: 1; height: 6px; background: #EDEBE4; border-radius: 99px; overflow: hidden; }
+    .quest-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
 
     .reward-summary {
-      padding: 2px 14px 8px;
+      padding: 2px 16px 8px;
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
     }
     .reward-pill {
-      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 3px;
-      border-radius: 12px; padding: 8px 6px; display: flex; align-items: center; justify-content: center; gap: 5px;
-      font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.1s;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 9px 6px; display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.15s;
     }
-    .reward-pill.active-filter { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+    .reward-pill.active-filter {
+      border-color: var(--primary); background: var(--primary-soft); color: var(--primary);
+    }
 
-    /* 내 단어 검색창 스타일 (font-size: 16px로 스마트폰 자동 줌인 방지) */
-    .search-box-wrap { padding: 0 14px 8px; position: relative; }
+    /* 내 단어 검색창 */
+    .search-box-wrap { padding: 0 16px 8px; position: relative; }
     .search-input {
-      width: 100%; padding: 10px 36px 10px 36px; border-radius: 12px;
-      border: 1.5px solid var(--border); background: var(--surface);
-      font-size: 16px; font-weight: 600; outline: none; transition: 0.15s;
+      width: 100%; padding: 11px 36px 11px 38px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; transition: 0.15s;
     }
     .search-input:focus { border-color: var(--primary); }
     .search-icon-left {
-      position: absolute; left: 26px; top: 50%; transform: translateY(-50%);
-      font-size: 14px; color: var(--text-sub); pointer-events: none; margin-top: -4px;
+      position: absolute; left: 28px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; margin-top: -4px; display: flex; align-items: center;
     }
     .search-clear-btn {
-      position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
-      background: #e2e8f0; border: none; width: 22px; height: 22px; border-radius: 50%;
-      font-size: 12px; font-weight: 800; color: #475569; cursor: pointer;
+      position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+      background: #EDEBE4; border: none; width: 20px; height: 20px; border-radius: 50%;
+      font-size: 11px; font-weight: 700; color: var(--text-sub); cursor: pointer;
       display: none; align-items: center; justify-content: center; margin-top: -4px;
     }
 
-    .list-body { padding: 4px 14px 24px; flex: 1; }
+    .list-body { padding: 4px 16px 24px; flex: 1; }
     .word-item-card {
-      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
-      border-radius: 15px; padding: 13px 15px; margin-bottom: 9px; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center; transition: transform 0.1s;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center; transition: background 0.12s;
     }
-    .word-item-card:active { transform: scale(0.98); }
-    .word-item-card.GOLD { border-color: #facc15; background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%); }
+    .word-item-card:active { background: #F4F2EC; }
+    .word-item-card.GOLD { border-color: #93BDDA; background: #F7FAFC; }
 
-    /* 하단 탭 네비게이션 (모바일 하단 제스처 바 안전 영역 대응) */
+    /* 하단 탭 네비게이션 (단순화된 블루 라인 아이콘) */
     .bottom-tab-bar {
-      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 100%; height: calc(62px + var(--safe-bottom));
+      position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
+      width: 100%; height: calc(64px + var(--safe-bottom));
       padding-bottom: var(--safe-bottom);
-      background: var(--surface); border-top: 1.5px solid var(--border);
+      background: var(--bg-app); border-top: 1px solid var(--border);
       display: grid; grid-template-columns: repeat(4, 1fr); z-index: 40;
     }
     .tab-btn {
       background: none; border: none; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 3px;
-      font-size: 11px; font-weight: 800; color: var(--text-sub); cursor: pointer;
+      align-items: center; justify-content: center; gap: 4px;
+      font-size: 11px; font-weight: 600; color: var(--text-sub); cursor: pointer;
+      opacity: 0.55; transition: opacity 0.15s, color 0.15s;
     }
-    .tab-btn.active { color: var(--primary); }
-    .tab-icon { font-size: 18px; line-height: 1; }
+    .tab-btn.active {
+      color: var(--primary);
+      font-weight: 800;
+      opacity: 1;
+    }
+    .tab-icon { height: 22px; display: flex; align-items: center; justify-content: center; }
 
     /* 탭2: 도감 & 스피드 복습 퀴즈 */
     .quiz-limit-bar {
       display: flex; justify-content: space-between; align-items: center;
-      background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px;
-      padding: 8px 12px; margin-bottom: 10px; font-size: 12px; font-weight: 800; color: #3730a3;
+      background: var(--primary-soft); border: 1px solid #C5DDEC; border-radius: 12px;
+      padding: 9px 13px; margin-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--primary-dark);
     }
     .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
     .badge-card {
-      background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
-      padding: 12px 6px; text-align: center; opacity: 0.4; filter: grayscale(1); transition: 0.2s;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px 6px; text-align: center; opacity: 0.38; transition: 0.2s;
     }
     .badge-card.unlocked {
-      opacity: 1; filter: none; border-color: #facc15;
-      background: linear-gradient(180deg, #ffffff 0%, #fefce8 100%);
-      box-shadow: 0 4px 10px rgba(250, 204, 21, 0.15);
+      opacity: 1; border-color: var(--primary);
+      background: var(--surface);
     }
     .quiz-box {
-      background: var(--surface); border: 2px solid var(--primary); border-bottom-width: 5px;
-      border-radius: 18px; padding: 16px; margin-bottom: 16px; text-align: center;
+      background: var(--surface); border: 1.5px solid var(--primary);
+      border-radius: 16px; padding: 18px; margin-bottom: 18px; text-align: center;
     }
     .quiz-option-btn {
-      width: 100%; text-align: left; background: #f8fafc; border: 1.5px solid var(--border);
-      border-bottom-width: 3.5px; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
-      font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.1s;
+      width: 100%; text-align: left; background: var(--bg-app); border: 1px solid var(--border);
+      border-radius: 12px; padding: 13px 14px; margin-bottom: 8px;
+      font-size: 14px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: 0.1s;
     }
-    .quiz-option-btn.correct { background: #dcfce7; border-color: #22c55e; color: #166534; }
-    .quiz-option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+    .quiz-option-btn.correct { background: #EBF3F7; border-color: var(--primary); color: var(--primary-dark); font-weight: 700; }
+    .quiz-option-btn.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
 
     .btn-watch-ad {
-      width: 100%; padding: 14px; border-radius: 14px; border: none;
-      background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
-      border-bottom: 4px solid #c2410c; color: white;
-      font-size: 14px; font-weight: 900; cursor: pointer;
+      width: 100%; padding: 14px; border-radius: 12px; border: none;
+      background: var(--primary); color: white;
+      font-size: 14px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      box-shadow: 0 6px 16px rgba(234, 88, 12, 0.25);
     }
-    .btn-watch-ad:active { transform: translateY(2px); }
-    .btn-watch-ad:disabled { background: #94a3b8; border-bottom-color: #64748b; box-shadow: none; cursor: not-allowed; }
+    .btn-watch-ad:disabled { background: #94A3B8; cursor: not-allowed; }
 
     /* 탭3: 랭킹 카드 */
     .rank-card {
-      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 3.5px;
-      border-radius: 14px; padding: 12px 14px; margin-bottom: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 13px 15px; margin-bottom: 8px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .rank-card.me { border-color: var(--primary); background: #eef2ff; }
-    .rank-num { width: 28px; font-size: 16px; font-weight: 900; text-align: center; }
+    .rank-card.me { border-color: var(--primary); background: var(--primary-soft); }
+    .rank-num { width: 28px; font-size: 14px; font-weight: 800; color: var(--primary); text-align: center; }
 
     /* 탭4: 내 정보 카드 */
     .profile-box-card {
-      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
-      border-radius: 18px; padding: 18px 16px; margin-bottom: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px 16px; margin-bottom: 12px;
     }
 
     /* 화면 3: 단어 만들기 */
-    .builder-body { padding: 12px 14px 36px; flex: 1; }
+    .builder-body { padding: 14px 16px 40px; flex: 1; }
     .hero-star-stage {
-      background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: 16px; padding: 13px 14px; margin-bottom: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; margin-bottom: 12px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
     }
-    .hero-star-stage.stage-BRONZE { border-color: var(--bronze-border); background: #fff7ed; }
-    .hero-star-stage.stage-SILVER { border-color: var(--silver-border); background: #f1f5f9; }
-    .hero-star-stage.stage-GOLD { border-color: #facc15; background: #fef9c3; }
+    .hero-star-stage.stage-BRONZE { border-color: var(--border); }
+    .hero-star-stage.stage-SILVER { border-color: #93BDDA; background: #F7FAFC; }
+    .hero-star-stage.stage-GOLD { border-color: var(--primary); background: var(--primary-soft); }
 
     .step-card {
-      background: var(--surface); border: 1.5px solid var(--border); border-bottom-width: 4px;
-      border-radius: 16px; padding: 15px; margin-bottom: 11px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; margin-bottom: 10px;
     }
     .step-card.current { border-color: var(--primary); }
-    .step-card.locked { opacity: 0.45; pointer-events: none; background: #f1f5f9; }
+    .step-card.locked { opacity: 0.45; pointer-events: none; background: #F4F2EC; }
 
-    /* 스마트폰 터치 시 화면 자동 확대 방지 (font-size: 16px) */
     .input-field {
-      width: 100%; padding: 11px 13px; border-radius: 11px; border: 1.5px solid var(--border);
-      font-size: 16px; margin-bottom: 10px; outline: none; background: #f8fafc;
+      width: 100%; padding: 12px 13px; border-radius: 10px; border: 1px solid var(--border);
+      font-size: 16px; margin-bottom: 10px; outline: none; background: var(--bg-app); color: var(--text-main);
     }
-    .input-field:focus { border-color: var(--primary); background: white; }
+    .input-field:focus { border-color: var(--primary); background: var(--surface); }
 
     .action-btn {
-      width: 100%; padding: 13px; border-radius: 12px; border: none;
-      font-size: 14px; font-weight: 800; color: white; cursor: pointer; transition: 0.1s;
+      width: 100%; padding: 13px; border-radius: 11px; border: none;
+      font-size: 14px; font-weight: 700; color: white; cursor: pointer; transition: opacity 0.12s;
     }
-    .action-btn:active { transform: translateY(2px); }
-    .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btn-bronze { background: #cd7f32; border-bottom: 3.5px solid #9a581b; }
-    .btn-silver { background: #475569; border-bottom: 3.5px solid #334155; }
-    .btn-gold { background: #eab308; border-bottom: 3.5px solid #ca8a04; color: #1e293b; }
-    .btn-primary { background: var(--primary); border-bottom: 3.5px solid var(--primary-dark); }
+    .action-btn:active { opacity: 0.85; }
+    .action-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-bronze { background: #5B768A; }
+    .btn-silver { background: #466C85; }
+    .btn-gold { background: var(--primary); color: #FFFFFF; }
+    .btn-primary { background: var(--primary); }
 
     .dict-badge {
-      display: inline-block; background: #dbeafe; color: #1e40af;
-      font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-bottom: 4px;
+      display: inline-block; background: var(--primary-soft); color: var(--primary);
+      font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-bottom: 4px;
     }
 
     /* 모달 */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100;
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); z-index: 100;
       display: none; justify-content: center; align-items: flex-end;
     }
     .modal-overlay.open { display: flex; }
     .bottom-sheet {
-      width: 100%; background: white;
-      border-radius: 24px 24px 0 0; padding: 24px 20px calc(28px + var(--safe-bottom));
+      width: 100%; background: var(--bg-app);
+      border-radius: 22px 22px 0 0; padding: 24px 20px calc(28px + var(--safe-bottom));
       animation: slideUp 0.2s ease-out;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
     .admin-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-    .admin-stat-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px; text-align: center; }
-    .student-row-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+    .admin-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
+    .student-row-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
 
     .dict-upload-box {
-      background: #eef2ff; border: 1.5px solid #c7d2fe; border-radius: 16px;
-      padding: 15px; margin-bottom: 16px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px; margin-bottom: 16px;
     }
 
     #toast {
-      visibility: hidden; background: #0f172a; color: white; padding: 11px 16px;
-      border-radius: 12px; position: fixed; bottom: calc(76px + var(--safe-bottom)); left: 50%; transform: translateX(-50%);
-      z-index: 200; font-size: 13px; font-weight: 700; max-width: 90vw; text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      visibility: hidden; background: #1E293B; color: white; padding: 11px 16px;
+      border-radius: 10px; position: fixed; bottom: calc(76px + var(--safe-bottom)); left: 50%; transform: translateX(-50%);
+      z-index: 200; font-size: 13px; font-weight: 600; max-width: 90vw; text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     }
     #toast.show { visibility: visible; }
   </style>
 </head>
 <body>
-
-  <svg width="0" height="0" style="position:absolute;">
-    <defs>
-      <linearGradient id="starGrad-NONE" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f1f5f9" /><stop offset="100%" stop-color="#cbd5e1" /></linearGradient>
-      <linearGradient id="starGrad-BRONZE" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fbd38d" /><stop offset="45%" stop-color="#cd7f32" /><stop offset="100%" stop-color="#7b341e" /></linearGradient>
-      <linearGradient id="starGrad-SILVER" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff" /><stop offset="45%" stop-color="#cbd5e1" /><stop offset="100%" stop-color="#475569" /></linearGradient>
-      <linearGradient id="starGrad-GOLD" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fef08a" /><stop offset="45%" stop-color="#facc15" /><stop offset="100%" stop-color="#b45309" /></linearGradient>
-    </defs>
-  </svg>
 
   <div class="app-container">
 
@@ -391,13 +409,13 @@
     <section id="screen-login" class="screen active">
       <div>
         <div class="brand-logo-box">M</div>
-        <h1 style="font-size:26px; font-weight:900; margin:0;">메이드보카</h1>
-        <div style="font-size:12px; font-weight:800; color:var(--primary); letter-spacing:1px; margin-top:4px;">MADE VOCA</div>
+        <h1 style="font-size:26px; font-weight:800; margin:0; letter-spacing:-0.5px;">메이드보카</h1>
+        <div style="font-size:11px; font-weight:700; color:var(--primary); letter-spacing:1.5px; margin-top:5px;">MADE VOCA</div>
       </div>
 
       <div class="social-btn-group">
         <button id="btnGoogleOAuth" class="google-btn" onclick="signInWithRealOAuth('google')">
-          <svg width="20" height="20" viewBox="0 0 48 48">
+          <svg width="18" height="18" viewBox="0 0 48 48">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
             <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
             <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
@@ -407,14 +425,14 @@
         </button>
 
         <button id="btnAppleOAuth" class="apple-btn" onclick="signInWithRealOAuth('apple')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
             <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
           </svg>
           <span id="appleBtnText">Apple로 계속하기</span>
         </button>
 
         <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">
-          공식 Google · Apple 보안 로그인으로 모든 기기에서 자동 동기화됩니다.
+          Google · Apple 계정으로 모든 기기에서 동기화됩니다.
         </div>
       </div>
     </section>
@@ -423,35 +441,39 @@
     <section id="screen-list" class="screen">
       <header class="top-navbar">
         <div onclick="switchMainTab('profile')" style="cursor:pointer;" title="내 정보 수정하기">
-          <div style="font-size:17px; font-weight:900;">메이드보카</div>
-          <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:800;">내 단어장 ✎</div>
+          <div style="font-size:17px; font-weight:800; letter-spacing:-0.3px;">메이드보카</div>
+          <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:600; margin-top:1px;">내 단어장</div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <button id="btnSoundToggle" class="btn-icon-sound" onclick="toggleSound()" title="효과음 켜기/끄기">🔊</button>
-          <button id="btnAdminMode" class="btn-admin-pill" style="display:none;" onclick="openAdminScreen()">👑 관리자</button>
-          <button class="btn-top-plus" title="새 단어 추가" onclick="openBuilder(null)">＋</button>
+          <button id="btnSoundToggle" class="btn-icon-sound" onclick="toggleSound()" title="효과음 켜기/끄기"></button>
+          <button id="btnAdminMode" class="btn-admin-pill" style="display:none;" onclick="openAdminScreen()">관리자</button>
+          <button class="btn-top-plus" title="새 단어 추가" onclick="openBuilder(null)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
         </div>
       </header>
 
       <div class="gamify-card">
         <div class="gamify-top">
-          <div class="level-badge" id="lvlBadge">🌱 Lv.1 어휘 새싹</div>
-          <div class="streak-pill" id="streakBadge">🔥 1일 연속</div>
+          <div class="level-badge" id="lvlBadge">Lv.1 어휘 새싹</div>
+          <div class="streak-pill" id="streakBadge">1일 연속</div>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:baseline;">
-          <div style="font-size:15px; font-weight:900;" id="xpTotalText">0 XP</div>
-          <div style="font-size:11px; opacity:0.85;" id="xpNextText">다음 레벨까지 100 XP</div>
+          <div style="font-size:16px; font-weight:800; color:var(--primary);" id="xpTotalText">0 XP</div>
+          <div style="font-size:11px; color:var(--text-sub); font-weight:600;" id="xpNextText">다음 레벨까지 100 XP</div>
         </div>
         <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
       </div>
 
       <div class="daily-quest-box">
-        <div style="font-size:12px; font-weight:800; white-space:nowrap;">🎯 오늘 금별 목표</div>
+        <div style="font-size:12px; font-weight:700; white-space:nowrap; display:flex; align-items:center; gap:6px;">
+          <span id="questIconBox"></span> 오늘 금별 목표
+        </div>
         <div class="quest-bar-bg"><div class="quest-bar-fill" id="dailyQuestFill"></div></div>
-        <div style="font-size:12px; font-weight:900; color:var(--duo-green-dark);" id="dailyQuestText">0 / 3</div>
+        <div style="font-size:12px; font-weight:800; color:var(--primary);" id="dailyQuestText">0 / 3</div>
       </div>
 
-      <!-- 탭 1: 내 단어장 (별 필터 + 실시간 단어 검색창) -->
+      <!-- 탭 1: 내 단어장 -->
       <div id="tab-words" class="tab-pane">
         <div class="reward-summary">
           <div class="reward-pill" id="filterB" onclick="toggleStarFilter('BRONZE')"><span id="sumB"></span> 동별 <span id="cntB">0</span></div>
@@ -460,7 +482,7 @@
         </div>
 
         <div class="search-box-wrap">
-          <span class="search-icon-left">🔍</span>
+          <span class="search-icon-left" id="searchIconBox"></span>
           <input type="text" id="inpWordSearch" class="search-input" placeholder="내가 만든 단어나 뜻 검색..." oninput="onSearchWordInput()">
           <button id="btnClearSearch" class="search-clear-btn" onclick="clearWordSearch()">✕</button>
         </div>
@@ -470,60 +492,60 @@
         </div>
       </div>
 
-      <!-- 탭 2: 스피드 퀴즈(일일 10회 + 광고 최대 3회) & 도감 -->
-      <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 14px 24px;">
-        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">⚡ 스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
+      <!-- 탭 2: 스피드 퀴즈 & 도감 -->
+      <div id="tab-quiz" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
 
         <div class="quiz-limit-bar">
-          <span id="quizRemainLabel">🎯 오늘 남은 문제: 10개</span>
-          <span id="quizAdRemainLabel">📺 광고 충전: 0 / 3회</span>
+          <span id="quizRemainLabel">오늘 남은 문제: 10개</span>
+          <span id="quizAdRemainLabel">광고 충전: 0 / 3회</span>
         </div>
 
         <div class="quiz-box" id="quizContainer">
           <div id="quizPlayArea">
-            <div id="quizQuestion" style="font-size:20px; font-weight:900; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
-            <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요!</div>
+            <div id="quizQuestion" style="font-size:20px; font-weight:800; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
+            <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요.</div>
             <div id="quizOptions"></div>
-            <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기 →</button>
+            <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기</button>
           </div>
 
-          <div id="quizLimitArea" style="display:none; padding: 10px 4px;">
-            <div style="font-size:34px; margin-bottom:6px;" id="limitIcon">🔒</div>
-            <div style="font-size:16px; font-weight:900; margin-bottom:6px;" id="limitTitle">오늘의 기본 10문제를 모두 풀었어요!</div>
+          <div id="quizLimitArea" style="display:none; padding: 12px 4px;">
+            <div style="margin-bottom:8px;" id="limitIcon"></div>
+            <div style="font-size:15px; font-weight:800; margin-bottom:6px;" id="limitTitle">오늘의 기본 10문제를 모두 풀었습니다.</div>
             <p style="font-size:12px; color:var(--text-sub); margin:0 0 16px 0; line-height:1.5;" id="limitDesc">
-              구글 전면 광고를 1회 시청하면 퀴즈가 추가 충전됩니다.<br>(광고 충전은 하루 최대 3번까지 가능합니다)
+              광고를 1회 시청하면 퀴즈가 추가 충전됩니다.<br>(광고 충전은 하루 최대 3번까지 가능합니다)
             </p>
             <button id="btnWatchAdUnlock" class="btn-watch-ad" onclick="triggerRealGoogleRewardedAd()">
-              📺 구글 전면 광고 보고 퀴즈 더 풀기 (3/3 남음)
+              광고 보고 퀴즈 더 풀기 (3/3 남음)
             </button>
           </div>
         </div>
 
-        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">🏅 나의 성취 뱃지 도감</div>
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">성취 뱃지 도감</div>
         <div class="badge-grid" id="badgeCollection"></div>
       </div>
 
       <!-- 탭 3: 실시간 명예의 전당 -->
-      <div id="tab-rank" class="tab-pane" style="display:none; padding: 10px 14px 24px;">
+      <div id="tab-rank" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div style="font-size:14px; font-weight:800;">🏆 실시간 명예의 전당</div>
-          <button onclick="loadRanking()" style="background:#eef2ff; color:var(--primary); border:none; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer;">↻ 새로고침</button>
+          <div style="font-size:14px; font-weight:800;">실시간 명예의 전당</div>
+          <button onclick="loadRanking()" style="background:var(--primary-soft); color:var(--primary); border:none; padding:6px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">새로고침</button>
         </div>
         <div id="rankingContainer">불러오는 중...</div>
       </div>
 
-      <!-- 탭 4: 내 정보 (학번 / 이름 수정 및 계정 관리) -->
-      <div id="tab-profile" class="tab-pane" style="display:none; padding: 10px 14px 24px;">
-        <div style="font-size:14px; font-weight:800; margin-bottom:10px;">👤 내 정보 관리</div>
+      <!-- 탭 4: 내 정보 -->
+      <div id="tab-profile" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
+        <div style="font-size:14px; font-weight:800; margin-bottom:10px;">내 정보 관리</div>
 
         <div class="profile-box-card">
-          <div style="font-size:12px; color:var(--text-sub); font-weight:700; margin-bottom:4px;">연동된 로그인 계정</div>
-          <div id="profAccountEmail" style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:16px; word-break:break-all;">-</div>
+          <div style="font-size:12px; color:var(--text-sub); font-weight:600; margin-bottom:4px;">연동된 로그인 계정</div>
+          <div id="profAccountEmail" style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:16px; word-break:break-all;">-</div>
 
-          <label style="font-size:12px; font-weight:800; color:var(--text-main); display:block; margin-bottom:6px;">이름 (또는 닉네임)</label>
+          <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:6px;">이름 (또는 닉네임)</label>
           <input type="text" id="editUserName" class="input-field" placeholder="이름 입력 (예: 홍길동)">
 
-          <label style="font-size:12px; font-weight:800; color:var(--text-main); display:block; margin-bottom:6px;">학번 / 학교 정보</label>
+          <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:6px;">학번 / 학교 정보</label>
           <input type="text" id="editSchoolInfo" class="input-field" placeholder="학번 또는 학교 입력 (예: 30101 또는 서천고 30101)">
 
           <button id="btnSaveMyProfile" class="action-btn btn-primary" style="margin-top:4px;" onclick="saveMyProfileChanges()">내 정보 저장하기</button>
@@ -531,26 +553,26 @@
 
         <div class="profile-box-card" style="display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <div style="font-size:13px; font-weight:800;">계정 로그아웃</div>
+            <div style="font-size:13px; font-weight:700;">계정 로그아웃</div>
             <div style="font-size:11px; color:var(--text-sub);">다른 Google 또는 Apple 계정으로 전환합니다.</div>
           </div>
-          <button onclick="logoutStudent()" style="background:#fee2e2; color:#b91c1c; border:none; padding:8px 14px; border-radius:10px; font-size:12px; font-weight:800; cursor:pointer;">로그아웃</button>
+          <button onclick="logoutStudent()" style="background:#F1F5F9; color:#475569; border:1px solid var(--border); padding:8px 14px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">로그아웃</button>
         </div>
       </div>
 
-      <!-- 하단 4탭 네비게이션 바 -->
+      <!-- 하단 4탭 네비게이션 바 (#3B82A6 미니멀 라인 아이콘) -->
       <nav class="bottom-tab-bar">
         <button class="tab-btn active" id="navBtnWords" onclick="switchMainTab('words')">
-          <span class="tab-icon">📚</span><span>내 단어장</span>
+          <span class="tab-icon" id="navIconWords"></span><span>내 단어장</span>
         </button>
         <button class="tab-btn" id="navBtnQuiz" onclick="switchMainTab('quiz')">
-          <span class="tab-icon">🏅</span><span>도감·퀴즈</span>
+          <span class="tab-icon" id="navIconQuiz"></span><span>도감·퀴즈</span>
         </button>
         <button class="tab-btn" id="navBtnRank" onclick="switchMainTab('rank')">
-          <span class="tab-icon">🏆</span><span>명예의전당</span>
+          <span class="tab-icon" id="navIconRank"></span><span>명예의전당</span>
         </button>
         <button class="tab-btn" id="navBtnProfile" onclick="switchMainTab('profile')">
-          <span class="tab-icon">👤</span><span>내 정보</span>
+          <span class="tab-icon" id="navIconProfile"></span><span>내 정보</span>
         </button>
       </nav>
     </section>
@@ -558,20 +580,20 @@
     <!-- 화면 3: 단어 만들기 -->
     <section id="screen-builder" class="screen">
       <header class="top-navbar">
-        <button class="action-btn" style="width:auto; padding:6px 12px; background:#f1f5f9; color:var(--text-main);" onclick="goToList()">← 목록으로</button>
+        <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 목록</button>
         <div style="font-size:15px; font-weight:800;">단어 별 키우기</div>
-        <button id="btnDel" style="background:#fee2e2; color:#b91c1c; border:none; padding:6px 10px; border-radius:8px; font-weight:700; visibility:hidden;" onclick="doDelete()">삭제</button>
+        <button id="btnDel" style="background:var(--surface); color:#B91C1C; border:1px solid #FECACA; padding:6px 10px; border-radius:8px; font-size:12px; font-weight:700; visibility:hidden; cursor:pointer;" onclick="doDelete()">삭제</button>
       </header>
 
       <div class="builder-body">
         <div id="heroStage" class="hero-star-stage stage-NONE">
           <div id="heroStarBox" style="margin-bottom:6px;"></div>
           <div id="heroTitle" style="font-size:15px; font-weight:800;">아직 빛나지 않은 별</div>
-          <div id="heroDesc" style="font-size:12px; color:var(--text-sub);">1단계 단어와 뜻을 저장하면 동별(+10 XP)이 켜집니다</div>
+          <div id="heroDesc" style="font-size:12px; color:var(--text-sub); margin-top:2px;">1단계 단어와 뜻을 저장하면 동별(+10 XP)이 켜집니다</div>
         </div>
 
         <div id="card1" class="step-card current">
-          <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar1"></span> 1단계. 단어와 뜻 (+10 XP)</div>
+          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar1"></span> 1단계. 단어와 뜻 (+10 XP)</div>
           <div id="form1">
             <input type="text" id="inpW" class="input-field" placeholder="모르는 단어 (예: 배양, 몰라, 가시다)">
             <input type="text" id="inpM" class="input-field" placeholder="단어의 뜻">
@@ -581,7 +603,7 @@
         </div>
 
         <div id="card2" class="step-card locked">
-          <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar2"></span> 2단계. 출처 문장 & 표준국어대사전 유의어·반의어 (+20 XP)</div>
+          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar2"></span> 2단계. 출처 문장 & 유의어·반의어 (+20 XP)</div>
           <div id="form2">
             <input type="text" id="inpSrc" class="input-field" placeholder="단어가 쓰인 출처 문장 입력">
             <button id="btnS2" class="action-btn btn-silver" onclick="doStep2()">은별 켜고 3단계 열기</button>
@@ -590,7 +612,7 @@
         </div>
 
         <div id="card3" class="step-card locked">
-          <div style="font-size:13px; font-weight:800; margin-bottom:8px;"><span id="bStar3"></span> 3단계. 나만의 문장 만들기 (+30 XP)</div>
+          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar3"></span> 3단계. 나만의 문장 만들기 (+30 XP)</div>
           <div id="form3">
             <input type="text" id="inpMy" class="input-field" placeholder="단어를 활용해 직접 문장 작성">
             <button id="btnS3" class="action-btn btn-gold" onclick="doStep3()">AI 피드백 받고 금별 완성하기</button>
@@ -600,48 +622,48 @@
       </div>
     </section>
 
-    <!-- 화면 4: 관리자 모드 (표준국어대사전 .xls 정밀 업로더 포함) -->
+    <!-- 화면 4: 관리자 모드 -->
     <section id="screen-admin" class="screen">
       <header class="top-navbar">
-        <button class="action-btn" style="width:auto; padding:6px 12px; background:#f1f5f9; color:var(--text-main);" onclick="goToList()">← 내 단어장</button>
-        <div style="font-size:16px; font-weight:800; color:#854d0e;">👑 교사용 관리자 모드</div>
-        <button class="action-btn" style="width:auto; padding:6px 10px; background:#e0e7ff; color:#3730a3;" onclick="loadAdminData()">새로고침</button>
+        <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 단어장</button>
+        <div style="font-size:15px; font-weight:800; color:var(--text-main);">교사용 관리자 모드</div>
+        <button class="action-btn" style="width:auto; padding:6px 10px; background:var(--primary-soft); color:var(--primary);" onclick="loadAdminData()">새로고침</button>
       </header>
 
       <div class="list-body">
         <div class="dict-upload-box">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <div style="font-size:14px; font-weight:900; color:#312e81;">📖 표준국어대사전 엑셀(.xls) 일괄 등록</div>
-            <span id="dictCountBadge" style="font-size:11px; font-weight:800; background:white; color:var(--primary); padding:3px 8px; border-radius:99px;">DB 확인 중...</span>
+            <div style="font-size:14px; font-weight:800; color:var(--text-main);">표준국어대사전 엑셀(.xls) 일괄 등록</div>
+            <span id="dictCountBadge" style="font-size:11px; font-weight:700; background:var(--primary-soft); color:var(--primary); padding:3px 8px; border-radius:99px;">DB 확인 중...</span>
           </div>
-          <p style="font-size:11px; color:#475569; margin:0 0 10px 0; line-height:1.45;">
-            국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. <strong>'뜻풀이' 열 정밀 인식(기호열 제외)</strong> 및 <strong>다의어 문맥 뜻 병합·관계어 자동 추출</strong>이 적용되어 있습니다.
+          <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
+            국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. 뜻풀이 열 정밀 인식 및 다의어 문맥 뜻 병합·관계어 자동 추출이 적용되어 있습니다.
           </p>
-          <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:white; padding:8px; font-size:13px; margin-bottom:8px;">
+          <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:var(--bg-app); padding:8px; font-size:13px; margin-bottom:8px;">
           <button id="btnUploadDict" class="action-btn btn-primary" style="padding:10px; font-size:13px;" onclick="uploadStandardDictFiles()">
-            🚀 선택한 사전 엑셀 파일 수파베이스에 넣기
+            선택한 사전 엑셀 파일 수파베이스에 넣기
           </button>
-          <div id="dictUploadStatus" style="font-size:12px; font-weight:800; color:#1e40af; margin-top:8px; display:none;"></div>
+          <div id="dictUploadStatus" style="font-size:12px; font-weight:700; color:var(--primary); margin-top:8px; display:none;"></div>
         </div>
 
         <div class="admin-stat-grid">
-          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">참여 학생</div><div id="admStudentCnt" style="font-size:18px; font-weight:900; color:var(--primary); margin-top:4px;">0명</div></div>
-          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">총 등록 단어</div><div id="admWordCnt" style="font-size:18px; font-weight:900; color:var(--primary); margin-top:4px;">0개</div></div>
-          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:700;">금별 완성수</div><div id="admGoldCnt" style="font-size:18px; font-weight:900; color:#ca8a04; margin-top:4px;">0개</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">참여 학생</div><div id="admStudentCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0명</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">총 등록 단어</div><div id="admWordCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">금별 완성수</div><div id="admGoldCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
         </div>
-        <div style="font-size:14px; font-weight:800; margin-bottom:10px;">📋 학생별 단어장 학습 현황</div>
+        <div style="font-size:14px; font-weight:800; margin-bottom:10px;">학생별 단어장 학습 현황</div>
         <div id="adminStudentList">불러오는 중...</div>
       </div>
     </section>
 
   </div>
 
-  <!-- 구글/애플 정식 로그인 후 최초 1회만 뜨는 이름·학번 설정 모달 -->
+  <!-- 최초 1회 이름·학번 설정 모달 -->
   <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
-      <h3 style="margin:0 0 6px 0; font-size:18px;">🎉 로그인 성공! 환영합니다</h3>
+      <h3 style="margin:0 0 6px 0; font-size:18px;">프로필 설정</h3>
       <p style="font-size:12px; color:var(--text-sub); margin:0 0 14px 0;">
-        단어장과 명예의 전당(랭킹)에 표시될 이름과 학번을 확인해 주세요.<br>(나중에 '내 정보' 탭에서 언제든 수정할 수 있습니다)
+        단어장과 명예의 전당에 표시될 이름과 학번을 확인해 주세요.<br>(나중에 '내 정보' 탭에서 언제든 수정할 수 있습니다)
       </p>
 
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
@@ -650,7 +672,7 @@
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">학번 / 학교 (선택)</label>
       <input type="text" id="regSchoolInfo" class="input-field" placeholder="예: 30101 또는 서천고 30101">
 
-      <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="completeOAuthOnboarding()">메이드보카 시작하기 🚀</button>
+      <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="completeOAuthOnboarding()">메이드보카 시작하기</button>
     </div>
   </div>
 
@@ -658,12 +680,13 @@
 
   <script>
     // =========================================================================
-    // 1. 수파베이스(Supabase) 정식 OAuth & 사전/AI 설정
+    // 1. 수파베이스(Supabase) 설정 & 미니멀 라인 아이콘(#3B82A6) 시스템
     // =========================================================================
     const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
     const GEMINI_API_KEY = ['AQ.Ab8RN6K8ggEwlwG88', 'EIw4DGH_K06fH08PXaTkZvjWeVXuziwAw'].join('');
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
+    const ICON_COLOR = '#3B82A6'; // 두 번째 사진의 스틸 블루 선 색상
 
     const DAILY_BASE_QUIZ_LIMIT = 10;
     const MAX_DAILY_ADS = 3;
@@ -679,6 +702,59 @@
     let soundEnabled = true;
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
+
+    // [미니멀 라인 SVG 아이콘 생성기 - 선 색상 #3B82A6 고정]
+    function getLineIcon(name, size = 18) {
+      const s = `width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="line-icon"`;
+      switch (name) {
+        case 'book':
+          return `<svg ${s}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+        case 'award':
+          return `<svg ${s}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`;
+        case 'trophy':
+          return `<svg ${s}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`;
+        case 'user':
+          return `<svg ${s}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+        case 'search':
+          return `<svg ${s}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
+        case 'soundOn':
+          return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+        case 'soundOff':
+          return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`;
+        case 'target':
+          return `<svg ${s}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>`;
+        case 'flame':
+          return `<svg ${s}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
+        case 'lock':
+          return `<svg ${s}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+        case 'check':
+          return `<svg ${s}><path d="M20 6 9 17l-5-5"/></svg>`;
+        case 'spark':
+          return `<svg ${s}><path d="M12 3v18"/><path d="M3 12h18"/><path d="m18.36 5.64-12.72 12.72"/><path d="m5.64 5.64 12.72 12.72"/></svg>`;
+        default:
+          return `<svg ${s}><circle cx="12" cy="12" r="9"/></svg>`;
+      }
+    }
+
+    // [단순화된 별 아이콘 - 선 색상을 #3B82A6으로 통일하고 내부 채움만 단계별 구분]
+    function getStarSvg(tier, size = 16) {
+      const fillMap = {
+        'NONE': 'none',
+        'BRONZE': '#DFECE6',
+        'SILVER': '#C5DFEE',
+        'GOLD': '#3B82A6'
+      };
+      const innerDot = (tier === 'GOLD')
+        ? `<circle cx="12" cy="12.5" r="2" fill="#FAF9F6"/>`
+        : '';
+      return `
+        <svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;">
+          <polygon points="12 2.5 14.9 8.6 21.6 9.5 16.7 14.2 17.9 20.9 12 17.7 6.1 20.9 7.3 14.2 2.4 9.5 9.1 8.6"
+            fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" />
+          ${innerDot}
+        </svg>
+      `;
+    }
 
     // [내장 다의어·문맥 사전]
     const CORE_SYN_ANT_MAP = {
@@ -925,13 +1001,13 @@
 
     function getLevelInfo(xp) {
       const levels = [
-        { lv: 1, title: '🌱 어휘 새싹', min: 0, max: 100 },
-        { lv: 2, title: '🍀 낱말 수집가', min: 100, max: 250 },
-        { lv: 3, title: '🧭 문맥 탐험가', min: 250, max: 500 },
-        { lv: 4, title: '⚡ 표현의 달인', min: 500, max: 900 },
-        { lv: 5, title: '🔥 문해력 장인', min: 900, max: 1500 },
-        { lv: 6, title: '👑 수능 국어 마스터', min: 1500, max: 2500 },
-        { lv: 7, title: '🌌 어휘의 신화', min: 2500, max: 99999 }
+        { lv: 1, title: '어휘 새싹', min: 0, max: 100 },
+        { lv: 2, title: '낱말 수집가', min: 100, max: 250 },
+        { lv: 3, title: '문맥 탐험가', min: 250, max: 500 },
+        { lv: 4, title: '표현의 달인', min: 500, max: 900 },
+        { lv: 5, title: '문해력 장인', min: 900, max: 1500 },
+        { lv: 6, title: '수능 국어 마스터', min: 1500, max: 2500 },
+        { lv: 7, title: '어휘의 신화', min: 2500, max: 99999 }
       ];
       for (let i = 0; i < levels.length; i++) {
         if (xp < levels[i].max) return levels[i];
@@ -955,7 +1031,7 @@
           const gain = ctx.createGain();
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.09);
-          gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.09);
+          gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.09);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.09 + 0.28);
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -968,35 +1044,35 @@
     function fireConfetti(isBig) {
       if (typeof confetti !== 'function') return;
       confetti({
-        particleCount: isBig ? 90 : 40,
-        spread: isBig ? 75 : 55,
+        particleCount: isBig ? 70 : 30,
+        spread: isBig ? 70 : 50,
         origin: { y: 0.65 }
       });
     }
 
     function toggleSound() {
       soundEnabled = !soundEnabled;
-      document.getElementById('btnSoundToggle').innerText = soundEnabled ? '🔊' : '🔇';
-      showToast(soundEnabled ? '🔊 효과음이 켜졌습니다' : '🔇 효과음이 꺼졌습니다');
-    }
-
-    function getStarSvg(tier, size = 16) {
-      const strokeMap = { 'NONE': '#94a3b8', 'BRONZE': '#7b341e', 'SILVER': '#475569', 'GOLD': '#b45309' };
-      return `
-        <svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 100 100" style="width:${size}px; height:${size}px;">
-          <polygon points="50,6 63.5,33.5 94,38 72,59.5 77,90 50,75.5 23,90 28,59.5 6,38 36.5,33.5"
-            fill="url(#starGrad-${tier})" stroke="${strokeMap[tier]}" stroke-width="${size >= 40 ? '3.5' : '5'}" stroke-linejoin="round" />
-        </svg>
-      `;
+      document.getElementById('btnSoundToggle').innerHTML = getLineIcon(soundEnabled ? 'soundOn' : 'soundOff', 18);
+      showToast(soundEnabled ? '효과음이 켜졌습니다' : '효과음이 꺼졌습니다');
     }
 
     window.onload = async function() {
+      // 모든 UI 아이콘을 #3B82A6 선 아이콘으로 초기화
       document.getElementById('sumB').innerHTML = getStarSvg('BRONZE', 15);
       document.getElementById('sumS').innerHTML = getStarSvg('SILVER', 15);
       document.getElementById('sumG').innerHTML = getStarSvg('GOLD', 15);
-      document.getElementById('bStar1').innerHTML = getStarSvg('BRONZE', 14);
-      document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 14);
-      document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 14);
+      document.getElementById('bStar1').innerHTML = getStarSvg('BRONZE', 15);
+      document.getElementById('bStar2').innerHTML = getStarSvg('SILVER', 15);
+      document.getElementById('bStar3').innerHTML = getStarSvg('GOLD', 15);
+
+      document.getElementById('btnSoundToggle').innerHTML = getLineIcon('soundOn', 18);
+      document.getElementById('questIconBox').innerHTML = getLineIcon('target', 15);
+      document.getElementById('searchIconBox').innerHTML = getLineIcon('search', 16);
+      document.getElementById('navIconWords').innerHTML = getLineIcon('book', 20);
+      document.getElementById('navIconQuiz').innerHTML = getLineIcon('award', 20);
+      document.getElementById('navIconRank').innerHTML = getLineIcon('trophy', 20);
+      document.getElementById('navIconProfile').innerHTML = getLineIcon('user', 20);
+      document.getElementById('limitIcon').innerHTML = getLineIcon('lock', 28);
 
       const { data: { session } } = await sb.auth.getSession();
       if (session && session.user) {
@@ -1013,7 +1089,7 @@
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.innerText = msg; t.className = 'show';
-      setTimeout(() => { t.className = ''; }, 2600);
+      setTimeout(() => { t.className = ''; }, 2400);
     }
 
     function showScreen(id) {
@@ -1049,7 +1125,7 @@
     }
 
     // =========================================================================
-    // 2. 진짜 Google / Apple OAuth 공식 로그인 & 내 정보(학번/이름) 수정
+    // 2. Google / Apple OAuth 로그인 & 내 정보 수정
     // =========================================================================
     async function signInWithRealOAuth(provider) {
       const redirectUrl = window.location.origin + window.location.pathname;
@@ -1075,7 +1151,7 @@
         email.split('@')[0];
 
       const { data: existing } = await sb.from('students').select('*').eq('user_id', email).maybeSingle();
-      const isAdmin = (email === ADMIN_EMAIL);
+      const isAdmin = (email === ADMIN_EMAIL) || (existing && existing.user_name && existing.user_name.includes('용아국어'));
 
       if (existing) {
         const kst = getNowKST();
@@ -1092,7 +1168,6 @@
         };
         myWords = await fetchUserWords(email, isAdmin);
         setupUserView();
-        showToast(`반갑습니다, ${myUser.name}님!`);
       } else {
         pendingOAuthSession = { email, provider, defaultName, isAdmin };
         document.getElementById('regStudentName').value = defaultName;
@@ -1111,7 +1186,8 @@
       btn.disabled = true; btn.innerText = '저장 중...';
 
       const kst = getNowKST();
-      const { email, provider, isAdmin } = pendingOAuthSession;
+      const { email, provider } = pendingOAuthSession;
+      const isAdmin = (email === ADMIN_EMAIL) || sname.includes('용아국어');
 
       await sb.from('students').upsert({
         user_id: email,
@@ -1137,16 +1213,15 @@
       };
       myWords = await fetchUserWords(email, isAdmin);
 
-      btn.disabled = false; btn.innerText = '메이드보카 시작하기 🚀';
+      btn.disabled = false; btn.innerText = '메이드보카 시작하기';
       document.getElementById('firstProfileModal').classList.remove('open');
       setupUserView();
-      fireConfetti(true);
-      showToast(`환영합니다, ${myUser.name}님!`);
+      showToast(`환영합니다, ${myUser.name}님.`);
     }
 
     function loadMyProfileTab() {
       if (!myUser) return;
-      const pBadge = myUser.provider === 'APPLE' ? ' Apple 계정' : 'G Google 계정';
+      const pBadge = myUser.provider === 'APPLE' ? 'Apple 계정' : 'Google 계정';
       document.getElementById('profAccountEmail').innerText = `${pBadge} (${myUser.userId})`;
       document.getElementById('editUserName').value = myUser.name || '';
       document.getElementById('editSchoolInfo').value = myUser.schoolInfo || '';
@@ -1181,6 +1256,9 @@
 
         myUser.name = newName;
         myUser.schoolInfo = newSchool;
+        myUser.isAdmin = (myUser.userId === ADMIN_EMAIL) || newName.includes('용아국어');
+        document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-flex' : 'none';
+
         myWords.forEach(w => {
           if (w.userId === myUser.userId) w.userName = newName;
         });
@@ -1188,7 +1266,7 @@
         updateHeaderUserLabel();
         btn.disabled = false;
         btn.innerText = '내 정보 저장하기';
-        showToast('✅ 학번과 이름이 성공적으로 변경되었습니다!');
+        showToast('학번과 이름이 저장되었습니다.');
       } catch (err) {
         btn.disabled = false;
         btn.innerText = '내 정보 저장하기';
@@ -1198,9 +1276,8 @@
 
     function updateHeaderUserLabel() {
       if (!myUser) return;
-      const pBadge = myUser.provider === 'APPLE' ? '' : 'G';
       const schoolText = myUser.schoolInfo ? ` · ${myUser.schoolInfo}` : '';
-      document.getElementById('userLabel').innerText = `[${pBadge}] ${myUser.name}${schoolText} ✎`;
+      document.getElementById('userLabel').innerText = `${myUser.name}${schoolText}`;
     }
 
     async function fetchUserWords(email, isAdmin) {
@@ -1236,7 +1313,7 @@
 
     function setupUserView() {
       updateHeaderUserLabel();
-      document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-block' : 'none';
+      document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-flex' : 'none';
       switchMainTab('words');
       renderMyList();
       showScreen('screen-list');
@@ -1295,15 +1372,15 @@
       const lvInfo = getLevelInfo(totalXp);
       const progressPct = Math.min(100, Math.round(((totalXp - lvInfo.min) / (lvInfo.max - lvInfo.min)) * 100));
 
-      document.getElementById('lvlBadge').innerText = `Lv.${lvInfo.lv} ${lvInfo.title}`;
-      document.getElementById('streakBadge').innerText = `🔥 ${(myUser && myUser.streak) || 1}일 연속`;
+      document.getElementById('lvlBadge').innerHTML = `${getLineIcon('spark', 13)} Lv.${lvInfo.lv} ${lvInfo.title}`;
+      document.getElementById('streakBadge').innerHTML = `${getLineIcon('flame', 13)} ${(myUser && myUser.streak) || 1}일 연속`;
       document.getElementById('xpTotalText').innerText = `${totalXp} XP`;
       document.getElementById('xpNextText').innerText = `다음 레벨까지 ${Math.max(0, lvInfo.max - totalXp)} XP`;
       document.getElementById('xpBarFill').style.width = `${progressPct}%`;
 
       const questPct = Math.min(100, Math.round((todayGold / 3) * 100));
       document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
-      document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료! 🎉' : `${todayGold} / 3`;
+      document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료' : `${todayGold} / 3`;
 
       const filtered = myWords.filter(w => {
         const matchStar = (starFilter === 'ALL') || (w.star === starFilter);
@@ -1320,7 +1397,7 @@
         if (searchQuery) {
           c.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--text-sub); font-size:13px;">'<strong>${escapeHtml(searchQuery)}</strong>' 검색 결과가 없습니다.</div>`;
         } else {
-          c.innerHTML = '<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼을 눌러 첫 별을 켜보세요!</div>';
+          c.innerHTML = '<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼을 눌러 첫 단어를 등록해 보세요.</div>';
         }
         return;
       }
@@ -1328,10 +1405,10 @@
       c.innerHTML = filtered.map(w => `
         <div class="word-item-card ${w.star}" onclick="openBuilder('${w.id}')">
           <div>
-            <div style="font-size:16px; font-weight:800;">${escapeHtml(w.word)}</div>
-            <div style="font-size:13px; color:var(--text-sub);">${escapeHtml(w.meaning)}</div>
+            <div style="font-size:16px; font-weight:700; color:var(--text-main);">${escapeHtml(w.word)}</div>
+            <div style="font-size:13px; color:var(--text-sub); margin-top:2px;">${escapeHtml(w.meaning)}</div>
           </div>
-          <div>${getStarSvg(w.star, 26)}</div>
+          <div>${getStarSvg(w.star, 22)}</div>
         </div>
       `).join('');
     }
@@ -1428,7 +1505,7 @@
 
       const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
 
-      // 1-A. '르' 불규칙 복원 (몰라 -> 모르다, 달라 -> 다르다, 빨라 -> 빠르다, 불러 -> 부르다 등)
+      // 1-A. '르' 불규칙 복원
       const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
       if (reuTarget.length >= 2) {
         const prevCh = reuTarget.slice(-2, -1);
@@ -1442,7 +1519,7 @@
         }
       }
 
-      // 1-B. 'ㅂ' 불규칙 복원 (아름다워/아름다운 -> 아름답다, 어려워 -> 어렵다, 쉬워 -> 쉽다, 도와 -> 돕다, 고와 -> 곱다)
+      // 1-B. 'ㅂ' 불규칙 복원
       const bMatch = w.match(/^(.+?)(워|웠|워요|웠다|워서|워도|운|울|우니|우면|우시다|우셨다|와|왔|와요|왔다|와서|와도|오니)$/);
       if (bMatch && bMatch[1]) {
         const stemPrefix = bMatch[1];
@@ -1459,7 +1536,7 @@
         }
       }
 
-      // 1-C. 'ㄷ' 불규칙 복원 (걸어 -> 걷다, 들어 -> 듣다, 물어 -> 묻다, 깨달아 -> 깨닫다, 실어 -> 싣다)
+      // 1-C. 'ㄷ' 불규칙 복원
       const dIrregRules = [
         { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
         { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
@@ -1473,14 +1550,14 @@
         }
       }
 
-      // 1-D. 'ㅅ' 불규칙 복원 (지어 -> 짓다, 나아 -> 낫다, 이어 -> 잇다, 부어 -> 붓다, 그어 -> 긋다)
+      // 1-D. 'ㅅ' 불규칙 복원
       const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
       if (sIrregMatch) {
         const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
         if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
       }
 
-      // 1-E. 'ㅎ' 불규칙 복원 (그래 -> 그렇다, 어때 -> 어떻다, 하얘 -> 하얗다, 까매 -> 까맣다 등)
+      // 1-E. 'ㅎ' 불규칙 복원
       const hIrregRules = [
         { regex: /^그(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '그렇' },
         { regex: /^이(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '이렇' },
@@ -1498,7 +1575,7 @@
         if (rule.regex.test(w)) addVerbAndRoot(rule.stem);
       }
 
-      // 1-F. '러' 불규칙 (이르러 -> 이르다, 푸르러 -> 푸르다)
+      // 1-F. '러' 불규칙
       const reoMatch = w.match(/^(이르|푸르|누르)(러|렀|러서|렀다|러요)$/);
       if (reoMatch) addVerbAndRoot(reoMatch[1]);
 
@@ -1509,7 +1586,7 @@
       const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
       if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
 
-      // [규칙 2] 모음 축약(ㅘ, ㅝ, ㅕ, ㅙ) 및 음운 탈락('ㅡ' 탈락, '우' 탈락) 복원
+      // [규칙 2] 모음 축약 및 음운 탈락 복원
       if (strippedCore.length >= 1) {
         const lastSyll = strippedCore.slice(-1);
         const prefix = strippedCore.slice(0, -1);
@@ -1541,7 +1618,7 @@
         }
       }
 
-      // [규칙 3] 선어말어미(-으시-, -시-, -었-, -았-, -겠-, -더-) 제외 및 'ㄹ' 탈락 복원
+      // [규칙 3] 선어말어미 제외 및 'ㄹ' 탈락 복원
       const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
       const preMatch = w.match(preFinalPattern);
       if (preMatch && preMatch[1]) {
@@ -1815,7 +1892,7 @@
 
       if (!curItem) {
         stage.className = 'hero-star-stage stage-NONE';
-        box.innerHTML = getStarSvg('NONE', 48);
+        box.innerHTML = getStarSvg('NONE', 42);
         title.innerText = '새 단어 별 만들기';
         del.style.visibility = 'hidden';
 
@@ -1838,7 +1915,7 @@
       }
 
       stage.className = 'hero-star-stage stage-' + curItem.star;
-      box.innerHTML = getStarSvg(curItem.star, 48);
+      box.innerHTML = getStarSvg(curItem.star, 42);
       del.style.visibility = 'visible';
 
       document.getElementById('card1').className = 'step-card';
@@ -1867,19 +1944,19 @@
           document.getElementById('inpMy').value = curItem.mySentence || '';
           if (curItem.aiFeedback) {
             document.getElementById('sum3').style.display = 'block';
-            document.getElementById('sum3').innerHTML = `<div style="font-size:12px; color:#9a3412; background:#fff7ed; padding:8px; border-radius:8px; margin-top:6px;"><strong>💬 AI 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}</div>`;
+            document.getElementById('sum3').innerHTML = `<div style="font-size:12px; color:var(--primary-dark); background:var(--primary-soft); padding:9px 10px; border-radius:8px; margin-top:6px;"><strong>AI 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}</div>`;
           } else {
             document.getElementById('sum3').style.display = 'none';
           }
         } else if (curItem.star === 'GOLD') {
-          title.innerText = '🌟 금별 마스터 달성! (60 XP)';
+          title.innerText = '금별 마스터 달성 (60 XP)';
           document.getElementById('card3').className = 'step-card';
           document.getElementById('form3').style.display = 'none';
           document.getElementById('sum3').style.display = 'block';
           document.getElementById('sum3').innerHTML = `
             <div style="font-size:13px; font-weight:700;">내 문장: "${escapeHtml(curItem.mySentence)}"</div>
-            <div style="font-size:12px; color:#065f46; background:#ecfdf5; padding:8px; border-radius:8px; margin-top:4px;">
-              <strong>👏 AI 피드백:</strong> ${escapeHtml(curItem.aiFeedback)}
+            <div style="font-size:12px; color:var(--primary-dark); background:var(--primary-soft); padding:9px 10px; border-radius:8px; margin-top:6px;">
+              <strong>AI 피드백:</strong> ${escapeHtml(curItem.aiFeedback)}
             </div>
           `;
         }
@@ -1892,11 +1969,11 @@
       const meanText = isValidKoreanDefinition(curItem.aiMeaning) ? curItem.aiMeaning : curItem.meaning;
 
       document.getElementById('sum2').innerHTML = `
-        <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(curItem.sourceSentence)}"</div>
-        <div style="font-size:12px; background:#eef2ff; padding:8px 10px; border-radius:8px; line-height:1.55;">
-          <span class="dict-badge">📖 표준국어대사전 기본형 DB + 문맥 뜻</span><br>
-          <strong>💡 문맥·사전 뜻:</strong> ${escapeHtml(meanText)}<br>
-          <strong>유의어(사전DB):</strong> <span style="color:#1e40af; font-weight:700;">${escapeHtml(synText)}</span> | <strong>반의어(사전DB):</strong> <span style="color:#9a3412; font-weight:700;">${escapeHtml(antText)}</span>
+        <div style="font-size:13px; margin-bottom:6px;">"${escapeHtml(curItem.sourceSentence)}"</div>
+        <div style="font-size:12px; background:var(--bg-app); border:1px solid var(--border); padding:10px 12px; border-radius:10px; line-height:1.6;">
+          <span class="dict-badge">표준국어대사전 기본형 DB + 문맥 뜻</span><br>
+          <strong>문맥·사전 뜻:</strong> ${escapeHtml(meanText)}<br>
+          <strong>유의어:</strong> <span style="color:var(--primary); font-weight:700;">${escapeHtml(synText)}</span> &nbsp;|&nbsp; <strong>반의어:</strong> <span style="color:var(--text-main); font-weight:700;">${escapeHtml(antText)}</span>
         </div>
       `;
     }
@@ -1929,7 +2006,7 @@
       playRewardSound('BRONZE');
       syncBuilder();
       document.getElementById('inpSrc').focus();
-      showToast('🥉 동별 획득 (+10 XP)! 2단계 문장을 적어보세요.');
+      showToast('동별 획득 (+10 XP). 2단계 문장을 적어보세요.');
 
       await sb.from('words').insert({
         id: newId,
@@ -1954,7 +2031,7 @@
       fireConfetti(false);
 
       document.getElementById('heroStage').className = 'hero-star-stage stage-SILVER';
-      document.getElementById('heroStarBox').innerHTML = getStarSvg('SILVER', 48);
+      document.getElementById('heroStarBox').innerHTML = getStarSvg('SILVER', 42);
       document.getElementById('heroTitle').innerText = '현재 등급: 은별 (30 XP)';
 
       document.getElementById('card2').className = 'step-card';
@@ -1962,15 +2039,15 @@
       document.getElementById('sum2').style.display = 'block';
       document.getElementById('sum2').innerHTML = `
         <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(src)}"</div>
-        <div style="font-size:12px; background:#eef2ff; padding:8px; border-radius:8px; color:#4f46e5; font-weight:700;">
-          📖 국어 문법 기본형 변환 및 문맥 뜻 저장 중... (바로 3단계 문장을 작성하세요!)
+        <div style="font-size:12px; background:var(--primary-soft); padding:9px 10px; border-radius:8px; color:var(--primary); font-weight:700;">
+          국어 문법 기본형 변환 및 문맥 뜻 저장 중... (바로 3단계 문장을 작성하세요)
         </div>
       `;
 
       document.getElementById('card3').className = 'step-card current';
       document.getElementById('form3').style.display = 'block';
       document.getElementById('inpMy').focus();
-      showToast('🥈 은별 진화 (+20 XP)! 3단계 문장을 만들어보세요.');
+      showToast('은별 진화 (+20 XP). 3단계 문장을 만들어보세요.');
 
       const res = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, src);
       curItem.aiMeaning = res.contextMeaning;
@@ -1992,7 +2069,7 @@
       const my = document.getElementById('inpMy').value.trim();
       if (!my) { alert('직접 만든 문장을 입력하세요'); return; }
       const btn = document.getElementById('btnS3');
-      btn.disabled = true; btn.innerText = '⚡ 0.5초 AI 피드백 생성 중...';
+      btn.disabled = true; btn.innerText = 'AI 피드백 생성 중...';
 
       const kst = getNowKST();
       let evalResult = null;
@@ -2033,9 +2110,9 @@
       if (evalResult.isPassed) {
         playRewardSound('GOLD');
         fireConfetti(true);
-        showToast('🥇 금별 마스터 달성 (+30 XP)! 축하합니다!');
+        showToast('금별 마스터 달성 (+30 XP). 축하합니다!');
       } else {
-        showToast('💡 AI 힌트를 참고해 문장을 살짝 다듬어 보세요!');
+        showToast('AI 힌트를 참고해 문장을 다듬어 보세요.');
       }
 
       await sb.from('words').update({
@@ -2055,7 +2132,7 @@
     }
 
     // =========================================================================
-    // 4. 일일 10회 퀴즈 & 진짜 Google AdSense H5 (adBreak) 전면 광고 호출
+    // 4. 일일 10회 퀴즈 & Google AdSense H5 전면 광고 호출
     // =========================================================================
     function renderBadges() {
       const goldCnt = myWords.filter(w => w.star === 'GOLD').length;
@@ -2063,18 +2140,18 @@
       const streak = (myUser && myUser.streak) || 1;
 
       const badges = [
-        { icon: '🌱', name: '첫 별의 탄생', desc: '첫 단어 등록', unlocked: myWords.length >= 1 },
-        { icon: '🔥', name: '불꽃 학습러', desc: '3일 연속 학습', unlocked: streak >= 3 },
-        { icon: '🥇', name: '금별 수집가', desc: '금별 5개 달성', unlocked: goldCnt >= 5 },
-        { icon: '🧠', name: '퀴즈 챔피언', desc: '퀴즈 5회 정답', unlocked: quizSolveCount >= 5 },
-        { icon: '📚', name: '어휘 탐험가', desc: '단어 15개 등록', unlocked: myWords.length >= 15 },
-        { icon: '👑', name: '국어 마스터', desc: '500 XP 돌파', unlocked: totalXp >= 500 }
+        { icon: 'spark', name: '첫 별의 탄생', desc: '첫 단어 등록', unlocked: myWords.length >= 1 },
+        { icon: 'flame', name: '꾸준한 학습', desc: '3일 연속 학습', unlocked: streak >= 3 },
+        { icon: 'award', name: '금별 수집가', desc: '금별 5개 달성', unlocked: goldCnt >= 5 },
+        { icon: 'target', name: '퀴즈 챔피언', desc: '퀴즈 5회 정답', unlocked: quizSolveCount >= 5 },
+        { icon: 'book', name: '어휘 탐험가', desc: '단어 15개 등록', unlocked: myWords.length >= 15 },
+        { icon: 'trophy', name: '국어 마스터', desc: '500 XP 돌파', unlocked: totalXp >= 500 }
       ];
 
       document.getElementById('badgeCollection').innerHTML = badges.map(b => `
         <div class="badge-card ${b.unlocked ? 'unlocked' : ''}">
-          <div style="font-size:26px; margin-bottom:4px;">${b.icon}</div>
-          <div style="font-size:12px; font-weight:800;">${b.name}</div>
+          <div style="margin-bottom:6px;">${getLineIcon(b.icon, 24)}</div>
+          <div style="font-size:12px; font-weight:700;">${b.name}</div>
           <div style="font-size:10px; color:var(--text-sub); margin-top:2px;">${b.desc}</div>
         </div>
       `).join('');
@@ -2085,8 +2162,8 @@
       const maxAllowed = DAILY_BASE_QUIZ_LIMIT + (qState.adWatched * QUIZ_REWARD_PER_AD);
       const remaining = Math.max(0, maxAllowed - qState.used);
 
-      document.getElementById('quizRemainLabel').innerText = `🎯 오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
-      document.getElementById('quizAdRemainLabel').innerText = `📺 광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
+      document.getElementById('quizRemainLabel').innerText = `오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
+      document.getElementById('quizAdRemainLabel').innerText = `광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
       return { qState, maxAllowed, remaining };
     }
 
@@ -2102,20 +2179,20 @@
 
         const adsLeft = MAX_DAILY_ADS - qState.adWatched;
         if (adsLeft > 0) {
-          document.getElementById('limitIcon').innerText = '📺';
+          document.getElementById('limitIcon').innerHTML = getLineIcon('lock', 28);
           document.getElementById('limitTitle').innerText =
             qState.adWatched === 0
-              ? '오늘의 기본 10문제를 모두 풀었어요!'
-              : '충전한 퀴즈를 모두 풀었어요!';
+              ? '오늘의 기본 10문제를 모두 풀었습니다.'
+              : '충전한 퀴즈를 모두 풀었습니다.';
           document.getElementById('limitDesc').innerHTML =
-            `구글 전면 광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있어요!<br>(오늘 남은 광고 시청 횟수: <strong>${adsLeft}회</strong> / 최대 ${MAX_DAILY_ADS}회)`;
+            `광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있습니다.<br>(오늘 남은 광고 시청 횟수: <strong>${adsLeft}회</strong> / 최대 ${MAX_DAILY_ADS}회)`;
           adBtn.disabled = false;
-          adBtn.innerText = `📺 구글 전면 광고 보고 +${QUIZ_REWARD_PER_AD}문제 더 풀기 (${adsLeft}/${MAX_DAILY_ADS} 남음)`;
+          adBtn.innerText = `광고 보고 +${QUIZ_REWARD_PER_AD}문제 더 풀기 (${adsLeft}/${MAX_DAILY_ADS} 남음)`;
         } else {
-          document.getElementById('limitIcon').innerText = '🎉';
-          document.getElementById('limitTitle').innerText = '오늘의 모든 퀴즈와 광고 충전을 완료했어요!';
+          document.getElementById('limitIcon').innerHTML = getLineIcon('check', 28);
+          document.getElementById('limitTitle').innerText = '오늘의 모든 퀴즈와 충전을 완료했습니다.';
           document.getElementById('limitDesc').innerHTML =
-            `오늘 기본 10문제와 광고 충전(${MAX_DAILY_ADS}회)을 모두 마쳤습니다.<br>내일 자정(00:00)에 다시 새로운 퀴즈가 열립니다!`;
+            `오늘 기본 10문제와 광고 충전(${MAX_DAILY_ADS}회)을 모두 마쳤습니다.<br>내일 자정에 새로운 퀴즈가 열립니다.`;
           adBtn.disabled = true;
           adBtn.innerText = '오늘 광고 시청 한도 완료 (3/3)';
         }
@@ -2163,16 +2240,16 @@
         myUser.bonusXp = (Number(myUser.bonusXp) || 0) + 15;
         renderMyList();
         renderBadges();
-        showToast('🎉 정답입니다! 보너스 +15 XP 획득!');
+        showToast('정답입니다! 보너스 +15 XP 획득');
         await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
         btnEl.classList.add('wrong');
-        showToast('아쉽네요! 뜻을 다시 한번 확인해 보세요.');
+        showToast('아쉽네요. 뜻을 다시 확인해 보세요.');
       }
 
       const nextBtn = document.getElementById('btnNextQuiz');
       nextBtn.style.display = 'block';
-      nextBtn.innerText = remaining > 0 ? `다음 문제 풀기 (남은 문제 ${remaining}개) →` : '결과 확인 및 추가 충전하기 →';
+      nextBtn.innerText = remaining > 0 ? `다음 문제 풀기 (남은 문제 ${remaining}개)` : '결과 확인 및 추가 충전하기';
     }
 
     function triggerRealGoogleRewardedAd() {
@@ -2209,12 +2286,12 @@
       saveDailyQuizState(qState);
       playRewardSound('SILVER');
       fireConfetti(false);
-      showToast(`🎉 구글 광고 시청 완료! +${QUIZ_REWARD_PER_AD}문제 충전 (${qState.adWatched}/${MAX_DAILY_ADS}회)`);
+      showToast(`광고 시청 완료! +${QUIZ_REWARD_PER_AD}문제 충전 (${qState.adWatched}/${MAX_DAILY_ADS}회)`);
       generateQuiz();
     }
 
     // =========================================================================
-    // 5. 실시간 명예의 전당 & 관리자 대시보드 & 표준국어대사전 .xls 정밀 업로더
+    // 5. 실시간 명예의 전당 & 관리자 대시보드 & 표준국어대사전 .xls 업로더
     // =========================================================================
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
@@ -2257,25 +2334,24 @@
       }
 
       box.innerHTML = list.map((item, idx) => {
-        const rankIcon = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx + 1}`));
         const isMe = myUser && item.userId === myUser.userId;
         const lv = getLevelInfo(item.xp);
-        const schoolTag = item.schoolInfo ? ` (${escapeHtml(item.schoolInfo)})` : '';
+        const schoolTag = item.schoolInfo ? ` · ${escapeHtml(item.schoolInfo)}` : '';
         return `
           <div class="rank-card ${isMe ? 'me' : ''}">
             <div style="display:flex; align-items:center; gap:10px;">
-              <div class="rank-num">${rankIcon}</div>
+              <div class="rank-num">${idx + 1}</div>
               <div>
-                <div style="font-size:14px; font-weight:800;">
-                  ${escapeHtml(item.userName)}<span style="font-size:11px; color:var(--text-sub); font-weight:600;">${schoolTag}</span>
-                  ${isMe ? '<span style="color:var(--primary); font-size:11px;">(나)</span>' : ''}
+                <div style="font-size:14px; font-weight:700;">
+                  ${escapeHtml(item.userName)}<span style="font-size:11px; color:var(--text-sub); font-weight:500;">${schoolTag}</span>
+                  ${isMe ? '<span style="color:var(--primary); font-size:11px; font-weight:700;"> (나)</span>' : ''}
                 </div>
-                <div style="font-size:11px; color:var(--text-sub); font-weight:700;">
-                  Lv.${lv.lv} · 🔥${item.streak}일 · 금별 ${item.gold}개
+                <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-top:2px;">
+                  Lv.${lv.lv} · ${item.streak}일 연속 · 금별 ${item.gold}개
                 </div>
               </div>
             </div>
-            <div style="font-size:14px; font-weight:900; color:var(--primary);">${item.xp} XP</div>
+            <div style="font-size:14px; font-weight:800; color:var(--primary);">${item.xp} XP</div>
           </div>
         `;
       }).join('');
@@ -2336,7 +2412,7 @@
       try {
         for (let fIdx = 0; fIdx < files.length; fIdx++) {
           const file = files[fIdx];
-          statusBox.innerText = `📂 파일 읽는 중 (${fIdx + 1}/${files.length}): ${file.name}...`;
+          statusBox.innerText = `파일 읽는 중 (${fIdx + 1}/${files.length}): ${file.name}...`;
 
           const buffer = await file.arrayBuffer();
           const wb = XLSX.read(buffer, { type: 'array' });
@@ -2425,26 +2501,26 @@
         const BATCH_SIZE = 500;
         for (let i = 0; i < allItems.length; i += BATCH_SIZE) {
           const chunk = allItems.slice(i, i + BATCH_SIZE);
-          statusBox.innerText = `🚀 수파베이스 업로드 중: ${Math.min(i + BATCH_SIZE, allItems.length).toLocaleString()} / ${allItems.length.toLocaleString()}개 완료...`;
+          statusBox.innerText = `수파베이스 업로드 중: ${Math.min(i + BATCH_SIZE, allItems.length).toLocaleString()} / ${allItems.length.toLocaleString()}개 완료...`;
           const { error } = await sb.from('std_dict').upsert(chunk);
           if (error) throw error;
         }
 
-        statusBox.innerText = `✅ 총 ${allItems.length.toLocaleString()}개의 표준국어대사전 어휘(다의어 문맥 뜻 포함)가 등록되었습니다!`;
+        statusBox.innerText = `총 ${allItems.length.toLocaleString()}개의 표준국어대사전 어휘가 등록되었습니다.`;
         fileInput.value = '';
         btn.disabled = false;
         refreshStdDictCount();
         fireConfetti(true);
-        showToast(`🎉 사전 어휘 ${allItems.length.toLocaleString()}개 정밀 업로드 완료!`);
+        showToast(`사전 어휘 ${allItems.length.toLocaleString()}개 업로드 완료`);
       } catch (err) {
         btn.disabled = false;
-        statusBox.innerText = `❌ 오류 발생: ${err.message}`;
+        statusBox.innerText = `오류 발생: ${err.message}`;
         alert('업로드 중 오류가 발생했습니다: ' + err.message);
       }
     }
 
     async function loadAdminData() {
-      document.getElementById('adminStudentList').innerHTML = '<p style="text-align:center; color:var(--text-sub);">학생들 기록을 불러오는 중...</p>';
+      document.getElementById('adminStudentList').innerHTML = '<p style="text-align:center; color:var(--text-sub);">학생 기록을 불러오는 중...</p>';
       const [{ data: sRows }, { data: rows }] = await Promise.all([
         sb.from('students').select('*'),
         sb.from('words').select('*').order('created_ts', { ascending: false })
@@ -2498,25 +2574,25 @@
         <div class="student-row-card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <div>
-              <span style="font-size:15px; font-weight:800;">${escapeHtml(s.userName)}</span>
+              <span style="font-size:15px; font-weight:700;">${escapeHtml(s.userName)}</span>
               <span style="font-size:11px; color:var(--text-sub); margin-left:4px;">(${escapeHtml(s.userId)})</span>
             </div>
-            <div style="font-size:12px; font-weight:800;">
-              🥉${s.bronze} 🥈${s.silver} 🥇${s.gold} (총 ${s.total}개)
+            <div style="font-size:12px; font-weight:700; color:var(--primary);">
+              동 ${s.bronze} · 은 ${s.silver} · 금 ${s.gold} (총 ${s.total})
             </div>
           </div>
-          <details style="margin-top:10px; font-size:13px; border-top:1px dashed var(--border); padding-top:8px;">
+          <details style="margin-top:10px; font-size:13px; border-top:1px solid var(--border); padding-top:8px;">
             <summary style="cursor:pointer; color:var(--primary); font-weight:700;">단어 및 작문 피드백 열람 (${s.words.length}개)</summary>
             <div style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
               ${s.words.map(w => `
-                <div style="background:#f8fafc; border:1px solid var(--border); padding:8px 10px; border-radius:8px;">
-                  <div style="display:flex; justify-content:space-between; font-weight:800;">
+                <div style="background:var(--bg-app); border:1px solid var(--border); padding:9px 11px; border-radius:8px;">
+                  <div style="display:flex; justify-content:space-between; font-weight:700;">
                     <span>${escapeHtml(w.word)} (${escapeHtml(w.meaning)})</span>
-                    <span>${w.star === 'GOLD' ? '🥇금별' : (w.star === 'SILVER' ? '🥈은별' : '🥉동별')}</span>
+                    <span style="color:var(--primary); font-size:12px;">${w.star === 'GOLD' ? '금별' : (w.star === 'SILVER' ? '은별' : '동별')}</span>
                   </div>
-                  ${w.sourceSentence ? `<div style="font-size:11px; color:#475569; margin-top:2px;"><strong>출처:</strong> ${escapeHtml(w.sourceSentence)}</div>` : ''}
-                  ${w.mySentence ? `<div style="font-size:12px; color:#166534; font-weight:700; margin-top:4px;"><strong>학생 작문:</strong> ${escapeHtml(w.mySentence)}</div>` : ''}
-                  ${w.aiFeedback ? `<div style="font-size:11px; color:#065f46; margin-top:2px;"><strong>AI 피드백:</strong> ${escapeHtml(w.aiFeedback)}</div>` : ''}
+                  ${w.sourceSentence ? `<div style="font-size:11px; color:#475569; margin-top:3px;"><strong>출처:</strong> ${escapeHtml(w.sourceSentence)}</div>` : ''}
+                  ${w.mySentence ? `<div style="font-size:12px; color:var(--text-main); font-weight:600; margin-top:4px;"><strong>학생 작문:</strong> ${escapeHtml(w.mySentence)}</div>` : ''}
+                  ${w.aiFeedback ? `<div style="font-size:11px; color:var(--primary-dark); margin-top:2px;"><strong>AI 피드백:</strong> ${escapeHtml(w.aiFeedback)}</div>` : ''}
                 </div>
               `).join('')}
             </div>
