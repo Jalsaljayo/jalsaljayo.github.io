@@ -218,7 +218,7 @@
     .quest-bar-bg { flex: 1; height: 6px; background: #EDEBE4; border-radius: 99px; overflow: hidden; }
     .quest-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
 
-    /* 별 필터 버튼 (동별·은별·금별 텍스트 제거, 별 아이콘 + 숫자만 깔끔하게 배치) */
+    /* 별 필터 버튼 */
     .reward-summary {
       padding: 2px 16px 8px;
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
@@ -324,11 +324,23 @@
     .rank-card.me { border-color: var(--primary); background: var(--primary-soft); }
     .rank-num { width: 28px; font-size: 14px; font-weight: 800; color: var(--primary); text-align: center; }
 
-    /* 탭4: 내 정보 카드 */
+    /* 탭4: 내 정보 카드 & CSV 입출력 버튼 */
     .profile-box-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 18px 16px; margin-bottom: 12px;
     }
+    .csv-btn-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;
+    }
+    .btn-csv-outline {
+      width: 100%; padding: 12px 10px; border-radius: 11px;
+      background: var(--bg-app); border: 1px solid var(--border);
+      color: var(--text-main); font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      cursor: pointer; transition: 0.12s;
+    }
+    .btn-csv-outline:active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+    .btn-csv-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* 화면 3: 단어 만들기 */
     .builder-body { padding: 14px 16px 40px; flex: 1; }
@@ -529,7 +541,7 @@
         <div id="rankingContainer">불러오는 중...</div>
       </div>
 
-      <!-- 탭 4: 내 정보 -->
+      <!-- 탭 4: 내 정보 (프로필 수정 + CSV 파일 단어 등록/내보내기) -->
       <div id="tab-profile" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">내 정보 관리</div>
 
@@ -544,6 +556,31 @@
           <input type="text" id="editSchoolInfo" class="input-field" placeholder="학번 또는 학교 입력 (예: 30101 또는 서천고 30101)">
 
           <button id="btnSaveMyProfile" class="action-btn btn-primary" style="margin-top:4px;" onclick="saveMyProfileChanges()">내 정보 저장하기</button>
+        </div>
+
+        <!-- [신규] CSV 파일로 단어 등록하기 & 내보내기 카드 -->
+        <div class="profile-box-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <div style="font-size:13px; font-weight:800;">단어장 CSV 파일 관리</div>
+            <button onclick="downloadCsvTemplate()" style="background:none; border:none; color:var(--primary); font-size:11px; font-weight:700; cursor:pointer; padding:0; text-decoration:underline;">기본 양식 내려받기</button>
+          </div>
+          <div style="font-size:11px; color:var(--text-sub); line-height:1.45;">
+            CSV 파일(`단어, 뜻` 또는 `단어, 뜻, 출처문장, 나의문장`)로 단어를 한 번에 등록하거나, 내 단어장을 CSV 파일로 백업할 수 있습니다.
+          </div>
+
+          <input type="file" id="inpUserCsvImport" accept=".csv,.xls,.xlsx" style="display:none;" onchange="handleUserCsvImport(this)">
+
+          <div class="csv-btn-grid">
+            <button id="btnImportCsv" class="btn-csv-outline" onclick="document.getElementById('inpUserCsvImport').click()">
+              <span id="iconCsvUpload"></span>
+              <span>CSV로 단어 등록</span>
+            </button>
+            <button id="btnExportCsv" class="btn-csv-outline" onclick="exportMyWordsToCsv()">
+              <span id="iconCsvDownload"></span>
+              <span>CSV로 내보내기</span>
+            </button>
+          </div>
+          <div id="userCsvStatus" style="font-size:12px; font-weight:700; color:var(--primary); margin-top:8px; display:none;"></div>
         </div>
 
         <div class="profile-box-card" style="display:flex; justify-content:space-between; align-items:center;">
@@ -726,12 +763,16 @@
           return `<svg ${s}><path d="M20 6 9 17l-5-5"/></svg>`;
         case 'spark':
           return `<svg ${s}><path d="M12 3v18"/><path d="M3 12h18"/><path d="m18.36 5.64-12.72 12.72"/><path d="m5.64 5.64 12.72 12.72"/></svg>`;
+        case 'upload':
+          return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
+        case 'download':
+          return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
         default:
           return `<svg ${s}><circle cx="12" cy="12" r="9"/></svg>`;
       }
     }
 
-    // [사용자 지정 3단계 별 아이콘 - 선 색상 #3B82A6 / 채움색 #E19973, #E0E6ED, #FDE28A]
+    // [3단계 별 아이콘 - 선 색상 #3B82A6 / 채움색 #E19973, #E0E6ED, #FDE28A]
     function getStarSvg(tier, size = 18) {
       const fillMap = {
         'NONE': 'none',
@@ -1048,7 +1089,6 @@
     }
 
     window.onload = async function() {
-      // 필터 탭 및 학습 단계의 별 아이콘 초기화
       document.getElementById('sumB').innerHTML = getStarSvg('BRONZE', 18);
       document.getElementById('sumS').innerHTML = getStarSvg('SILVER', 18);
       document.getElementById('sumG').innerHTML = getStarSvg('GOLD', 18);
@@ -1064,6 +1104,8 @@
       document.getElementById('navIconRank').innerHTML = getLineIcon('trophy', 20);
       document.getElementById('navIconProfile').innerHTML = getLineIcon('user', 20);
       document.getElementById('limitIcon').innerHTML = getLineIcon('lock', 28);
+      document.getElementById('iconCsvUpload').innerHTML = getLineIcon('upload', 16);
+      document.getElementById('iconCsvDownload').innerHTML = getLineIcon('download', 16);
 
       const { data: { session } } = await sb.auth.getSession();
       if (session && session.user) {
@@ -1116,7 +1158,7 @@
     }
 
     // =========================================================================
-    // 2. Google / Apple OAuth 로그인 & 내 정보 수정
+    // 2. Google / Apple OAuth 로그인 & 내 정보 수정 & CSV 단어 등록/내보내기
     // =========================================================================
     async function signInWithRealOAuth(provider) {
       const redirectUrl = window.location.origin + window.location.pathname;
@@ -1216,6 +1258,7 @@
       document.getElementById('profAccountEmail').innerText = `${pBadge} (${myUser.userId})`;
       document.getElementById('editUserName').value = myUser.name || '';
       document.getElementById('editSchoolInfo').value = myUser.schoolInfo || '';
+      document.getElementById('userCsvStatus').style.display = 'none';
     }
 
     async function saveMyProfileChanges() {
@@ -1262,6 +1305,232 @@
         btn.disabled = false;
         btn.innerText = '내 정보 저장하기';
         alert('저장 중 오류가 발생했습니다: ' + err.message);
+      }
+    }
+
+    // =========================================================================
+    // [신규 기능] 내 단어장 CSV 파일 내보내기 / 등록하기 / 기본 양식 다운로드
+    // =========================================================================
+    function escapeCsvCell(val) {
+      const str = String(val == null ? '' : val).replace(/\r?\n/g, ' ');
+      if (str.includes(',') || str.includes('"')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+      }
+      return str;
+    }
+
+    function downloadCsvTemplate() {
+      const headers = ['단어', '뜻', '출처문장', '나의문장'];
+      const sampleRows = [
+        ['배양', '실력이나 품성 따위를 기르고 발전시킴', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '꾸준한 연습으로 기초 체력을 배양했다.'],
+        ['고찰', '사물이나 현상을 깊이 생각하여 살핌', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '']
+      ];
+      const csvLines = [
+        headers.map(escapeCsvCell).join(','),
+        ...sampleRows.map(r => r.map(escapeCsvCell).join(','))
+      ];
+      // 엑셀 한글 깨짐 방지를 위한 UTF-8 BOM(\uFEFF) 추가
+      const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '메이드보카_단어등록_양식.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('CSV 기본 양식이 다운로드되었습니다.');
+    }
+
+    function exportMyWordsToCsv() {
+      if (!myWords || myWords.length === 0) {
+        alert('현재 등록된 단어가 없어 내보낼 데이터가 없습니다.');
+        return;
+      }
+
+      const headers = ['단어', '뜻', '출처문장', '문맥사전뜻', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
+      const stageLabelMap = { 'BRONZE': '1단계', 'SILVER': '2단계', 'GOLD': '3단계' };
+
+      const rows = myWords.map(w => [
+        w.word || '',
+        w.meaning || '',
+        w.sourceSentence || '',
+        w.aiMeaning || '',
+        w.synonyms || '',
+        w.antonyms || '',
+        w.mySentence || '',
+        w.aiFeedback || '',
+        stageLabelMap[w.star] || '1단계',
+        w.updatedAt || ''
+      ]);
+
+      const csvContent = [
+        headers.map(escapeCsvCell).join(','),
+        ...rows.map(r => r.map(escapeCsvCell).join(','))
+      ].join('\r\n');
+
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeName = (myUser && myUser.name) ? myUser.name.replace(/[^가-힣a-zA-Z0-9_-]/g, '') : '내단어장';
+      a.href = url;
+      a.download = `메이드보카_${safeName}_${getNowKST().date}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`총 ${myWords.length}개의 단어를 CSV 파일로 내보냈습니다.`);
+    }
+
+    async function handleUserCsvImport(inputEl) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      if (!myUser) {
+        alert('로그인 후 이용해 주세요.');
+        return;
+      }
+
+      const statusEl = document.getElementById('userCsvStatus');
+      const importBtn = document.getElementById('btnImportCsv');
+      statusEl.style.display = 'block';
+      statusEl.innerText = 'CSV 파일을 읽는 중...';
+      importBtn.disabled = true;
+
+      try {
+        const buffer = await file.arrayBuffer();
+        let wb = null;
+
+        // .csv 파일인 경우 UTF-8 및 윈도우 엑셀 기본 EUC-KR(CP949) 인코딩 자동 감지
+        if (file.name.toLowerCase().endsWith('.csv')) {
+          let text = new TextDecoder('utf-8').decode(buffer);
+          if (text.includes('\uFFFD')) {
+            text = new TextDecoder('euc-kr').decode(buffer);
+          }
+          wb = XLSX.read(text, { type: 'string' });
+        } else {
+          wb = XLSX.read(buffer, { type: 'array' });
+        }
+
+        const firstSheet = wb.Sheets[wb.SheetNames[0]];
+        const matrix = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+
+        if (!matrix || matrix.length === 0) {
+          throw new Error('파일 안에 데이터가 없습니다.');
+        }
+
+        const firstRow = matrix[0].map(c => String(c || '').trim());
+        const hasHeader = firstRow.some(h =>
+          ['단어', '어휘', '표제어', '뜻', '의미', '뜻풀이', 'word', 'meaning'].includes(h.toLowerCase())
+        );
+
+        let wIdx = 0, mIdx = 1, srcIdx = 2, myIdx = 3, synIdx = -1, antIdx = -1, aiMeanIdx = -1, aiFbIdx = -1, starIdx = -1;
+
+        if (hasHeader) {
+          wIdx = firstRow.findIndex(h => h.includes('단어') || h.includes('어휘') || h.includes('표제어') || h.toLowerCase() === 'word');
+          mIdx = firstRow.findIndex(h => (h === '뜻' || h.includes('뜻풀이') || h.includes('의미') || h.toLowerCase() === 'meaning') && !h.includes('문맥'));
+          srcIdx = firstRow.findIndex(h => h.includes('출처') || h.includes('예문') || h.toLowerCase() === 'sourcesentence');
+          aiMeanIdx = firstRow.findIndex(h => h.includes('문맥') || h.toLowerCase() === 'aimeaning');
+          synIdx = firstRow.findIndex(h => h.includes('유의어') || h.includes('비슷'));
+          antIdx = firstRow.findIndex(h => h.includes('반의어') || h.includes('반대'));
+          myIdx = firstRow.findIndex(h => h.includes('나의문장') || h.includes('내문장') || h.includes('작문'));
+          aiFbIdx = firstRow.findIndex(h => h.includes('피드백') || h.includes('첨삭'));
+          starIdx = firstRow.findIndex(h => h.includes('단계') || h.includes('등급') || h.toLowerCase() === 'star');
+
+          if (wIdx === -1) wIdx = 0;
+          if (mIdx === -1) mIdx = 1;
+        }
+
+        const startRow = hasHeader ? 1 : 0;
+        const kst = getNowKST();
+        const dbRecords = [];
+        const localItems = [];
+        const baseTs = Date.now();
+
+        for (let i = startRow; i < matrix.length; i++) {
+          const row = matrix[i];
+          if (!row || row.length === 0) continue;
+
+          const word = String(row[wIdx] || '').trim();
+          const meaning = String(row[mIdx] || '').trim();
+          if (!word || !meaning) continue;
+
+          const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim() : '';
+          const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : '';
+          const synonyms = (synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]).trim() : '';
+          const antonyms = (antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]).trim() : '';
+          const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim() : '';
+          const aiFeedback = (aiFbIdx >= 0 && row[aiFbIdx] != null) ? String(row[aiFbIdx]).trim() : '';
+          const rawStar = (starIdx >= 0 && row[starIdx] != null) ? String(row[starIdx]).trim().toUpperCase() : '';
+
+          let star = 'BRONZE';
+          if (rawStar.includes('3') || rawStar === 'GOLD' || rawStar.includes('금')) {
+            star = 'GOLD';
+          } else if (rawStar.includes('2') || rawStar === 'SILVER' || rawStar.includes('은')) {
+            star = 'SILVER';
+          } else if (mySentence) {
+            star = 'GOLD';
+          } else if (sourceSentence) {
+            star = 'SILVER';
+          }
+
+          const newId = `W_${baseTs}_${i}_${Math.floor(Math.random() * 1000)}`;
+
+          dbRecords.push({
+            id: newId,
+            user_id: myUser.userId,
+            user_name: myUser.name,
+            word: word,
+            meaning: meaning,
+            source_sentence: sourceSentence,
+            ai_meaning: aiMeaning || (sourceSentence ? meaning : ''),
+            synonyms: synonyms,
+            antonyms: antonyms,
+            my_sentence: mySentence,
+            ai_feedback: aiFeedback,
+            star: star,
+            updated_at: kst.full
+          });
+
+          localItems.push({
+            id: newId,
+            userId: myUser.userId,
+            userName: myUser.name,
+            word: word,
+            meaning: meaning,
+            sourceSentence: sourceSentence,
+            aiMeaning: aiMeaning || (sourceSentence ? meaning : ''),
+            synonyms: synonyms,
+            antonyms: antonyms,
+            mySentence: mySentence,
+            aiFeedback: aiFeedback,
+            star: star,
+            updatedAt: kst.full
+          });
+        }
+
+        if (dbRecords.length === 0) {
+          throw new Error('등록할 수 있는 단어와 뜻 행을 찾지 못했습니다.');
+        }
+
+        const BATCH = 200;
+        for (let i = 0; i < dbRecords.length; i += BATCH) {
+          const chunk = dbRecords.slice(i, i + BATCH);
+          statusEl.innerText = `단어 등록 중... (${Math.min(i + BATCH, dbRecords.length)} / ${dbRecords.length}개)`;
+          const { error } = await sb.from('words').insert(chunk);
+          if (error) throw error;
+        }
+
+        myWords = [...localItems, ...myWords];
+        renderMyList();
+        fireConfetti(true);
+        statusEl.innerText = `총 ${dbRecords.length}개의 단어가 성공적으로 등록되었습니다.`;
+        showToast(`CSV에서 단어 ${dbRecords.length}개를 등록했습니다.`);
+      } catch (err) {
+        statusEl.innerText = `오류: ${err.message}`;
+        alert('CSV 등록 중 오류가 발생했습니다: ' + err.message);
+      } finally {
+        inputEl.value = '';
+        importBtn.disabled = false;
       }
     }
 
