@@ -151,14 +151,28 @@
       display: flex; align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; transition: background 0.15s;
     }
-    .apple-btn {
-      width: 100%; background: #1E293B; color: #FFFFFF;
-      border: 1px solid #1E293B;
+    .email-auth-btn {
+      width: 100%; background: var(--primary); color: #FFFFFF;
+      border: 1px solid var(--primary);
       padding: 15px 16px; border-radius: 14px; font-size: 15px; font-weight: 700;
       display: flex; align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; transition: opacity 0.15s;
     }
-    .google-btn:active, .apple-btn:active { opacity: 0.8; }
+    .google-btn:active, .email-auth-btn:active { opacity: 0.85; }
+
+    /* 이메일 로그인/회원가입 탭 전환 스위치 */
+    .auth-mode-tabs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      background: #EDEBE4; padding: 4px; border-radius: 12px; margin-bottom: 16px;
+    }
+    .auth-mode-tab {
+      padding: 10px; border-radius: 9px; border: none; background: transparent;
+      font-size: 13px; font-weight: 700; color: var(--text-sub); cursor: pointer; transition: 0.15s;
+    }
+    .auth-mode-tab.active {
+      background: var(--surface); color: var(--primary); font-weight: 800;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
     /* 상단 네비바 */
     .top-navbar {
@@ -358,7 +372,7 @@
     }
     .tab-icon { height: 22px; display: flex; align-items: center; justify-content: center; }
 
-    /* 탭2: 활동·기록 (경험치 + 오늘의 목표 + 스피드 퀴즈 + 도감) */
+    /* 탭2: 활동·기록 */
     .quiz-limit-bar {
       display: flex; justify-content: space-between; align-items: center;
       background: var(--primary-soft); border: 1px solid #C5DDEC; border-radius: 12px;
@@ -465,7 +479,7 @@
       width: 100%; background: var(--bg-app);
       border-radius: 22px 22px 0 0; padding: 22px 20px calc(28px + var(--safe-bottom));
       animation: slideUp 0.2s ease-out;
-      max-height: 88dvh; overflow-y: auto;
+      max-height: 90dvh; overflow-y: auto;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
@@ -491,7 +505,7 @@
 
   <div class="app-container">
 
-    <!-- 화면 1: 정식 Google / Apple OAuth 로그인 -->
+    <!-- 화면 1: Google OAuth 로그인 & 이메일 회원가입/로그인 -->
     <section id="screen-login" class="screen active">
       <div>
         <div class="brand-logo-box">M</div>
@@ -510,15 +524,16 @@
           <span id="googleBtnText">Google 계정으로 계속하기</span>
         </button>
 
-        <button id="btnAppleOAuth" class="apple-btn" onclick="signInWithRealOAuth('apple')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff">
-            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+        <button id="btnEmailAuthOpen" class="email-auth-btn" onclick="openEmailAuthModal('SIGNUP')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
           </svg>
-          <span id="appleBtnText">Apple로 계속하기</span>
+          <span>이메일로 회원가입 · 로그인</span>
         </button>
 
         <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">
-          Google · Apple 계정으로 모든 기기에서 동기화됩니다.
+          Google 계정 또는 이메일 계정으로 모든 기기에서 동기화됩니다.
         </div>
       </div>
     </section>
@@ -539,7 +554,7 @@
         </div>
       </header>
 
-      <!-- 탭 1: 내 단어장 (경험치·오늘의 목표를 빼고 깔끔하게 별 필터 + 검색 + 단어 목록만 배치) -->
+      <!-- 탭 1: 내 단어장 -->
       <div id="tab-words" class="tab-pane">
         <div class="reward-summary">
           <div class="reward-pill" id="filterB" onclick="toggleStarFilter('BRONZE')"><span id="sumB"></span><span id="cntB">0</span></div>
@@ -553,7 +568,6 @@
           <button id="btnClearSearch" class="search-clear-btn" onclick="clearWordSearch()">✕</button>
         </div>
 
-        <!-- 그룹별 필터 바 -->
         <div id="groupFilterBar" class="group-chip-bar" style="display:none;"></div>
 
         <div class="list-body">
@@ -670,13 +684,13 @@
         <div class="profile-box-card" style="display:flex; justify-content:space-between; align-items:center;">
           <div>
             <div style="font-size:13px; font-weight:700;">계정 로그아웃</div>
-            <div style="font-size:11px; color:var(--text-sub);">다른 Google 또는 Apple 계정으로 전환합니다.</div>
+            <div style="font-size:11px; color:var(--text-sub);">다른 계정으로 전환합니다.</div>
           </div>
           <button onclick="logoutStudent()" style="background:#F1F5F9; color:#475569; border:1px solid var(--border); padding:8px 14px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">로그아웃</button>
         </div>
       </div>
 
-      <!-- 하단 4탭 네비게이션 바 (2번째 탭: 활동·기록) -->
+      <!-- 하단 4탭 네비게이션 바 -->
       <nav class="bottom-tab-bar">
         <button class="tab-btn active" id="navBtnWords" onclick="switchMainTab('words')">
           <span class="tab-icon" id="navIconWords"></span><span>내 단어장</span>
@@ -772,6 +786,62 @@
       </div>
     </section>
 
+  </div>
+
+  <!-- [이메일 즉시 회원가입 & 로그인 모달] -->
+  <div class="modal-overlay" id="emailAuthModal" onclick="if(event.target===this) closeEmailAuthModal()">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="font-size:17px; font-weight:800; color:var(--text-main);">이메일 계정으로 시작하기</div>
+        <button onclick="closeEmailAuthModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+
+      <!-- 회원가입 / 로그인 전환 탭 -->
+      <div class="auth-mode-tabs">
+        <button id="tabBtnEmailSignup" class="auth-mode-tab active" onclick="switchEmailAuthTab('SIGNUP')">이메일 회원가입</button>
+        <button id="tabBtnEmailLogin" class="auth-mode-tab" onclick="switchEmailAuthTab('LOGIN')">이메일 로그인</button>
+      </div>
+
+      <!-- 1. 이메일 즉시 회원가입 폼 -->
+      <div id="emailSignupPane">
+        <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
+        <input type="text" id="suName" class="input-field" placeholder="예: 홍길동">
+
+        <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">학번 / 학교 정보 (선택)</label>
+        <input type="text" id="suSchool" class="input-field" placeholder="예: 30101 또는 서천고 30101">
+
+        <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">이메일 주소 (필수)</label>
+        <input type="email" id="suEmail" class="input-field" placeholder="example@email.com">
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">비밀번호 (6자 이상)</label>
+            <input type="password" id="suPassword" class="input-field" placeholder="비밀번호 입력">
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">비밀번호 확인</label>
+            <input type="password" id="suPasswordConfirm" class="input-field" placeholder="비밀번호 재입력" onkeydown="if(event.key==='Enter') submitDirectEmailSignup()">
+          </div>
+        </div>
+
+        <button id="btnSubmitDirectSignup" class="action-btn btn-primary" style="margin-top:4px;" onclick="submitDirectEmailSignup()">
+          회원가입 완료하기
+        </button>
+      </div>
+
+      <!-- 2. 이메일 로그인 폼 (기존 가입자용) -->
+      <div id="emailLoginPane" style="display:none;">
+        <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">이메일 주소</label>
+        <input type="email" id="liEmail" class="input-field" placeholder="가입한 이메일 입력">
+
+        <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">비밀번호</label>
+        <input type="password" id="liPassword" class="input-field" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter') loginWithEmailPassword()">
+
+        <button id="btnSubmitEmailLogin" class="action-btn btn-primary" style="margin-top:4px;" onclick="loginWithEmailPassword()">
+          이메일로 로그인하기
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- [모달 1] 단어 우측 상단 점 3개(...) 클릭 시 뜨는 메뉴 팝업 -->
@@ -880,7 +950,7 @@
     </div>
   </div>
 
-  <!-- 최초 1회 이름·학번 설정 모달 -->
+  <!-- 최초 1회 이름·학번 설정 모달 (Google 로그인 최초 가입 시 사용) -->
   <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
       <h3 style="margin:0 0 6px 0; font-size:18px;">프로필 설정</h3>
@@ -1391,7 +1461,7 @@
       document.getElementById('navBtnProfile').className = 'tab-btn' + (tabName === 'profile' ? ' active' : '');
 
       if (tabName === 'quiz') {
-        renderMyList(); // 경험치 및 오늘의 목표 최신화
+        renderMyList();
         renderBadges();
         generateQuiz();
       } else if (tabName === 'rank') {
@@ -1407,7 +1477,7 @@
     }
 
     // =========================================================================
-    // 2. Google / Apple OAuth 로그인 & 내 정보 수정 & CSV/그룹 관리
+    // 2. Google OAuth 로그인 & 이메일 즉시 회원가입 / 로그인
     // =========================================================================
     async function signInWithRealOAuth(provider) {
       const redirectUrl = window.location.origin + window.location.pathname;
@@ -1417,23 +1487,158 @@
       });
 
       if (error) {
-        alert(
-          `[${provider.toUpperCase()} 로그인 설정 안내]\n\n` +
-          `수파베이스(Supabase) 대시보드의 Authentication → Providers 메뉴에서 '${provider}' 스위치를 켜주시면 즉시 공식 로그인이 작동합니다.\n(오류 내용: ${error.message})`
-        );
+        alert(`Google 로그인 연동 중 오류가 발생했습니다: ${error.message}`);
+      }
+    }
+
+    function openEmailAuthModal(defaultTab = 'SIGNUP') {
+      switchEmailAuthTab(defaultTab);
+      document.getElementById('emailAuthModal').classList.add('open');
+    }
+
+    function closeEmailAuthModal() {
+      document.getElementById('emailAuthModal').classList.remove('open');
+    }
+
+    function switchEmailAuthTab(mode) {
+      const isSignup = (mode === 'SIGNUP');
+      document.getElementById('tabBtnEmailSignup').className = 'auth-mode-tab' + (isSignup ? ' active' : '');
+      document.getElementById('tabBtnEmailLogin').className = 'auth-mode-tab' + (!isSignup ? ' active' : '');
+      document.getElementById('emailSignupPane').style.display = isSignup ? 'block' : 'none';
+      document.getElementById('emailLoginPane').style.display = !isSignup ? 'block' : 'none';
+    }
+
+    // 이메일 즉시 회원가입 실행
+    async function submitDirectEmailSignup() {
+      const name = document.getElementById('suName').value.trim();
+      const school = document.getElementById('suSchool').value.trim();
+      const email = document.getElementById('suEmail').value.trim().toLowerCase();
+      const pw = document.getElementById('suPassword').value;
+      const pwConfirm = document.getElementById('suPasswordConfirm').value;
+
+      if (!name) { alert('이름 또는 닉네임을 입력해 주세요.'); return; }
+      if (!email || !email.includes('@')) { alert('올바른 이메일 주소를 입력해 주세요.'); return; }
+      if (!pw || pw.length < 6) { alert('비밀번호는 6자리 이상으로 설정해 주세요.'); return; }
+      if (pw !== pwConfirm) { alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.'); return; }
+
+      const btn = document.getElementById('btnSubmitDirectSignup');
+      btn.disabled = true;
+      btn.innerText = '가입 처리 중...';
+
+      try {
+        const { data, error } = await sb.auth.signUp({
+          email: email,
+          password: pw,
+          options: {
+            data: {
+              full_name: name,
+              school_info: school
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        btn.disabled = false;
+        btn.innerText = '회원가입 완료하기';
+
+        // Confirm email이 꺼져 있으면 data.session이 바로 생성되어 즉시 로그인됨
+        if (data && data.session && data.user) {
+          closeEmailAuthModal();
+          await finalizeEmailSignupRecord(email, name, school);
+        } else {
+          // 만약 아직 수파베이스에서 Confirm email 스위치를 끄기 전이라면 안내 표시
+          alert(
+            '수파베이스의 [Authentication] → [Providers] → [Email]에서 "Confirm email" 스위치를 끄고 Save를 눌러주시면 인증 없이 즉시 가입됩니다.\n\n(또는 방금 발송된 이메일의 확인 링크를 누른 뒤 로그인해 주세요.)'
+          );
+          switchEmailAuthTab('LOGIN');
+          document.getElementById('liEmail').value = email;
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = '회원가입 완료하기';
+        alert('회원가입 중 오류가 발생했습니다: ' + err.message);
+      }
+    }
+
+    async function finalizeEmailSignupRecord(email, name, school) {
+      const kst = getNowKST();
+      const isAdmin = (email === ADMIN_EMAIL) || name.includes('용아국어');
+
+      await sb.from('students').upsert({
+        user_id: email,
+        user_name: name,
+        provider: 'EMAIL',
+        pin: 'EMAIL_AUTH',
+        school_info: school,
+        streak: 1,
+        bonus_xp: 0,
+        last_study_date: kst.date,
+        created_at: kst.full,
+        last_access_at: kst.full
+      });
+
+      myUser = {
+        userId: email,
+        name: name,
+        provider: 'EMAIL',
+        schoolInfo: school,
+        isAdmin: isAdmin,
+        streak: 1,
+        bonusXp: 0
+      };
+      myWords = await fetchUserWords(email, isAdmin);
+      await loadUserGroupsAndMap();
+      setupUserView();
+      fireConfetti(true);
+      showToast(`회원가입이 완료되었습니다. 환영합니다, ${name}님!`);
+    }
+
+    // 기존 이메일 가입자 로그인
+    async function loginWithEmailPassword() {
+      const email = document.getElementById('liEmail').value.trim().toLowerCase();
+      const pw = document.getElementById('liPassword').value;
+
+      if (!email || !pw) {
+        alert('이메일과 비밀번호를 모두 입력해 주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmitEmailLogin');
+      btn.disabled = true;
+      btn.innerText = '로그인 중...';
+
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({
+          email: email,
+          password: pw
+        });
+        if (error) throw error;
+
+        btn.disabled = false;
+        btn.innerText = '이메일로 로그인하기';
+        closeEmailAuthModal();
+
+        if (data && data.user) {
+          await handleAuthenticatedUser(data.user);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = '이메일로 로그인하기';
+        alert('이메일 또는 비밀번호가 올바르지 않습니다.\n(' + err.message + ')');
       }
     }
 
     async function handleAuthenticatedUser(authUser) {
       const email = (authUser.email || authUser.id).trim().toLowerCase();
-      const rawProvider = (authUser.app_metadata && authUser.app_metadata.provider) || 'google';
+      const rawProvider = (authUser.app_metadata && authUser.app_metadata.provider) || 'email';
       const provider = rawProvider.toUpperCase();
-      const defaultName =
-        (authUser.user_metadata && (authUser.user_metadata.full_name || authUser.user_metadata.name)) ||
-        email.split('@')[0];
+      const metaName = authUser.user_metadata && (authUser.user_metadata.full_name || authUser.user_metadata.name);
+      const metaSchool = (authUser.user_metadata && authUser.user_metadata.school_info) || '';
+      const defaultName = metaName || email.split('@')[0];
 
       const { data: existing } = await sb.from('students').select('*').eq('user_id', email).maybeSingle();
-      const isAdmin = (email === ADMIN_EMAIL) || (existing && existing.user_name && existing.user_name.includes('용아국어'));
+      const isAdmin = (email === ADMIN_EMAIL) || (existing && existing.user_name && existing.user_name.includes('용아국어')) || (defaultName && defaultName.includes('용아국어'));
 
       if (existing) {
         const kst = getNowKST();
@@ -1451,10 +1656,12 @@
         myWords = await fetchUserWords(email, isAdmin);
         await loadUserGroupsAndMap();
         setupUserView();
+      } else if (provider === 'EMAIL' && metaName) {
+        await finalizeEmailSignupRecord(email, metaName, metaSchool);
       } else {
         pendingOAuthSession = { email, provider, defaultName, isAdmin };
         document.getElementById('regStudentName').value = defaultName;
-        document.getElementById('regSchoolInfo').value = '';
+        document.getElementById('regSchoolInfo').value = metaSchool;
         document.getElementById('firstProfileModal').classList.add('open');
       }
     }
@@ -1505,7 +1712,7 @@
 
     function loadMyProfileTab() {
       if (!myUser) return;
-      const pBadge = myUser.provider === 'APPLE' ? 'Apple 계정' : 'Google 계정';
+      const pBadge = myUser.provider === 'EMAIL' ? '이메일 계정' : 'Google 계정';
       document.getElementById('profAccountEmail').innerText = `${pBadge} (${myUser.userId})`;
       document.getElementById('editUserName').value = myUser.name || '';
       document.getElementById('editSchoolInfo').value = myUser.schoolInfo || '';
@@ -2247,7 +2454,6 @@
         return;
       }
 
-      // 단어 카드 우측: 점 3개(...)가 위, 별이 바로 아래에 위치하도록 배치
       c.innerHTML = filtered.map(w => {
         const gName = wordGroupMap[w.id] || '';
         const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
