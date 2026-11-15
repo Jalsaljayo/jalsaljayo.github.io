@@ -281,28 +281,33 @@
       background: var(--primary); border-color: var(--primary); color: #FFFFFF;
     }
 
-    /* 단어 카드: 우측에 점 3개(...)가 위, 별이 바로 아래에 위치하도록 세로 배치 */
+    /* [수정 1] 단어 카드: 점 3개(...)의 행 위치를 단어 이름의 행 위치와 정확히 일치시킴 */
     .list-body { padding: 4px 16px 24px; flex: 1; }
     .word-item-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 12px 12px 12px 16px; margin-bottom: 8px; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center; transition: background 0.12s;
+      border-radius: 14px; padding: 14px 12px 14px 16px; margin-bottom: 8px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: flex-start; transition: background 0.12s;
     }
     .word-item-card:active { background: #F4F2EC; }
+    .word-title-row {
+      font-size: 16px; font-weight: 700; color: var(--text-main);
+      min-height: 24px; line-height: 24px;
+      display: flex; align-items: center; flex-wrap: wrap;
+    }
     .word-group-tag {
-      display: inline-block; font-size: 10px; font-weight: 700;
+      display: inline-block; font-size: 10px; font-weight: 700; line-height: 1.2;
       color: var(--primary); background: var(--primary-soft);
-      padding: 2px 7px; border-radius: 6px; margin-left: 6px; vertical-align: middle;
+      padding: 2px 7px; border-radius: 6px; margin-left: 6px;
     }
     .word-card-right {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 4px; flex-shrink: 0; margin-left: 8px; min-width: 32px;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      gap: 6px; flex-shrink: 0; margin-left: 8px; min-width: 32px;
     }
     .btn-word-more {
       width: 30px; height: 24px; border-radius: 6px;
       background: transparent; border: none; color: var(--primary);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; padding: 0;
+      cursor: pointer; padding: 0; margin: 0;
     }
     .btn-word-more:active { background: var(--primary-soft); }
 
@@ -1014,7 +1019,7 @@
 
   <script>
     // =========================================================================
-    // 1. 수파베이스(Supabase) 설정 & 미니멀 라인 아이콘(#3B82A6) 시스템
+    // 1. 수파베이스(Supabase) 설정 & 미니멀 라인 아이콘(#3B82A6) & 진동(Haptic) 엔진
     // =========================================================================
     const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
@@ -1022,12 +1027,10 @@
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
     const ICON_COLOR = '#3B82A6';
 
-    // 스피드 퀴즈 일일 한도
     const DAILY_BASE_QUIZ_LIMIT = 10;
     const MAX_DAILY_ADS = 3;
     const QUIZ_REWARD_PER_AD = 5;
 
-    // 3단계 유의어·반의어 AI 확인 무료 한도 (무료 5회 + 광고 1회당 5번 충전)
     const FREE_SYN_ANT_LIMIT = 5;
     const SYN_ANT_REWARD_PER_AD = 5;
 
@@ -1047,6 +1050,22 @@
     let wordGroupMap = {};
     let dotMenuTargetWordId = null;
     let selectedTempGroup = null;
+
+    // [수정 2] 버튼 터치 시 스마트폰 진동(Haptic) 피드백 실행 함수 및 전역 리스너
+    function triggerHaptic(pattern = 15) {
+      try {
+        if (navigator && typeof navigator.vibrate === 'function') {
+          navigator.vibrate(pattern);
+        }
+      } catch (e) {}
+    }
+
+    document.addEventListener('click', function(e) {
+      const clickable = e.target.closest('button, .reward-pill, .word-item-card, .group-chip, .tab-btn, summary');
+      if (clickable) {
+        triggerHaptic(14);
+      }
+    }, { passive: true });
 
     function getLineIcon(name, size = 18) {
       const s = `width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="line-icon"`;
@@ -1101,7 +1120,7 @@
       `;
     }
 
-    // 3단계 유의어·반의어 확인 횟수 상태 관리 (무료 5회 + 광고 1회당 5번 충전)
+    // 3단계 유의어·반의어 확인 횟수 상태 관리
     function getSynAntQuotaState() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
       const key = `madevoca_synquota_${uid}`;
@@ -1205,8 +1224,8 @@
         senses: [
           '사람이나 동물 따위가 아래에서 위나 높은 곳으로 이동하다.',
           '물가, 성적, 기온, 가치 따위의 수치나 등급이 높아지다.',
-          '탈것에 몸을 싣다.',
-          '입방아, 화제, 기록 따위에 거론되거나 실리다.'
+          '차, 배, 비행기 따위의 탈것에 몸을 싣다.',
+          '소문, 입방아, 화제, 기록 따위에 거론되거나 실리다.'
         ],
         def: '아래에서 위로 이동하거나 수치·등급 따위가 높아지다.',
         syn: '상승하다, 올라가다, 등정하다',
@@ -1271,12 +1290,12 @@
       },
       '가다': {
         senses: [
-          '한 곳에서 다른 곳으로 장소를 이동하다.',
-          '시간이나 세월이 흘러 지나다.',
-          '어떤 곳으로 길이 이어져 통하다.',
-          '관심이나 눈길, 마음이 어떤 대상에게 쏠리다.'
+          '한곳에서 다른 곳으로 장소를 이동하다.',
+          '수레, 배, 자동차, 비행기 따위가 운행하거나 다니다.',
+          '직업이나 학업, 복무 따위로 다른 곳으로 옮기다.',
+          '시간이나 세월이 흘러 지나다.'
         ],
-        def: '한 곳에서 다른 곳으로 장소를 이동하다.',
+        def: '한곳에서 다른 곳으로 장소를 이동하다.',
         syn: '이동하다, 나아가다, 향하다',
         ant: '오다, 머무르다, 멈추다'
       },
@@ -1393,7 +1412,16 @@
         syn: '적다, 기록하다, 사용하다',
         ant: '지우다, 아끼다, 달다'
       },
-      '집': { def: '사람이나 동물이 추위, 더위, 비바람을 막고 들어 살기 위하여 지은 건물.', syn: '가옥, 주택, 거처', ant: '바깥, 외부, 타향' },
+      '집': {
+        senses: [
+          '사람이나 동물이 추위, 더위, 비바람 따위를 막고 들어 살기 위하여 지은 건물.',
+          '가정을 이루고 생활하는 집안이나 식구.',
+          '칼, 총, 안경 따위를 넣어서 보관하는 물건.'
+        ],
+        def: '사람이나 동물이 추위, 더위, 비바람을 막고 들어 살기 위하여 지은 건물.',
+        syn: '가옥, 주택, 거처',
+        ant: '바깥, 외부, 타향'
+      },
       '학교': { def: '교사가 계속적으로 학생에게 교육을 실시하는 기관.', syn: '교정, 배움터, 학원', ant: '가정, 사회' },
       '친구': { def: '가깝게 오래 사귄 사람.', syn: '벗, 동무, 교우', ant: '원수, 적' },
       '마음': { def: '사람이 본래부터 지닌 성격이나 감정, 정신.', syn: '심성, 정신, 내면', ant: '육체, 겉모습' },
@@ -1481,6 +1509,7 @@
     }
 
     function playRewardSound(type) {
+      triggerHaptic(type === 'GOLD' ? [25, 40, 35] : 22);
       if (!soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1767,6 +1796,7 @@
         myWords = await fetchUserWords(email, isAdmin);
         await loadUserGroupsAndMap();
         setupUserView();
+        autoHealExistingWordMeanings();
       } else if (provider === 'EMAIL' && metaName) {
         await finalizeEmailSignupRecord(email, metaName, metaSchool);
       } else {
@@ -1887,7 +1917,7 @@
 
       dotMenuTargetWordId = wordId;
       document.getElementById('dotMenuWordTitle').innerText = target.word;
-      document.getElementById('dotMenuWordSub').innerText = target.aiMeaning || target.meaning || '';
+      document.getElementById('dotMenuWordSub').innerText = getCleanSingleDisplayMeaning(target);
       const gName = wordGroupMap[wordId] || '';
       document.getElementById('dotMenuCurGroupLabel').innerText = gName ? `${gName} →` : '미지정 →';
 
@@ -2041,7 +2071,7 @@
       closeWordDotMenu();
       document.getElementById('editModalWord').value = target.word || '';
       document.getElementById('editModalSource').value = target.sourceSentence || '';
-      document.getElementById('editModalMeaning').value = target.aiMeaning || target.meaning || '';
+      document.getElementById('editModalMeaning').value = getCleanSingleDisplayMeaning(target);
       document.getElementById('editModalMySent').value = target.mySentence || '';
       document.getElementById('wordEditModal').classList.add('open');
     }
@@ -2195,7 +2225,7 @@
         wordGroupMap[w.id] || '',
         w.word || '',
         w.sourceSentence || '',
-        w.aiMeaning || w.meaning || '',
+        getCleanSingleDisplayMeaning(w),
         w.synonyms || '',
         w.antonyms || '',
         w.mySentence || '',
@@ -2323,7 +2353,7 @@
           const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim() : '';
           const rawMeaning = (mIdx >= 0 && row[mIdx] != null) ? String(row[mIdx]).trim() : '';
           const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : rawMeaning;
-          const finalMeaning = rawMeaning || aiMeaning || '문맥 의미 확인 필요';
+          const finalMeaning = selectBestContextualMeaning(rawMeaning || aiMeaning, sourceSentence, '');
           const synonyms = (synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]).trim() : '';
           const antonyms = (antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]).trim() : '';
           const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim() : '';
@@ -2352,7 +2382,7 @@
             word: word,
             meaning: finalMeaning,
             source_sentence: sourceSentence,
-            ai_meaning: aiMeaning || finalMeaning,
+            ai_meaning: finalMeaning,
             synonyms: synonyms,
             antonyms: antonyms,
             my_sentence: mySentence,
@@ -2368,7 +2398,7 @@
             word: word,
             meaning: finalMeaning,
             sourceSentence: sourceSentence,
-            aiMeaning: aiMeaning || finalMeaning,
+            aiMeaning: finalMeaning,
             synonyms: synonyms,
             antonyms: antonyms,
             mySentence: mySentence,
@@ -2506,6 +2536,70 @@
       return xp;
     }
 
+    // [수정 3 & 4] 화면 출력용 단일 문맥 의미 정제기
+    // '[I] ... [I] ...'처럼 여러 뜻이 묶여 있거나 '「1」 「2」...'처럼 기호만 있는 경우를 완벽히 걸러내고 무조건 1개의 깨끗한 의미만 반환!
+    function getCleanSingleDisplayMeaning(wObj) {
+      if (!wObj) return '';
+      const rawAi = wObj.aiMeaning || '';
+      const rawMean = wObj.meaning || '';
+
+      // '[기본형: ...]' 접두어 보존 추출
+      const baseMatch = rawAi.match(/^(\[기본형:\s*[^\]]+\]\s*)/);
+      const basePrefix = (baseMatch && !baseMatch[1].includes('드다]')) ? baseMatch[1] : '';
+
+      let candidate = isValidKoreanDefinition(rawAi) ? rawAi : (isValidKoreanDefinition(rawMean) ? rawMean : '');
+
+      if (!candidate) {
+        // 만약 DB에 '「1」 「2」...'만 저장되어 있다면 내장 사전에서 즉시 복원
+        const cands = getKoreanGrammarBaseCandidates(wObj.word || '');
+        for (const c of cands) {
+          if (CORE_SYN_ANT_MAP[c]) {
+            const picked = selectBestContextualMeaning(
+              (CORE_SYN_ANT_MAP[c].senses || [CORE_SYN_ANT_MAP[c].def]).join(' || '),
+              wObj.sourceSentence || '',
+              CORE_SYN_ANT_MAP[c].def
+            );
+            const prefix = (c !== wObj.word) ? `[기본형: ${c}] ` : '';
+            return prefix + picked;
+          }
+        }
+        return '문맥 의미를 불러오는 중...';
+      }
+
+      const bodyWithoutBase = candidate.replace(/^\[기본형:[^\]]+\]\s*/, '');
+      const singleSense = selectBestContextualMeaning(bodyWithoutBase, wObj.sourceSentence || '', bodyWithoutBase);
+      return basePrefix + singleSense;
+    }
+
+    // [자동 복구 엔진] 기존 단어장의 '가다([I] 여러개)' 또는 '집(「1」 「2」...)' 같은 오염 데이터를 백그라운드에서 즉시 1개 의미로 치료 후 DB 저장!
+    async function autoHealExistingWordMeanings() {
+      if (!myWords || myWords.length === 0) return;
+      let anyChanged = false;
+
+      for (const w of myWords) {
+        const rawText = w.aiMeaning || w.meaning || '';
+        const hasMultipleMarkers = /\[[IVX\d]+\]|「\d+」|\|\|/.test(rawText);
+        const sentenceCount = rawText.replace(/^\[기본형:[^\]]+\]\s*/, '').split(/다\.\s+/).filter(Boolean).length;
+        const isInvalid = !isValidKoreanDefinition(rawText);
+
+        if (isInvalid || hasMultipleMarkers || sentenceCount >= 2 || rawText.includes('드다]')) {
+          const healed = await findContextualMeaningFromDbAndAi(w.word, w.sourceSentence || w.word);
+          w.meaning = healed.pureMeaning;
+          w.aiMeaning = healed.displayMeaning;
+          anyChanged = true;
+
+          await sb.from('words').update({
+            meaning: w.meaning,
+            ai_meaning: w.aiMeaning
+          }).eq('id', w.id);
+        }
+      }
+
+      if (anyChanged) {
+        renderMyList();
+      }
+    }
+
     function renderMyList() {
       let b = 0, s = 0, g = 0, todayGold = 0;
       const todayPrefix = getNowKST().date;
@@ -2546,11 +2640,10 @@
         const matchGroup = (groupFilter === 'ALL') || (wGroup === groupFilter);
         if (!matchGroup) return false;
         if (!searchQuery) return true;
+        const cleanMean = getCleanSingleDisplayMeaning(w).toLowerCase();
         const inWord = (w.word || '').toLowerCase().includes(searchQuery);
-        const inMeaning = (w.meaning || '').toLowerCase().includes(searchQuery);
-        const inAiMeaning = (w.aiMeaning || '').toLowerCase().includes(searchQuery);
         const inGroup = wGroup.toLowerCase().includes(searchQuery);
-        return inWord || inMeaning || inAiMeaning || inGroup;
+        return inWord || cleanMean.includes(searchQuery) || inGroup;
       });
 
       const c = document.getElementById('wordListContainer');
@@ -2563,18 +2656,19 @@
         return;
       }
 
+      // [수정 1] 단어 이름(.word-title-row)과 우측 점 3개(.btn-word-more)가 정확히 같은 높이(24px 행)에 나란히 배치됨
       c.innerHTML = filtered.map(w => {
         const gName = wordGroupMap[w.id] || '';
         const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
-        const displayMeaning = w.aiMeaning || w.meaning || '문맥 의미 분석 중...';
+        const displayMeaning = getCleanSingleDisplayMeaning(w);
         return `
           <div class="word-item-card" onclick="openBuilder('${w.id}')">
             <div style="flex:1; min-width:0; padding-right:8px;">
-              <div style="font-size:16px; font-weight:700; color:var(--text-main); display:flex; align-items:center; flex-wrap:wrap;">
+              <div class="word-title-row">
                 <span>${escapeHtml(w.word)}</span>
                 ${groupBadgeHtml}
               </div>
-              <div style="font-size:13px; color:var(--text-sub); margin-top:4px; word-break:break-all;">${escapeHtml(displayMeaning)}</div>
+              <div style="font-size:13px; color:var(--text-sub); margin-top:5px; line-height:1.45; word-break:keep-all;">${escapeHtml(displayMeaning)}</div>
             </div>
             <div class="word-card-right">
               <button type="button" class="btn-word-more" title="단어 메뉴" onclick="openWordDotMenu(event, '${w.id}')">
@@ -2588,7 +2682,7 @@
     }
 
     // =========================================================================
-    // 3. 국어 문법 기본형 변환 엔진 ('오르드다' 버그 완벽 차단) + 4단계 학습 엔진
+    // 3. 국어 문법 기본형 변환 엔진 + 단일 문맥 의미 추출기
     // =========================================================================
     async function callGeminiDirect(prompt, schema) {
       const models = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-lite'];
@@ -2624,12 +2718,14 @@
       throw new Error('AI 응답 지연');
     }
 
+    // '[1]', '[I]', '「1」' 등 모든 사전 기호를 걷어냈을 때 실제 한글 뜻풀이가 3글자 이상 있는지 검사
     function isValidKoreanDefinition(str) {
       if (!str) return false;
       const cleaned = String(str)
         .replace(/\[기본형:[^\]]+\]/g, '')
-        .replace(/\[\d+\]|「\d+」|『\d+』|\(\d+\)/g, '')
+        .replace(/\[[^\]]*\]|「[^」]*」|『[^』]*』|【[^】]*】|\(\d+\)/g, '')
         .trim();
+      if (cleaned === '문맥 의미 분석 중...' || cleaned.includes('분석하고 있습니다')) return false;
       const hangulChars = cleaned.match(/[가-힣]/g);
       return Boolean(hangulChars && hangulChars.length >= 3);
     }
@@ -2637,7 +2733,7 @@
     function cleanSenseMarkers(str) {
       if (!str) return '';
       return String(str)
-        .replace(/\[\d+\]|「\d+」|『\d+』/g, ' ')
+        .replace(/\[[IVX\d]+\]|「[^」]*」|『[^』]*』|【[^】]*】|\(\d+\)|[①②③④⑤⑥⑦⑧⑨⑩]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
     }
@@ -2657,7 +2753,6 @@
       return { cho, jung, jong };
     }
 
-    // [국어 문법 기본형 후보 추출기 - '오르다 -> 오르드다' 오합성 버그 완벽 해결]
     function getKoreanGrammarBaseCandidates(rawInput) {
       const w = (rawInput || '').trim().replace(/[.?!~,"']/g, '');
       if (!w) return [];
@@ -2678,7 +2773,6 @@
         }
       };
 
-      // [핵심 수정 1] 이미 기본형 '-다'로 끝나는 단어(선어말어미/과거형 결합이 아닌 경우, 예: '오르다', '가다', '모르다', '배양하다')는 원형 그대로를 1순위 후보로 보존!
       const isConjugatedDa = /(시|으시|었|았|겠|더|셨|으셨|했|됐|왔|갔|봤|줬|놨|썼|컸|몰랐|달랐|빨랐|불렀|골랐|흘렀|올랐|잘랐|길렀|눌렀|워졌|아졌|어졌|기뻤|슬펐|예뻤|바빴|아팠)다$/.test(w);
       if (w.endsWith('다') && !isConjugatedDa) {
         pushUnique(w);
@@ -2686,7 +2780,7 @@
         if (nounFromDa && nounFromDa !== w) pushUnique(nounFromDa);
       }
 
-      // 1-A. '르' 불규칙 복원 (몰라/몰랐다 -> 모르다, 올라/올랐다 -> 오르다, 달라 -> 다르다, 빨라 -> 빠르다, 불러 -> 부르다 등)
+      // 1-A. '르' 불규칙 복원
       const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
       if (reuTarget.length >= 2) {
         const prevCh = reuTarget.slice(-2, -1);
@@ -2700,7 +2794,7 @@
         }
       }
 
-      // 1-B. 'ㅂ' 불규칙 복원 (아름다워/아름다운 -> 아름답다, 어려워 -> 어렵다, 쉬워 -> 쉽다, 도와 -> 돕다, 고와 -> 곱다)
+      // 1-B. 'ㅂ' 불규칙 복원
       const bMatch = w.match(/^(.+?)(워|웠|워요|웠다|워서|워도|운|울|우니|우면|우시다|우셨다|와|왔|와요|왔다|와서|와도|오니)$/);
       if (bMatch && bMatch[1]) {
         const stemPrefix = bMatch[1];
@@ -2717,7 +2811,7 @@
         }
       }
 
-      // 1-C. 'ㄷ' 불규칙 복원 (걸어 -> 걷다, 들어 -> 듣다, 물어 -> 묻다, 깨달아 -> 깨닫다, 실어 -> 싣다)
+      // 1-C. 'ㄷ' 불규칙 복원
       const dIrregRules = [
         { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
         { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
@@ -2731,14 +2825,14 @@
         }
       }
 
-      // 1-D. 'ㅅ' 불규칙 복원 (지어 -> 짓다, 나아 -> 낫다, 이어 -> 잇다, 부어 -> 붓다, 그어 -> 긋다)
+      // 1-D. 'ㅅ' 불규칙 복원
       const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
       if (sIrregMatch) {
         const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
         if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
       }
 
-      // 1-E. 'ㅎ' 불규칙 복원 (그래 -> 그렇다, 어때 -> 어떻다, 하얘 -> 하얗다, 까매 -> 까맣다 등)
+      // 1-E. 'ㅎ' 불규칙 복원
       const hIrregRules = [
         { regex: /^그(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '그렇' },
         { regex: /^이(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '이렇' },
@@ -2756,7 +2850,7 @@
         if (rule.regex.test(w)) addVerbAndRoot(rule.stem);
       }
 
-      // 1-F. '러' 불규칙 (이르러 -> 이르다, 푸르러 -> 푸르다)
+      // 1-F. '러' 불규칙
       const reoMatch = w.match(/^(이르|푸르|누르)(러|렀|러서|렀다|러요)$/);
       if (reoMatch) addVerbAndRoot(reoMatch[1]);
 
@@ -2767,7 +2861,7 @@
       const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
       if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
 
-      // [규칙 2] 선어말어미(-으시-, -시-, -었-, -았-, -겠-, -더-) 제외 및 'ㄹ' 탈락 복원
+      // [규칙 2] 선어말어미 제외 및 'ㄹ' 탈락 복원
       const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
       const preMatch = w.match(preFinalPattern);
       if (preMatch && preMatch[1]) {
@@ -2811,8 +2905,7 @@
         }
       }
 
-      // [규칙 4] 모음 축약(ㅘ, ㅝ, ㅕ, ㅙ) 및 'ㅡ' 탈락 복원
-      // [핵심 수정 2] 기본형 '-다'로 끝나는 단어에는 절대 'ㅡ' 탈락 복원을 적용하지 않아 '오르다 -> 오르드다' 현상을 원천 차단!
+      // [규칙 4] 모음 축약 및 'ㅡ' 탈락 복원 ('-다' 기본형에는 적용하지 않음)
       if (!w.endsWith('다') || isConjugatedDa) {
         const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
         if (strippedCore.length >= 1 && !strippedCore.endsWith('다')) {
@@ -2870,31 +2963,38 @@
       return candidates;
     }
 
+    // [수정 3 핵심] 여러 개의 뜻풀이가 들어왔을 때('[I] ... [I] ...' 또는 여러 문장),
+    // 개별 의미 단위로 쪼갠 뒤 문맥(sourceSentence)과 가장 관련 있는 '단 하나의 의미(1문장)'만 골라 반환!
     function selectBestContextualMeaning(rawDefinitionText, sourceSentence, fallbackMeaning) {
-      if (!isValidKoreanDefinition(rawDefinitionText)) {
-        return isValidKoreanDefinition(fallbackMeaning) ? cleanSenseMarkers(fallbackMeaning) : '문맥에 맞는 사전적 의미';
+      const sourceRaw = isValidKoreanDefinition(rawDefinitionText) ? rawDefinitionText : fallbackMeaning;
+      if (!isValidKoreanDefinition(sourceRaw)) {
+        return '';
       }
 
-      const cleanedRaw = cleanSenseMarkers(rawDefinitionText);
-      const senseList = cleanedRaw
-        .split(/\s*\|\|\s*|\s*(?:^|\s)[①②③④⑤1-5]\.\s*/)
-        .map(s => s.trim())
+      // 1) 먼저 [I], [II], [1], 「1」, ||, 줄바꿈, 또는 '다. ' 기준으로 개별 뜻풀이들을 모두 분리
+      const rawPieces = String(sourceRaw)
+        .replace(/\[기본형:[^\]]+\]/g, '')
+        .split(/\s*\|\|\s*|\s*\[[IVX\d]+\]\s*|\s*「\d+」\s*|\s*[①②③④⑤⑥⑦⑧⑨⑩]\s*|\s*(?:^|\s)[1-9]\.\s*|\r?\n|(?<=다)\.\s+/)
+        .map(s => cleanSenseMarkers(s))
         .filter(s => isValidKoreanDefinition(s));
 
-      if (senseList.length === 0) return cleanSenseMarkers(fallbackMeaning || '');
-      if (senseList.length === 1) return senseList[0];
+      if (rawPieces.length === 0) {
+        const cleanedSingle = cleanSenseMarkers(sourceRaw);
+        return cleanedSingle.endsWith('.') ? cleanedSingle : (cleanedSingle + '.');
+      }
 
+      // 2) 출처 문장(sourceSentence)에서 핵심 어근 키워드 추출
       const keywords = String(sourceSentence || '')
         .replace(/[^가-힣\s]/g, ' ')
         .split(/\s+/)
-        .map(t => t.replace(/(은|는|이|가|을|를|에|에서|으로|로|도|만|하다|되다|다)$/, ''))
+        .map(t => t.replace(/(에서|에게|으로|로|은|는|이|가|을|를|에|도|만|하다|되다|다)$/, ''))
         .filter(t => t.length >= 1);
 
-      let bestSense = senseList[0];
+      let bestSense = rawPieces[0];
       let bestScore = -1;
 
-      senseList.forEach((sense, idx) => {
-        let score = (idx === 0) ? 0.5 : 0;
+      rawPieces.forEach((sense, idx) => {
+        let score = (idx === 0) ? 0.6 : 0; // 동점일 때는 가장 기본이 되는 첫 번째 중심 의미 선택
         keywords.forEach(kw => {
           if (kw.length >= 2 && sense.includes(kw)) {
             score += 3;
@@ -2908,10 +3008,15 @@
         }
       });
 
+      // 마침표 정리 (단 1개의 문장으로 깔끔하게 마무리)
+      bestSense = bestSense.trim();
+      if (!bestSense.endsWith('.') && !bestSense.endsWith('음') && !bestSense.endsWith('함') && !bestSense.endsWith('킴') && !bestSense.endsWith('됨')) {
+        bestSense += '.';
+      }
       return bestSense;
     }
 
-    // [1·2단계 저장 시 실행] 문장의 문맥에 따라 모르는 단어의 의미를 DB + AI로 추출
+    // [1·2단계 저장 시 실행] 문장의 문맥에 따라 모르는 단어의 의미를 DB + AI로 추출 (단일 의미 보장 & 빈칸 방지)
     async function findContextualMeaningFromDbAndAi(rawWord, sourceSentence) {
       const cleanWord = rawWord.trim();
       const candidates = getKoreanGrammarBaseCandidates(cleanWord);
@@ -2954,13 +3059,13 @@
         coreHit ? coreHit.def : ''
       );
 
-      // AI를 돌려 문장 속 정확한 기본형과 문맥 의미 추출
+      // AI를 돌려 문장 속 정확한 기본형과 '단 1개의 문맥 의미' 추출
       try {
         const prompt =
           `단어:"${cleanWord}" / 출처문장:"${sourceSentence}"\n` +
-          `${rawDictDef ? `(참고 사전뜻: "${rawDictDef}")\n` : ''}` +
-          `1. baseForm: 위 단어를 국어사전에서 찾을 때의 정확한 표준국어대사전 기본형 표제어(용언은 선어말어미 제외 후 어간+'-다', 명사는 조사 제외한 원형. 예: '올랐다'->'오르다', '오르다'->'오르다', '몰라'->'모르다', '가시다'->'가다'). 절대 존재하지 않는 글자('오르드다' 등)를 합성하지 말 것.\n` +
-          `2. contextMeaning: 위 출처문장의 문맥에서 이 단어가 뜻하는 정확한 의미를 학생이 이해하기 쉽게 한 문장으로 설명. JSON 반환`;
+          `${rawDictDef ? `(사전 후보 뜻들: "${cleanSenseMarkers(rawDictDef)}")\n` : ''}` +
+          `1. baseForm: 위 단어의 정확한 표준국어대사전 기본형 표제어(용언은 선어말어미 제외 후 어간+'-다', 명사는 조사 제외한 원형. 절대 '오르드다' 같은 없는 말을 합성하지 말 것).\n` +
+          `2. contextMeaning: 여러 개의 뜻을 나열하지 말고, 오직 위 출처문장의 맥락에 해당하는 뜻 딱 1가지만 골라 한 문장(예: '~하다.' 또는 '~하는 것.')으로 작성. 절대 [I], [1], 「1」 같은 기호를 넣지 말 것. JSON 반환`;
 
         const schema = {
           type: 'OBJECT',
@@ -2976,34 +3081,44 @@
           const aiBase = (aiRes.baseForm || '').trim();
           if (aiBase && !aiBase.endsWith('드다')) {
             matchedBaseWord = aiBase;
-            // 만약 기존 dictHit가 없었는데 AI가 정확한 기본형을 찾았다면 std_dict 한 번 더 확인
-            if (!dictHit) {
-              const { data: retryRow } = await sb.from('std_dict').select('*').eq('word', aiBase).maybeSingle();
-              if (retryRow && isValidKoreanDefinition(retryRow.definition)) {
-                dictHit = retryRow;
-              }
-            }
           }
           if (isValidKoreanDefinition(aiRes.contextMeaning)) {
-            finalContextMeaning = cleanSenseMarkers(aiRes.contextMeaning);
+            // AI가 혹시 2문장을 주더라도 selectBestContextualMeaning으로 무조건 1문장만 남김
+            finalContextMeaning = selectBestContextualMeaning(aiRes.contextMeaning, sourceSentence, finalContextMeaning);
           }
         }
       } catch (e) {}
 
+      // 만약 AI도 실패하고 std_dict에도 없거나 기호('「1」 「2」')로 오염되어 있었다면, 어근 검색으로 뜻 보완
       if (!isValidKoreanDefinition(finalContextMeaning)) {
-        finalContextMeaning = `${cleanWord}의 문맥적 의미`;
+        if (coreHit && coreHit.def) {
+          finalContextMeaning = coreHit.def;
+        } else {
+          const rootKey = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
+          const { data: fallbackRows } = await sb
+            .from('std_dict')
+            .select('definition')
+            .ilike('word', `${rootKey}%`)
+            .limit(10);
+          const validRow = (fallbackRows || []).find(r => isValidKoreanDefinition(r.definition));
+          if (validRow) {
+            finalContextMeaning = selectBestContextualMeaning(validRow.definition, sourceSentence, '');
+          }
+        }
+      }
+
+      if (!isValidKoreanDefinition(finalContextMeaning)) {
+        finalContextMeaning = `'${matchedBaseWord}'의 문맥적 의미 (단어 편집에서 뜻을 직접 다듬을 수 있습니다).`;
       }
 
       const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
-      const cleanFinalMeaning = cleanSenseMarkers(finalContextMeaning.replace(/^\[기본형:[^\]]+\]\s*/, ''));
+      const cleanFinalMeaning = selectBestContextualMeaning(finalContextMeaning, sourceSentence, finalContextMeaning);
       const displayMeaningWithBase = basePrefix + cleanFinalMeaning;
 
       return {
         baseWord: matchedBaseWord || cleanWord,
         pureMeaning: cleanFinalMeaning,
-        displayMeaning: displayMeaningWithBase,
-        cachedSyn: (dictHit && dictHit.synonyms && dictHit.synonyms !== '없음') ? dictHit.synonyms : ((coreHit && coreHit.syn) || ''),
-        cachedAnt: (dictHit && dictHit.antonyms && dictHit.antonyms !== '없음') ? dictHit.antonyms : ((coreHit && coreHit.ant) || '')
+        displayMeaning: displayMeaningWithBase
       };
     }
 
@@ -3084,16 +3199,20 @@
       syncBuilder();
       showScreen('screen-builder');
 
-      // 만약 기존 저장 단어 중 '오르드다' 같은 잘못된 기본형 표기가 들어있다면 자동으로 즉시 교정
-      if (curItem && (curItem.aiMeaning || '').includes('드다]')) {
-        const fixed = await findContextualMeaningFromDbAndAi(curItem.word, curItem.sourceSentence || curItem.word);
-        curItem.meaning = fixed.pureMeaning;
-        curItem.aiMeaning = fixed.displayMeaning;
-        renderStep12Summary();
-        await sb.from('words').update({
-          meaning: curItem.meaning,
-          ai_meaning: curItem.aiMeaning
-        }).eq('id', curItem.id);
+      if (curItem) {
+        const rawText = curItem.aiMeaning || curItem.meaning || '';
+        const hasMultipleOrCorrupt = /\[[IVX\d]+\]|「\d+」|\|\|/.test(rawText) || !isValidKoreanDefinition(rawText) || rawText.includes('드다]');
+        if (hasMultipleOrCorrupt) {
+          const fixed = await findContextualMeaningFromDbAndAi(curItem.word, curItem.sourceSentence || curItem.word);
+          curItem.meaning = fixed.pureMeaning;
+          curItem.aiMeaning = fixed.displayMeaning;
+          renderStep12Summary();
+          renderMyList();
+          await sb.from('words').update({
+            meaning: curItem.meaning,
+            ai_meaning: curItem.aiMeaning
+          }).eq('id', curItem.id);
+        }
       }
     }
 
@@ -3180,7 +3299,7 @@
     }
 
     function renderStep12Summary() {
-      const meanText = curItem.aiMeaning || curItem.meaning || '문맥 의미 분석 중...';
+      const meanText = getCleanSingleDisplayMeaning(curItem);
       document.getElementById('sum12').innerHTML = `
         <div style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:4px;">${escapeHtml(curItem.word)}</div>
         <div style="font-size:13px; color:var(--text-sub); margin-bottom:8px;">"${escapeHtml(curItem.sourceSentence)}"</div>
@@ -3203,7 +3322,7 @@
       `;
     }
 
-    // [1·2단계 필수 저장] 단어와 문장만 입력받아 저장하고, 아래에 문맥 의미를 DB + AI로 찾아 표시!
+    // [1·2단계 필수 저장]
     async function doSaveMandatoryStep12() {
       const w = document.getElementById('inpW').value.trim();
       const src = document.getElementById('inpSrc').value.trim();
@@ -3223,9 +3342,9 @@
         userId: myUser.userId,
         userName: myUser.name,
         word: w,
-        meaning: '문맥 의미 분석 중...',
+        meaning: '',
         sourceSentence: src,
-        aiMeaning: '표준국어대사전 DB와 AI로 문맥 의미를 분석하고 있습니다...',
+        aiMeaning: '',
         synonyms: '',
         antonyms: '',
         mySentence: '',
@@ -3267,7 +3386,7 @@
       });
     }
 
-    // [3단계 실행] 유의어·반의어 확인하기 (무료 5회 차감, 이후 광고 1회당 5회 충전)
+    // [3단계 실행] 유의어·반의어 확인하기
     async function doStep3CheckSynAnt() {
       if (!curItem) return;
 
@@ -3284,11 +3403,10 @@
 
       const res = await fetchSynonymsAndAntonyms(
         curItem.word,
-        curItem.aiMeaning || curItem.meaning,
+        getCleanSingleDisplayMeaning(curItem),
         curItem.sourceSentence
       );
 
-      // 1회 사용 차감
       const qState = getSynAntQuotaState();
       qState.used += 1;
       saveSynAntQuotaState(qState);
@@ -3316,7 +3434,6 @@
       }).eq('id', curItem.id);
     }
 
-    // 3단계 유의어·반의어 광고 1회 시청 시 +5번 충전
     function triggerSynAntRewardedAd() {
       if (typeof window.adBreak === 'function') {
         window.adBreak({
@@ -3357,7 +3474,7 @@
       let evalResult = null;
 
       try {
-        const prompt = `단어:"${curItem.word}"(뜻:"${curItem.aiMeaning || curItem.meaning}")/학생문장:"${my}" -> 단어가 문맥에 맞게 쓰였으면 isPassed:true와 다정한 칭찬(1문장), 어색하거나 단어가 빠졌으면 isPassed:false와 수정힌트(1문장) JSON반환`;
+        const prompt = `단어:"${curItem.word}"(뜻:"${getCleanSingleDisplayMeaning(curItem)}")/학생문장:"${my}" -> 단어가 문맥에 맞게 쓰였으면 isPassed:true와 다정한 칭찬(1문장), 어색하거나 단어가 빠졌으면 isPassed:false와 수정힌트(1문장) JSON반환`;
         const schema = {
           type: 'OBJECT',
           properties: {
@@ -3489,12 +3606,12 @@
       limitArea.style.display = 'none';
       document.getElementById('btnNextQuiz').style.display = 'none';
 
-      const pool = myWords.map(w => ({ word: w.word, meaning: w.meaning || w.aiMeaning }));
+      const pool = myWords.map(w => ({ word: w.word, meaning: getCleanSingleDisplayMeaning(w) }));
       FALLBACK_VOCAB.forEach(fb => {
         if (!pool.some(p => p.word === fb.word)) pool.push(fb);
       });
 
-      const targetPool = myWords.length > 0 ? myWords.map(w => ({ word: w.word, meaning: w.meaning || w.aiMeaning })) : pool;
+      const targetPool = myWords.length > 0 ? myWords.map(w => ({ word: w.word, meaning: getCleanSingleDisplayMeaning(w) })) : pool;
       const answerItem = targetPool[Math.floor(Math.random() * targetPool.length)];
       const wrongPool = pool.filter(p => p.word !== answerItem.word).sort(() => Math.random() - 0.5).slice(0, 3);
       const choices = [answerItem, ...wrongPool].sort(() => Math.random() - 0.5);
@@ -3530,6 +3647,7 @@
         await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
         btnEl.classList.add('wrong');
+        triggerHaptic([40, 30, 40]);
         showToast('아쉽네요. 뜻을 다시 확인해 보세요.');
       }
 
@@ -3837,7 +3955,7 @@
 
         studentMap[uId].words.push({
           word: r.word,
-          meaning: r.ai_meaning || r.meaning,
+          meaning: getCleanSingleDisplayMeaning({ word: r.word, meaning: r.meaning, aiMeaning: r.ai_meaning, sourceSentence: r.source_sentence }),
           sourceSentence: r.source_sentence || '',
           mySentence: r.my_sentence || '',
           aiFeedback: r.ai_feedback || '',
