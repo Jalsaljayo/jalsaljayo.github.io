@@ -11,12 +11,10 @@
   <title>메이드보카 (MadeVoca)</title>
 
   <script>
-    // 모바일 화면 100% 자동 맞춤 스크립트 (데스크톱 사이트 보기 대응)
     function fitMobileScreen() {
       var isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
       if (isMobileDevice && window.innerWidth > 500) {
-        var scaleRatio = window.innerWidth / 412;
-        document.documentElement.style.zoom = scaleRatio;
+        document.documentElement.style.zoom = window.innerWidth / 412;
       } else {
         document.documentElement.style.zoom = 1;
       }
@@ -67,107 +65,69 @@
     }
 
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-      background-color: var(--bg-app);
-      color: var(--text-main);
+      margin: 0; padding: 0; width: 100%;
+      min-height: 100vh; min-height: 100dvh;
+      background-color: var(--bg-app); color: var(--text-main);
       overflow-x: hidden;
     }
 
     @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-      body {
-        background-color: #EFECE6;
-        display: flex;
-        justify-content: center;
-      }
-      .app-container {
-        max-width: 460px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.05);
-      }
-      .bottom-tab-bar, .bottom-sheet {
-        max-width: 460px !important;
-      }
+      body { background-color: #EFECE6; display: flex; justify-content: center; }
+      .app-container { max-width: 460px; box-shadow: 0 0 30px rgba(0,0,0,0.05); }
+      .bottom-tab-bar, .bottom-sheet { max-width: 460px !important; }
     }
 
     .app-container {
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-      background-color: var(--bg-app);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
+      width: 100%; min-height: 100vh; min-height: 100dvh;
+      background-color: var(--bg-app); position: relative;
+      display: flex; flex-direction: column; overflow-x: hidden;
     }
 
     .screen {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
+      display: none; flex-direction: column; width: 100%;
+      min-height: 100vh; min-height: 100dvh;
       padding-bottom: calc(72px + var(--safe-bottom));
     }
     #screen-builder, #screen-admin { padding-bottom: 28px; }
     .screen.active { display: flex; animation: fadeIn 0.15s ease-out; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .star-svg, .line-icon {
-      display: inline-block;
-      vertical-align: middle;
-      overflow: visible;
-      flex-shrink: 0;
-    }
+    .star-svg, .line-icon { display: inline-block; vertical-align: middle; overflow: visible; flex-shrink: 0; }
 
     /* 화면 1: 로그인 화면 */
     #screen-login {
-      height: 100vh;
-      height: 100dvh;
-      min-height: 0;
+      height: 100vh; height: 100dvh; min-height: 0;
       background-color: var(--bg-app);
       padding: 16vh 24px calc(36px + var(--safe-bottom));
-      justify-content: space-between;
-      align-items: center;
-      text-align: center;
-      overflow: hidden;
+      justify-content: space-between; align-items: center; text-align: center; overflow: hidden;
     }
     .brand-logo-box {
       width: 68px; height: 68px; border-radius: 20px;
-      background-color: var(--surface);
-      border: 2px solid var(--icon-stroke);
+      background-color: var(--surface); border: 2px solid var(--icon-stroke);
       display: flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: 800; color: var(--icon-stroke);
-      margin: 0 auto 16px;
+      font-size: 32px; font-weight: 800; color: var(--icon-stroke); margin: 0 auto 16px;
     }
 
     .social-btn-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
     .google-btn {
       width: 100%; background: var(--surface); color: var(--text-main);
-      border: 1px solid var(--border);
-      padding: 15px 16px; border-radius: 14px; font-size: 15px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; transition: background 0.15s;
+      border: 1px solid var(--border); padding: 15px 16px; border-radius: 14px;
+      font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
     }
     .email-auth-btn {
       width: 100%; background: var(--primary); color: #FFFFFF;
-      border: 1px solid var(--primary);
-      padding: 15px 16px; border-radius: 14px; font-size: 15px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      cursor: pointer; transition: opacity 0.15s;
+      border: 1px solid var(--primary); padding: 15px 16px; border-radius: 14px;
+      font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
     }
     .google-btn:active, .email-auth-btn:active { opacity: 0.85; }
 
-    /* 이메일 로그인/회원가입 탭 전환 스위치 */
     .auth-mode-tabs {
       display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
       background: #EDEBE4; padding: 4px; border-radius: 12px; margin-bottom: 16px;
     }
     .auth-mode-tab {
       padding: 10px; border-radius: 9px; border: none; background: transparent;
-      font-size: 13px; font-weight: 700; color: var(--text-sub); cursor: pointer; transition: 0.15s;
+      font-size: 13px; font-weight: 700; color: var(--text-sub); cursor: pointer;
     }
     .auth-mode-tab.active {
       background: var(--surface); color: var(--primary); font-weight: 800;
@@ -187,8 +147,7 @@
     }
     .btn-icon-sound {
       width: 36px; height: 36px; border-radius: 10px; background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .btn-admin-pill {
       background: var(--primary-soft); color: var(--primary); border: 1px solid #C5DDEC;
@@ -196,33 +155,22 @@
       display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
     }
 
-    /* 활동·기록 탭 내부의 레벨·경험치 카드 & 오늘의 목표 */
+    /* 활동·기록 탭 카드 */
     .gamify-card {
       margin: 0 0 8px 0; padding: 16px; border-radius: 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-main);
+      background: var(--surface); border: 1px solid var(--border); color: var(--text-main);
     }
     .gamify-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .level-badge {
-      background: var(--primary-soft); color: var(--primary);
-      padding: 4px 10px; border-radius: 8px;
+      background: var(--primary-soft); color: var(--primary); padding: 4px 10px; border-radius: 8px;
       font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
     }
     .streak-pill {
-      background: var(--bg-app); color: var(--text-main);
-      border: 1px solid var(--border);
-      padding: 4px 10px; border-radius: 8px;
-      font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
+      background: var(--bg-app); color: var(--text-main); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
     }
-    .xp-bar-bg {
-      width: 100%; height: 6px; background: #EDEBE4;
-      border-radius: 999px; overflow: hidden; margin: 8px 0 2px;
-    }
-    .xp-bar-fill {
-      height: 100%; background: var(--primary);
-      border-radius: 999px; width: 0%; transition: width 0.4s ease;
-    }
+    .xp-bar-bg { width: 100%; height: 6px; background: #EDEBE4; border-radius: 999px; overflow: hidden; margin: 8px 0 2px; }
+    .xp-bar-fill { height: 100%; background: var(--primary); border-radius: 999px; width: 0%; transition: width 0.4s ease; }
 
     .daily-quest-box {
       margin: 0 0 18px 0; padding: 11px 14px; border-radius: 14px;
@@ -233,25 +181,20 @@
     .quest-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
 
     /* 별 필터 버튼 */
-    .reward-summary {
-      padding: 12px 16px 8px;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-    }
+    .reward-summary { padding: 12px 16px 8px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .reward-pill {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 10px 6px; display: flex; align-items: center; justify-content: center; gap: 8px;
-      font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.15s;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px 6px; display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer;
     }
-    .reward-pill.active-filter {
-      border-color: var(--primary); background: var(--primary-soft); color: var(--primary);
-    }
+    .reward-pill.active-filter { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
 
     /* 내 단어 검색창 */
     .search-box-wrap { padding: 0 16px 6px; position: relative; }
     .search-input {
       width: 100%; padding: 11px 36px 11px 38px; border-radius: 12px;
       border: 1px solid var(--border); background: var(--surface);
-      font-size: 16px; font-weight: 500; color: var(--text-main); outline: none; transition: 0.15s;
+      font-size: 16px; font-weight: 500; color: var(--text-main); outline: none;
     }
     .search-input:focus { border-color: var(--primary); }
     .search-icon-left {
@@ -265,23 +208,20 @@
       display: none; align-items: center; justify-content: center; margin-top: -3px;
     }
 
-    /* 그룹 필터 가로 스크롤 칩 바 */
+    /* 그룹 필터 칩 */
     .group-chip-bar {
-      padding: 2px 16px 8px;
-      display: flex; gap: 6px; overflow-x: auto;
+      padding: 2px 16px 8px; display: flex; gap: 6px; overflow-x: auto;
       scrollbar-width: none; -ms-overflow-style: none;
     }
     .group-chip-bar::-webkit-scrollbar { display: none; }
     .group-chip {
       background: var(--surface); border: 1px solid var(--border);
       padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
-      color: var(--text-sub); white-space: nowrap; cursor: pointer; transition: 0.15s;
+      color: var(--text-sub); white-space: nowrap; cursor: pointer;
     }
-    .group-chip.active {
-      background: var(--primary); border-color: var(--primary); color: #FFFFFF;
-    }
+    .group-chip.active { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
 
-    /* [수정 1] 단어 카드: 점 3개(...)의 행 위치를 단어 이름의 행 위치와 정확히 일치시킴 */
+    /* 단어 카드: 단어 행과 점 3개(...) 행을 상단 동일 수평선에 정렬, 그 아래 별 배치 */
     .list-body { padding: 4px 16px 24px; flex: 1; }
     .word-item-card {
       background: var(--surface); border: 1px solid var(--border);
@@ -291,8 +231,7 @@
     .word-item-card:active { background: #F4F2EC; }
     .word-title-row {
       font-size: 16px; font-weight: 700; color: var(--text-main);
-      min-height: 24px; line-height: 24px;
-      display: flex; align-items: center; flex-wrap: wrap;
+      min-height: 24px; line-height: 24px; display: flex; align-items: center; flex-wrap: wrap;
     }
     .word-group-tag {
       display: inline-block; font-size: 10px; font-weight: 700; line-height: 1.2;
@@ -306,78 +245,54 @@
     .btn-word-more {
       width: 30px; height: 24px; border-radius: 6px;
       background: transparent; border: none; color: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; padding: 0; margin: 0;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; margin: 0;
     }
     .btn-word-more:active { background: var(--primary-soft); }
 
-    /* 점 3개 메뉴 및 그룹 변경 모달 스타일 */
-    .menu-action-list {
-      display: flex; flex-direction: column; gap: 8px; margin-top: 14px;
-    }
+    /* 점 3개 팝업 및 그룹 모달 */
+    .menu-action-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
     .menu-action-btn {
       width: 100%; padding: 14px 16px; border-radius: 12px;
       background: var(--surface); border: 1px solid var(--border);
       font-size: 14px; font-weight: 700; color: var(--text-main);
-      text-align: left; display: flex; align-items: center; justify-content: space-between;
-      cursor: pointer; transition: 0.12s;
+      text-align: left; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
     }
     .menu-action-btn:active { background: var(--primary-soft); border-color: var(--primary); }
     .menu-action-btn.danger { color: #B91C1C; border-color: #FECACA; background: #FFF5F5; }
 
     .btn-header-done {
-      padding: 7px 13px; border-radius: 9px; border: none;
-      font-size: 13px; font-weight: 800;
-      background: var(--primary); color: #FFFFFF; cursor: pointer; transition: 0.15s;
+      padding: 7px 13px; border-radius: 9px; border: none; font-size: 13px; font-weight: 800;
+      background: var(--primary); color: #FFFFFF; cursor: pointer;
     }
-    .btn-header-done:disabled {
-      background: #E2E8F0; color: #94A3B8; cursor: not-allowed;
-    }
+    .btn-header-done:disabled { background: #E2E8F0; color: #94A3B8; cursor: not-allowed; }
 
-    .group-select-list {
-      display: flex; flex-direction: column; gap: 8px;
-      max-height: 240px; overflow-y: auto; margin: 12px 0;
-    }
+    .group-select-list { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; margin: 12px 0; }
     .group-option-item {
       width: 100%; padding: 13px 15px; border-radius: 12px;
       background: var(--surface); border: 1.5px solid var(--border);
       font-size: 14px; font-weight: 700; color: var(--text-main);
-      display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; transition: 0.15s;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer;
     }
-    .group-option-item.selected {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #FFFFFF;
-    }
+    .group-option-item.selected { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
 
-    .export-part-box {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 15px; margin-bottom: 12px;
-    }
+    .export-part-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px; margin-bottom: 12px; }
 
     /* 하단 탭 네비게이션 */
     .bottom-tab-bar {
       position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
-      width: 100%; height: calc(64px + var(--safe-bottom));
-      padding-bottom: var(--safe-bottom);
+      width: 100%; height: calc(64px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
       background: var(--bg-app); border-top: 1px solid var(--border);
       display: grid; grid-template-columns: repeat(4, 1fr); z-index: 40;
     }
     .tab-btn {
       background: none; border: none; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 4px;
-      font-size: 11px; font-weight: 600; color: var(--text-sub); cursor: pointer;
-      opacity: 0.55; transition: opacity 0.15s, color 0.15s;
+      font-size: 11px; font-weight: 600; color: var(--text-sub); cursor: pointer; opacity: 0.55;
     }
-    .tab-btn.active {
-      color: var(--primary);
-      font-weight: 800;
-      opacity: 1;
-    }
+    .tab-btn.active { color: var(--primary); font-weight: 800; opacity: 1; }
     .tab-icon { height: 22px; display: flex; align-items: center; justify-content: center; }
 
-    /* 탭2: 활동·기록 */
+    /* 퀴즈 및 도감 */
     .quiz-limit-bar {
       display: flex; justify-content: space-between; align-items: center;
       background: var(--primary-soft); border: 1px solid #C5DDEC; border-radius: 12px;
@@ -386,12 +301,9 @@
     .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
     .badge-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-      padding: 14px 6px; text-align: center; opacity: 0.38; transition: 0.2s;
+      padding: 14px 6px; text-align: center; opacity: 0.38;
     }
-    .badge-card.unlocked {
-      opacity: 1; border-color: var(--primary);
-      background: var(--surface);
-    }
+    .badge-card.unlocked { opacity: 1; border-color: var(--primary); background: var(--surface); }
     .quiz-box {
       background: var(--surface); border: 1.5px solid var(--primary);
       border-radius: 16px; padding: 18px; margin-bottom: 18px; text-align: center;
@@ -399,20 +311,19 @@
     .quiz-option-btn {
       width: 100%; text-align: left; background: var(--bg-app); border: 1px solid var(--border);
       border-radius: 12px; padding: 13px 14px; margin-bottom: 8px;
-      font-size: 14px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: 0.1s;
+      font-size: 14px; font-weight: 600; color: var(--text-main); cursor: pointer;
     }
     .quiz-option-btn.correct { background: #EBF3F7; border-color: var(--primary); color: var(--primary-dark); font-weight: 700; }
     .quiz-option-btn.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
 
     .btn-watch-ad {
       width: 100%; padding: 13px; border-radius: 11px; border: none;
-      background: var(--primary-dark); color: white;
-      font-size: 14px; font-weight: 700; cursor: pointer;
+      background: var(--primary-dark); color: white; font-size: 14px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-watch-ad:disabled { background: #94A3B8; cursor: not-allowed; }
 
-    /* 탭3: 랭킹 카드 */
+    /* 랭킹 및 내 정보 */
     .rank-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 14px; padding: 13px 15px; margin-bottom: 8px;
@@ -421,44 +332,34 @@
     .rank-card.me { border-color: var(--primary); background: var(--primary-soft); }
     .rank-num { width: 28px; font-size: 14px; font-weight: 800; color: var(--primary); text-align: center; }
 
-    /* 탭4: 내 정보 카드 & CSV 입출력 버튼 */
     .profile-box-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 18px 16px; margin-bottom: 12px;
     }
-    .csv-btn-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;
-    }
+    .csv-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
     .btn-csv-outline {
       width: 100%; padding: 12px 10px; border-radius: 11px;
       background: var(--bg-app); border: 1px solid var(--border);
       color: var(--text-main); font-size: 13px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      cursor: pointer; transition: 0.12s;
+      display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
     }
     .btn-csv-outline:active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
     .btn-csv-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* 화면 3: 단어 학습 (4단계 구조) */
+    /* 단어 학습 4단계 */
     .builder-body { padding: 14px 16px 40px; flex: 1; }
     .hero-star-stage {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 16px; margin-bottom: 12px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
-      transition: all 0.2s ease;
     }
-
     .step-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 16px; margin-bottom: 10px;
     }
     .step-card.current { border-color: var(--primary); }
     .step-card.locked { opacity: 0.45; pointer-events: none; background: #F4F2EC; }
-
-    .step-sub-label {
-      font-size: 12px; font-weight: 800; color: var(--primary);
-      margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
-    }
+    .step-sub-label { font-size: 12px; font-weight: 800; color: var(--primary); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
 
     .input-field {
       width: 100%; padding: 12px 13px; border-radius: 10px; border: 1px solid var(--border);
@@ -468,7 +369,7 @@
 
     .action-btn {
       width: 100%; padding: 13px; border-radius: 11px; border: none;
-      font-size: 14px; font-weight: 700; color: white; background: var(--primary); cursor: pointer; transition: opacity 0.12s;
+      font-size: 14px; font-weight: 700; color: white; background: var(--primary); cursor: pointer;
     }
     .action-btn:active { opacity: 0.85; }
     .action-btn:disabled { opacity: 0.55; cursor: not-allowed; }
@@ -479,7 +380,7 @@
       font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-bottom: 4px;
     }
 
-    /* 모달 */
+    /* 모달 및 관리자 */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); z-index: 100;
       display: none; justify-content: center; align-items: flex-end;
@@ -488,19 +389,14 @@
     .bottom-sheet {
       width: 100%; background: var(--bg-app);
       border-radius: 22px 22px 0 0; padding: 22px 20px calc(28px + var(--safe-bottom));
-      animation: slideUp 0.2s ease-out;
-      max-height: 90dvh; overflow-y: auto;
+      animation: slideUp 0.2s ease-out; max-height: 90dvh; overflow-y: auto;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
     .admin-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
     .admin-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 6px; text-align: center; }
     .student-row-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
-
-    .dict-upload-box {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-      padding: 16px; margin-bottom: 16px;
-    }
+    .dict-upload-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
 
     #toast {
       visibility: hidden; background: #1E293B; color: white; padding: 11px 16px;
@@ -515,7 +411,7 @@
 
   <div class="app-container">
 
-    <!-- 화면 1: Google OAuth 로그인 & 이메일 회원가입/로그인 -->
+    <!-- 화면 1: 로그인 화면 -->
     <section id="screen-login" class="screen active">
       <div>
         <div class="brand-logo-box">M</div>
@@ -548,7 +444,7 @@
       </div>
     </section>
 
-    <!-- 화면 2: 메인 (내 단어장 / 활동·기록 / 명예의전당 / 내 정보) -->
+    <!-- 화면 2: 메인 화면 -->
     <section id="screen-list" class="screen">
       <header class="top-navbar">
         <div onclick="switchMainTab('profile')" style="cursor:pointer;" title="내 정보 수정하기">
@@ -585,7 +481,7 @@
         </div>
       </div>
 
-      <!-- 탭 2: 활동·기록 (레벨·경험치·오늘의 목표 + 스피드 퀴즈 + 성취 뱃지 도감) -->
+      <!-- 탭 2: 활동·기록 -->
       <div id="tab-quiz" class="tab-pane" style="display:none; padding: 12px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">나의 학습 기록</div>
 
@@ -666,7 +562,6 @@
           <button id="btnSaveMyProfile" class="action-btn btn-primary" style="margin-top:4px;" onclick="saveMyProfileChanges()">내 정보 저장하기</button>
         </div>
 
-        <!-- CSV 파일로 단어 등록하기 & 내보내기 카드 -->
         <div class="profile-box-card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
             <div style="font-size:13px; font-weight:800;">단어장 CSV 파일 관리</div>
@@ -680,12 +575,10 @@
 
           <div class="csv-btn-grid">
             <button id="btnImportCsv" class="btn-csv-outline" onclick="document.getElementById('inpUserCsvImport').click()">
-              <span id="iconCsvUpload"></span>
-              <span>CSV로 단어 등록</span>
+              <span id="iconCsvUpload"></span><span>CSV로 단어 등록</span>
             </button>
             <button id="btnExportCsv" class="btn-csv-outline" onclick="openCsvExportModal()">
-              <span id="iconCsvDownload"></span>
-              <span>CSV로 내보내기</span>
+              <span id="iconCsvDownload"></span><span>CSV로 내보내기</span>
             </button>
           </div>
           <div id="userCsvStatus" style="font-size:12px; font-weight:700; color:var(--primary); margin-top:8px; display:none;"></div>
@@ -700,7 +593,7 @@
         </div>
       </div>
 
-      <!-- 하단 4탭 네비게이션 바 -->
+      <!-- 하단 4탭 바 -->
       <nav class="bottom-tab-bar">
         <button class="tab-btn active" id="navBtnWords" onclick="switchMainTab('words')">
           <span class="tab-icon" id="navIconWords"></span><span>내 단어장</span>
@@ -717,7 +610,7 @@
       </nav>
     </section>
 
-    <!-- 화면 3: 단어 학습 (개편된 4단계 구조) -->
+    <!-- 화면 3: 단어 학습 (4단계 구조) -->
     <section id="screen-builder" class="screen">
       <header class="top-navbar">
         <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 목록</button>
@@ -732,7 +625,7 @@
           <div id="heroDesc" style="font-size:12px; color:var(--text-sub); margin-top:2px;">1·2단계를 저장하면 문맥에 맞는 단어 뜻을 찾아줍니다</div>
         </div>
 
-        <!-- [필수 구간] 1단계(모르는 단어) + 2단계(모르는 단어가 나오는 문장) -->
+        <!-- 필수 입력 (1·2단계) -->
         <div id="card12" class="step-card current">
           <div style="font-size:13px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
             <span style="display:flex; align-items:center; gap:6px;"><span id="bStar1"></span> 필수 입력 (1·2단계)</span>
@@ -749,11 +642,10 @@
             <button id="btnS12" class="action-btn" onclick="doSaveMandatoryStep12()">1·2단계 저장하고 문맥 의미 찾기</button>
           </div>
 
-          <!-- 저장 후 문맥 의미가 표시되는 영역 -->
           <div id="sum12" style="display:none;"></div>
         </div>
 
-        <!-- [3단계] 유의어·반의어 확인하기 (무료 5회 + 광고 1회당 5번 충전) -->
+        <!-- 3단계. 유의어·반의어 확인하기 -->
         <div id="card3" class="step-card locked">
           <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
             <span style="display:flex; align-items:center; gap:6px;"><span id="bStar2"></span> 3단계. 유의어·반의어 확인하기</span>
@@ -783,7 +675,7 @@
           <div id="sum3" style="display:none;"></div>
         </div>
 
-        <!-- [4단계] 나만의 문장 만들기 -->
+        <!-- 4단계. 나만의 문장 만들기 -->
         <div id="card4" class="step-card locked">
           <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
             <span style="display:flex; align-items:center; gap:6px;"><span id="bStar3"></span> 4단계. 나만의 문장 만들기</span>
@@ -815,7 +707,7 @@
             <span id="dictCountBadge" style="font-size:11px; font-weight:700; background:var(--primary-soft); color:var(--primary); padding:3px 8px; border-radius:99px;">DB 확인 중...</span>
           </div>
           <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
-            국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. 뜻풀이 열 정밀 인식 및 다의어 문맥 뜻 병합·관계어 자동 추출이 적용되어 있습니다.
+            국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. 뜻풀이 열 정밀 인식 및 유의어·반의어 기호 정제가 적용되어 있습니다.
           </p>
           <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:var(--bg-app); padding:8px; font-size:13px; margin-bottom:8px;">
           <button id="btnUploadDict" class="action-btn btn-primary" style="padding:10px; font-size:13px;" onclick="uploadStandardDictFiles()">
@@ -836,7 +728,7 @@
 
   </div>
 
-  <!-- [이메일 즉시 회원가입 & 로그인 모달] -->
+  <!-- 이메일 즉시 회원가입 & 로그인 모달 -->
   <div class="modal-overlay" id="emailAuthModal" onclick="if(event.target===this) closeEmailAuthModal()">
     <div class="bottom-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -849,7 +741,6 @@
         <button id="tabBtnEmailLogin" class="auth-mode-tab" onclick="switchEmailAuthTab('LOGIN')">이메일 로그인</button>
       </div>
 
-      <!-- 1. 이메일 즉시 회원가입 폼 -->
       <div id="emailSignupPane">
         <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
         <input type="text" id="suName" class="input-field" placeholder="예: 홍길동">
@@ -876,7 +767,6 @@
         </button>
       </div>
 
-      <!-- 2. 이메일 로그인 폼 -->
       <div id="emailLoginPane" style="display:none;">
         <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">이메일 주소</label>
         <input type="email" id="liEmail" class="input-field" placeholder="가입한 이메일 입력">
@@ -891,7 +781,7 @@
     </div>
   </div>
 
-  <!-- [모달 1] 단어 우측 상단 점 3개(...) 클릭 시 뜨는 메뉴 팝업 -->
+  <!-- 단어 우측 상단 점 3개(...) 클릭 팝업 -->
   <div class="modal-overlay" id="wordDotMenuModal" onclick="if(event.target===this) closeWordDotMenu()">
     <div class="bottom-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; border-bottom:1px solid var(--border);">
@@ -919,7 +809,7 @@
     </div>
   </div>
 
-  <!-- [모달 2] 그룹 변경 / 그룹 만들기 / 그룹 삭제하기 팝업 -->
+  <!-- 그룹 변경 / 만들기 / 삭제 팝업 -->
   <div class="modal-overlay" id="groupChangeModal" onclick="if(event.target===this) closeGroupChangeModal()">
     <div class="bottom-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border);">
@@ -947,7 +837,7 @@
     </div>
   </div>
 
-  <!-- [모달 3] 단어 편집 팝업 -->
+  <!-- 단어 편집 팝업 -->
   <div class="modal-overlay" id="wordEditModal" onclick="if(event.target===this) closeWordEditModal()">
     <div class="bottom-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -961,7 +851,7 @@
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">출처 문장 (2단계)</label>
       <input type="text" id="editModalSource" class="input-field" placeholder="단어가 나오는 문장 입력">
 
-      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">문맥 의미 (자동 추출된 뜻 수정 가능)</label>
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">문맥 의미 (직접 수정 가능)</label>
       <input type="text" id="editModalMeaning" class="input-field" placeholder="단어의 문맥 의미">
 
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">나의 문장 (4단계)</label>
@@ -974,7 +864,7 @@
     </div>
   </div>
 
-  <!-- [모달 4] CSV 내보내기 (파트 1: 전체 내보내기 / 파트 2: 그룹별 내보내기) -->
+  <!-- CSV 내보내기 (1. 전체 / 2. 그룹별) 팝업 -->
   <div class="modal-overlay" id="csvExportModal" onclick="if(event.target===this) closeCsvExportModal()">
     <div class="bottom-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -997,7 +887,7 @@
     </div>
   </div>
 
-  <!-- 최초 1회 이름·학번 설정 모달 (Google 로그인 최초 가입 시 사용) -->
+  <!-- Google 로그인 최초 1회 프로필 설정 모달 -->
   <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
       <h3 style="margin:0 0 6px 0; font-size:18px;">프로필 설정</h3>
@@ -1019,7 +909,7 @@
 
   <script>
     // =========================================================================
-    // 1. 수파베이스(Supabase) 설정 & 미니멀 라인 아이콘(#3B82A6) & 진동(Haptic) 엔진
+    // 1. 설정 및 전역 상태 & 햅틱 진동 시스템
     // =========================================================================
     const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
@@ -1051,18 +941,14 @@
     let dotMenuTargetWordId = null;
     let selectedTempGroup = null;
 
-    // [수정 2] 버튼 터치 시 스마트폰 진동(Haptic) 피드백 실행 함수 및 전역 리스너
-    function triggerHaptic(pattern = 15) {
+    function triggerHaptic(pattern = 14) {
       try {
-        if (navigator && typeof navigator.vibrate === 'function') {
-          navigator.vibrate(pattern);
-        }
+        if (navigator && typeof navigator.vibrate === 'function') navigator.vibrate(pattern);
       } catch (e) {}
     }
 
     document.addEventListener('click', function(e) {
-      const clickable = e.target.closest('button, .reward-pill, .word-item-card, .group-chip, .tab-btn, summary');
-      if (clickable) {
+      if (e.target.closest('button, .reward-pill, .word-item-card, .group-chip, .tab-btn, summary')) {
         triggerHaptic(14);
       }
     }, { passive: true });
@@ -1070,108 +956,63 @@
     function getLineIcon(name, size = 18) {
       const s = `width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="line-icon"`;
       switch (name) {
-        case 'book':
-          return `<svg ${s}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
-        case 'award':
-          return `<svg ${s}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`;
-        case 'trophy':
-          return `<svg ${s}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`;
-        case 'user':
-          return `<svg ${s}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
-        case 'search':
-          return `<svg ${s}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
-        case 'soundOn':
-          return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
-        case 'soundOff':
-          return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`;
-        case 'target':
-          return `<svg ${s}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>`;
-        case 'flame':
-          return `<svg ${s}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
-        case 'lock':
-          return `<svg ${s}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
-        case 'check':
-          return `<svg ${s}><path d="M20 6 9 17l-5-5"/></svg>`;
-        case 'spark':
-          return `<svg ${s}><path d="M12 3v18"/><path d="M3 12h18"/><path d="m18.36 5.64-12.72 12.72"/><path d="m5.64 5.64 12.72 12.72"/></svg>`;
-        case 'upload':
-          return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
-        case 'download':
-          return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
-        case 'dots':
-          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${ICON_COLOR}" class="line-icon"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
-        default:
-          return `<svg ${s}><circle cx="12" cy="12" r="9"/></svg>`;
+        case 'book': return `<svg ${s}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+        case 'award': return `<svg ${s}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>`;
+        case 'trophy': return `<svg ${s}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`;
+        case 'user': return `<svg ${s}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+        case 'search': return `<svg ${s}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
+        case 'soundOn': return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
+        case 'soundOff': return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`;
+        case 'target': return `<svg ${s}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>`;
+        case 'flame': return `<svg ${s}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
+        case 'lock': return `<svg ${s}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+        case 'check': return `<svg ${s}><path d="M20 6 9 17l-5-5"/></svg>`;
+        case 'spark': return `<svg ${s}><path d="M12 3v18"/><path d="M3 12h18"/><path d="m18.36 5.64-12.72 12.72"/><path d="m5.64 5.64 12.72 12.72"/></svg>`;
+        case 'upload': return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
+        case 'download': return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+        case 'dots': return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${ICON_COLOR}" class="line-icon"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
+        default: return `<svg ${s}><circle cx="12" cy="12" r="9"/></svg>`;
       }
     }
 
     function getStarSvg(tier, size = 18) {
-      const fillMap = {
-        'NONE': 'none',
-        'BRONZE': '#E19973',
-        'SILVER': '#E0E6ED',
-        'GOLD': '#FDE28A'
-      };
-      return `
-        <svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;">
-          <polygon points="12 2.5 14.9 8.6 21.6 9.5 16.7 14.2 17.9 20.9 12 17.7 6.1 20.9 7.3 14.2 2.4 9.5 9.1 8.6"
-            fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" />
-        </svg>
-      `;
+      const fillMap = { 'NONE': 'none', 'BRONZE': '#E19973', 'SILVER': '#E0E6ED', 'GOLD': '#FDE28A' };
+      return `<svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;"><polygon points="12 2.5 14.9 8.6 21.6 9.5 16.7 14.2 17.9 20.9 12 17.7 6.1 20.9 7.3 14.2 2.4 9.5 9.1 8.6" fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" /></svg>`;
     }
 
-    // 3단계 유의어·반의어 확인 횟수 상태 관리
+    // 3단계 유의어·반의어 확인 횟수 관리 (무료 5회 + 광고 충전 5회)
     function getSynAntQuotaState() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      const key = `madevoca_synquota_${uid}`;
-      const raw = localStorage.getItem(key);
-      if (raw) {
-        try { return JSON.parse(raw); } catch (e) {}
-      }
+      const raw = localStorage.getItem(`madevoca_synquota_${uid}`);
+      if (raw) { try { return JSON.parse(raw); } catch (e) {} }
       return { used: 0, adRecharged: 0 };
     }
-
     function saveSynAntQuotaState(state) {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      const key = `madevoca_synquota_${uid}`;
-      localStorage.setItem(key, JSON.stringify(state));
+      localStorage.setItem(`madevoca_synquota_${uid}`, JSON.stringify(state));
     }
-
     function getSynAntRemainingCount() {
       const st = getSynAntQuotaState();
-      const totalAllowed = FREE_SYN_ANT_LIMIT + (st.adRecharged * SYN_ANT_REWARD_PER_AD);
-      return Math.max(0, totalAllowed - st.used);
+      return Math.max(0, (FREE_SYN_ANT_LIMIT + st.adRecharged * SYN_ANT_REWARD_PER_AD) - st.used);
     }
-
     function updateStep3QuotaUI() {
       const st = getSynAntQuotaState();
       const totalAllowed = FREE_SYN_ANT_LIMIT + (st.adRecharged * SYN_ANT_REWARD_PER_AD);
       const remaining = Math.max(0, totalAllowed - st.used);
-
       const labelEl = document.getElementById('synFreeRemainLabel');
       const playWrap = document.getElementById('synPlayBtnWrap');
       const adWrap = document.getElementById('synAdRechargeWrap');
-
-      if (labelEl) {
-        labelEl.innerText = `확인 가능 횟수: ${remaining}회 남음 (총 ${st.used}/${totalAllowed}회 사용)`;
-      }
+      if (labelEl) labelEl.innerText = `확인 가능 횟수: ${remaining}회 남음 (총 ${st.used}/${totalAllowed}회 사용)`;
       if (playWrap && adWrap) {
-        if (remaining > 0) {
-          playWrap.style.display = 'block';
-          adWrap.style.display = 'none';
-        } else {
-          playWrap.style.display = 'none';
-          adWrap.style.display = 'block';
-        }
+        playWrap.style.display = remaining > 0 ? 'block' : 'none';
+        adWrap.style.display = remaining > 0 ? 'none' : 'block';
       }
     }
 
-    // 그룹 데이터 저장 및 동기화
+    // 그룹 동기화
     function getGroupSyncKey() {
-      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      return `__USER_GROUPS__:${uid}`;
+      return `__USER_GROUPS__:${(myUser && myUser.userId) ? myUser.userId : 'guest'}`;
     }
-
     async function loadUserGroupsAndMap() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
       const localRaw = localStorage.getItem(`madevoca_grpdata_${uid}`);
@@ -1182,246 +1023,61 @@
           wordGroupMap = parsed.map || {};
         } catch (e) {}
       }
-
       try {
         const { data } = await sb.from('std_dict').select('synonyms').eq('word', getGroupSyncKey()).maybeSingle();
-        if (data && data.synonyms && data.synonyms !== '없음') {
+        if (data && data.synonyms && data.synonyms !== '없음' && data.antonyms === 'META') {
           const remote = JSON.parse(data.synonyms);
           if (Array.isArray(remote.groups)) myGroups = remote.groups;
           if (remote.map) wordGroupMap = { ...wordGroupMap, ...remote.map };
           localStorage.setItem(`madevoca_grpdata_${uid}`, JSON.stringify({ groups: myGroups, map: wordGroupMap }));
         }
       } catch (e) {}
-
-      myWords.forEach(w => {
-        w.groupName = wordGroupMap[w.id] || '';
-      });
+      myWords.forEach(w => { w.groupName = wordGroupMap[w.id] || ''; });
     }
-
     async function saveUserGroupsAndMap() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
       const payload = JSON.stringify({ groups: myGroups, map: wordGroupMap });
       localStorage.setItem(`madevoca_grpdata_${uid}`, payload);
-
-      myWords.forEach(w => {
-        w.groupName = wordGroupMap[w.id] || '';
-      });
-
+      myWords.forEach(w => { w.groupName = wordGroupMap[w.id] || ''; });
       try {
-        await sb.from('std_dict').upsert({
-          word: getGroupSyncKey(),
-          definition: '',
-          synonyms: payload,
-          antonyms: 'META',
-          updated_at: getNowKST().full
-        });
+        await sb.from('std_dict').upsert({ word: getGroupSyncKey(), definition: '', synonyms: payload, antonyms: 'META', updated_at: getNowKST().full });
       } catch (e) {}
     }
 
-    // [내장 다의어·문맥 사전]
+    // 내장 다의어·문맥 사전
     const CORE_SYN_ANT_MAP = {
-      '오르다': {
-        senses: [
-          '사람이나 동물 따위가 아래에서 위나 높은 곳으로 이동하다.',
-          '물가, 성적, 기온, 가치 따위의 수치나 등급이 높아지다.',
-          '차, 배, 비행기 따위의 탈것에 몸을 싣다.',
-          '소문, 입방아, 화제, 기록 따위에 거론되거나 실리다.'
-        ],
-        def: '아래에서 위로 이동하거나 수치·등급 따위가 높아지다.',
-        syn: '상승하다, 올라가다, 등정하다',
-        ant: '내리다, 하락하다, 떨어지다'
-      },
-      '내리다': {
-        senses: [
-          '눈, 비, 서리 따위가 하늘에서 떨어지다.',
-          '높은 곳에서 낮은 곳으로 이동하거나 탈것에서 밖으로 나오다.',
-          '물가, 기온, 성적 따위가 낮아지다.',
-          '명령, 결정, 판결 따위를 공식적으로 알리다.'
-        ],
-        def: '위에서 아래로 이동하거나 수치·정도 따위가 낮아지다.',
-        syn: '하강하다, 하락하다, 내놓다',
-        ant: '오르다, 상승하다, 타다'
-      },
-      '모르다': {
-        senses: [
-          '사실이나 내용을 알지 못하거나 이해하지 못하다.',
-          '어떤 사람이나 사물을 겪어 보지 못하여 관계가 없다.',
-          '마땅히 해야 할 도리나 예의를 깨닫지 못하다.'
-        ],
-        def: '사실이나 내용을 알지 못하거나 이해하지 못하다.',
-        syn: '알지 못하다, 미지하다, 생소하다',
-        ant: '알다, 깨닫다, 이해하다'
-      },
-      '알다': {
-        senses: [
-          '감각이나 사유를 통하여 사실이나 대상을 의식하고 깨닫다.',
-          '어떤 사람과 사귀어 안면이 있거나 친분이 있다.',
-          '어떤 일이나 상황을 마음으로 헤아려 이해하다.'
-        ],
-        def: '사실이나 대상을 의식하고 깨달아 이해하다.',
-        syn: '깨닫다, 이해하다, 파악하다',
-        ant: '모르다, 잊다'
-      },
-      '몰다': {
-        senses: [
-          '가축이나 새 따위를 일정한 방향으로 움직여 가도록 하다.',
-          '자동차, 배, 비행기 따위의 탈것을 운전하여 움직이다.',
-          '어떤 사람을 불리한 처지나 궁지로 몰아넣다.'
-        ],
-        def: '탈것을 운전하거나 대상을 일정한 방향으로 움직여 가도록 하다.',
-        syn: '운전하다, 조종하다, 내몰다',
-        ant: '멈추다, 세우다'
-      },
-      '싫다': {
-        senses: ['마음에 들지 아니하여 좋지 아니하다.', '하고 싶은 마음이 없다.'],
-        def: '마음에 들지 아니하여 좋지 아니하다.',
-        syn: '꺼리다, 마땅찮다, 밉다',
-        ant: '좋다, 반갑다, 기쁘다'
-      },
-      '좋다': {
-        senses: [
-          '대상의 성질이나 내용이 마음에 들 만한 가치가 있다.',
-          '건강이나 기분 상태가 정상적이거나 유쾌하다.',
-          '날씨나 환경이 활동하기에 알맞고 화창하다.'
-        ],
-        def: '대상의 성질이나 내용이 마음에 들 만한 가치가 있다.',
-        syn: '훌륭하다, 마땅하다, 반갑다',
-        ant: '싫다, 나쁘다, 밉다'
-      },
-      '가다': {
-        senses: [
-          '한곳에서 다른 곳으로 장소를 이동하다.',
-          '수레, 배, 자동차, 비행기 따위가 운행하거나 다니다.',
-          '직업이나 학업, 복무 따위로 다른 곳으로 옮기다.',
-          '시간이나 세월이 흘러 지나다.'
-        ],
-        def: '한곳에서 다른 곳으로 장소를 이동하다.',
-        syn: '이동하다, 나아가다, 향하다',
-        ant: '오다, 머무르다, 멈추다'
-      },
-      '오다': {
-        senses: [
-          '다른 곳에서 이곳으로 장소를 이동하다.',
-          '비나 눈 따위의 기상 현상이 내리다.',
-          '어떤 계절이나 시기, 기회가 닥쳐오다.'
-        ],
-        def: '다른 곳에서 이곳으로 장소를 이동하다.',
-        syn: '도착하다, 찾아오다, 다다르다',
-        ant: '가다, 떠나다'
-      },
-      '보다': {
-        senses: [
-          '눈으로 대상의 존재나 형태를 인식하다.',
-          '책, 신문, 영화 따위를 읽거나 감상하다.',
-          '시험이나 볼일을 치르다.',
-          '대상을 어떤 관점으로 평가하거나 판단하다.'
-        ],
-        def: '눈으로 대상을 인식하거나 책을 읽고 살펴보다.',
-        syn: '바라보다, 관찰하다, 살피다',
-        ant: '외면하다, 무시하다'
-      },
-      '크다': {
-        senses: [
-          '길이, 넓이, 부피 따위가 보통 정도를 넘다.',
-          '소리나 목소리의 세기가 강하다.',
-          '일이나 사건의 규모, 중요성이 대단하다.',
-          '동식물이 자라나서 성장하다.'
-        ],
-        def: '길이, 넓이, 부피나 정도가 보통 수준을 넘다.',
-        syn: '거대하다, 넓다, 막대하다',
-        ant: '작다, 좁다, 적다'
-      },
-      '작다': {
-        def: '길이, 넓이, 부피 따위가 보통 정도에 미치지 못하다.',
-        syn: '자그마하다, 왜소하다, 협소하다',
-        ant: '크다, 거대하다'
-      },
-      '많다': {
-        def: '수효나 분량, 정도 따위가 일정한 기준을 넘다.',
-        syn: '풍부하다, 허다하다, 넉넉하다',
-        ant: '적다, 부족하다, 드물다'
-      },
-      '적다': {
-        senses: ['수효나 분량, 정도가 일정한 기준에 미치지 못하다.', '글자나 기호를 종이 위에 쓰다.'],
-        def: '수효나 분량, 정도가 일정한 기준에 미치지 못하다.',
-        syn: '모자라다, 부족하다, 희소하다',
-        ant: '많다, 풍부하다'
-      },
-      '아름답다': {
-        def: '보거나 듣기에 흐뭇하고 훌륭하다.',
-        syn: '곱다, 수려하다, 어여쁘다',
-        ant: '추하다, 밉다'
-      },
-      '어렵다': {
-        senses: ['하기가 까다로워 힘에 겹다.', '살림살이가 가난하고 궁핍하다.', '상대하기에 조심스럽고 거북하다.'],
-        def: '하기가 까다로워 힘에 겹거나 이해하기 쉽지 않다.',
-        syn: '난해하다, 곤란하다, 버겁다',
-        ant: '쉽다, 수월하다, 용이하다'
-      },
-      '쉽다': {
-        def: '하기에 까다롭거나 힘들지 아니하다.',
-        syn: '수월하다, 용이하다, 간단하다',
-        ant: '어렵다, 난해하다, 힘들다'
-      },
+      '가다': { senses: ['한곳에서 다른 곳으로 장소를 이동하다.', '수레, 배, 자동차, 비행기 따위가 운행하거나 다니다.', '직업이나 학업, 복무 따위로 다른 곳으로 옮기다.', '시간이나 세월이 흘러 지나다.'], def: '한곳에서 다른 곳으로 장소를 이동하다.', syn: '이동하다, 나아가다, 향하다', ant: '오다, 머무르다, 멈추다' },
+      '오다': { senses: ['다른 곳에서 이곳으로 장소를 이동하다.', '비나 눈 따위의 기상 현상이 내리다.', '어떤 계절이나 시기, 기회가 닥쳐오다.'], def: '다른 곳에서 이곳으로 장소를 이동하다.', syn: '도착하다, 찾아오다, 다다르다', ant: '가다, 떠나다' },
+      '오르다': { senses: ['사람이나 동물 따위가 아래에서 위나 높은 곳으로 이동하다.', '물가, 성적, 기온, 가치 따위의 수치나 등급이 높아지다.', '차, 배, 비행기 따위의 탈것에 몸을 싣다.', '소문, 화제, 기록 따위에 거론되거나 실리다.'], def: '아래에서 위로 이동하거나 수치·등급 따위가 높아지다.', syn: '상승하다, 올라가다, 등정하다', ant: '내리다, 하락하다, 떨어지다' },
+      '내리다': { senses: ['눈, 비, 서리 따위가 하늘에서 떨어지다.', '높은 곳에서 낮은 곳으로 이동하거나 탈것에서 밖으로 나오다.', '물가, 기온, 성적 따위가 낮아지다.', '명령, 결정, 판결 따위를 공식적으로 알리다.'], def: '위에서 아래로 이동하거나 수치·정도 따위가 낮아지다.', syn: '하강하다, 하락하다, 내놓다', ant: '오르다, 상승하다, 타다' },
+      '모르다': { senses: ['사실이나 내용을 알지 못하거나 이해하지 못하다.', '어떤 사람이나 사물을 겪어 보지 못하여 관계가 없다.', '마땅히 해야 할 도리나 예의를 깨닫지 못하다.'], def: '사실이나 내용을 알지 못하거나 이해하지 못하다.', syn: '알지 못하다, 미지하다, 생소하다', ant: '알다, 깨닫다, 이해하다' },
+      '알다': { senses: ['감각이나 사유를 통하여 사실이나 대상을 의식하고 깨닫다.', '어떤 사람과 사귀어 안면이 있거나 친분이 있다.', '어떤 일이나 상황을 마음으로 헤아려 이해하다.'], def: '사실이나 대상을 의식하고 깨달아 이해하다.', syn: '깨닫다, 이해하다, 파악하다', ant: '모르다, 잊다' },
+      '몰다': { senses: ['가축이나 새 따위를 일정한 방향으로 움직여 가도록 하다.', '자동차, 배, 비행기 따위의 탈것을 운전하여 움직이다.', '어떤 사람을 불리한 처지나 궁지로 몰아넣다.'], def: '탈것을 운전하거나 대상을 일정한 방향으로 움직여 가도록 하다.', syn: '운전하다, 조종하다, 내몰다', ant: '멈추다, 세우다' },
+      '싫다': { senses: ['마음에 들지 아니하여 좋지 아니하다.', '하고 싶은 마음이 없다.'], def: '마음에 들지 아니하여 좋지 아니하다.', syn: '꺼리다, 마땅찮다, 밉다', ant: '좋다, 반갑다, 기쁘다' },
+      '좋다': { senses: ['대상의 성질이나 내용이 마음에 들 만한 가치가 있다.', '건강이나 기분 상태가 정상적이거나 유쾌하다.', '날씨나 환경이 활동하기에 알맞고 화창하다.'], def: '대상의 성질이나 내용이 마음에 들 만한 가치가 있다.', syn: '훌륭하다, 마땅하다, 반갑다', ant: '싫다, 나쁘다, 밉다' },
+      '보다': { senses: ['눈으로 대상의 존재나 형태를 인식하다.', '책, 신문, 영화 따위를 읽거나 감상하다.', '시험이나 볼일을 치르다.', '대상을 어떤 관점으로 평가하거나 판단하다.'], def: '눈으로 대상을 인식하거나 책을 읽고 살펴보다.', syn: '바라보다, 관찰하다, 살피다', ant: '외면하다, 무시하다' },
+      '크다': { senses: ['길이, 넓이, 부피 따위가 보통 정도를 넘다.', '소리나 목소리의 세기가 강하다.', '일이나 사건의 규모, 중요성이 대단하다.', '동식물이 자라나서 성장하다.'], def: '길이, 넓이, 부피나 정도가 보통 수준을 넘다.', syn: '거대하다, 넓다, 막대하다', ant: '작다, 좁다, 적다' },
+      '작다': { def: '길이, 넓이, 부피 따위가 보통 정도에 미치지 못하다.', syn: '자그마하다, 왜소하다, 협소하다', ant: '크다, 거대하다' },
+      '많다': { def: '수효나 분량, 정도 따위가 일정한 기준을 넘다.', syn: '풍부하다, 허다하다, 넉넉하다', ant: '적다, 부족하다, 드물다' },
+      '적다': { senses: ['수효나 분량, 정도가 일정한 기준에 미치지 못하다.', '글자나 기호를 종이 위에 쓰다.'], def: '수효나 분량, 정도가 일정한 기준에 미치지 못하다.', syn: '모자라다, 부족하다, 희소하다', ant: '많다, 풍부하다' },
+      '아름답다': { def: '보거나 듣기에 흐뭇하고 훌륭하다.', syn: '곱다, 수려하다, 어여쁘다', ant: '추하다, 밉다' },
+      '어렵다': { senses: ['하기가 까다로워 힘에 겹다.', '살림살이가 가난하고 궁핍하다.', '상대하기에 조심스럽고 거북하다.'], def: '하기가 까다로워 힘에 겹거나 이해하기 쉽지 않다.', syn: '난해하다, 곤란하다, 버겁다', ant: '쉽다, 수월하다, 용이하다' },
+      '쉽다': { def: '하기에 까다롭거나 힘들지 아니하다.', syn: '수월하다, 용이하다, 간단하다', ant: '어렵다, 난해하다, 힘들다' },
       '기쁘다': { def: '욕구가 충족되어 마음이 흐뭇하고 흡족하다.', syn: '즐겁다, 유쾌하다, 반갑다', ant: '슬프다, 괴롭다' },
       '슬프다': { def: '마음이 아프고 괴롭다.', syn: '서글프다, 애통하다, 비통하다', ant: '기쁘다, 즐겁다' },
       '빠르다': { def: '어떤 동작이나 일에 걸리는 시간이 짧다.', syn: '신속하다, 재빠르다, 민첩하다', ant: '느리다, 더디다' },
       '느리다': { def: '어떤 동작이나 일에 걸리는 시간이 길다.', syn: '더디다, 완만하다, 굼뜨다', ant: '빠르다, 신속하다' },
       '다르다': { def: '비교가 되는 두 대상이 서로 같지 아니하다.', syn: '상이하다, 별다르다, 구별되다', ant: '같다, 동일하다' },
       '같다': { def: '둘 이상의 대상이 서로 다르지 않고 하나이다.', syn: '동일하다, 일치하다, 비슷하다', ant: '다르다, 상이하다' },
-      '걷다': {
-        senses: ['다리를 번갈아 옮기어 땅 위를 이동하다.', '소매나 바짓가랑이, 커튼 따위를 말아 올리다.', '여러 사람에게서 돈이나 물품을 모으다.'],
-        def: '다리를 번갈아 옮기어 땅 위를 이동하다.',
-        syn: '보행하다, 거닐다, 행보하다',
-        ant: '뛰다, 멈추다'
-      },
-      '듣다': {
-        senses: ['소리를 귀로 느끼어 알아차리다.', '남의 말이나 부탁, 충고를 받아들여 따르다.', '약의 효험이나 기계의 기능이 제대로 나타나다.'],
-        def: '소리나 남의 말을 귀로 느끼어 알아차리다.',
-        syn: '경청하다, 청취하다, 수용하다',
-        ant: '말하다, 무시하다'
-      },
-      '묻다': {
-        senses: ['알고자 하는 바를 상대에게 말하여 대답을 구하다.', '물건을 흙이나 다른 것 속에 넣어 보이지 않게 덮다.', '옷이나 몸에 가루, 물감 따위가 달라붙다.'],
-        def: '알고자 하는 바를 상대에게 질문하여 대답을 구하다.',
-        syn: '질문하다, 문의하다, 질의하다',
-        ant: '대답하다, 답하다'
-      },
+      '걷다': { senses: ['다리를 번갈아 옮기어 땅 위를 이동하다.', '소매나 바짓가랑이, 커튼 따위를 말아 올리다.', '여러 사람에게서 돈이나 물품을 모으다.'], def: '다리를 번갈아 옮기어 땅 위를 이동하다.', syn: '보행하다, 거닐다, 행보하다', ant: '뛰다, 멈추다' },
+      '듣다': { senses: ['소리를 귀로 느끼어 알아차리다.', '남의 말이나 부탁, 충고를 받아들여 따르다.', '약의 효험이나 기계의 기능이 제대로 나타나다.'], def: '소리나 남의 말을 귀로 느끼어 알아차리다.', syn: '경청하다, 청취하다, 수용하다', ant: '말하다, 무시하다' },
+      '묻다': { senses: ['알고자 하는 바를 상대에게 말하여 대답을 구하다.', '물건을 흙이나 다른 것 속에 넣어 보이지 않게 덮다.', '옷이나 몸에 가루, 물감 따위가 달라붙다.'], def: '알고자 하는 바를 상대에게 질문하여 대답을 구하다.', syn: '질문하다, 문의하다, 질의하다', ant: '대답하다, 답하다' },
       '깨닫다': { def: '사물의 본질이나 이치를 생각하여 알게 되다.', syn: '자각하다, 통찰하다, 터득하다', ant: '미혹하다, 망각하다' },
-      '짓다': {
-        senses: ['집이나 건물을 세워 만들다.', '밥이나 옷, 약 따위를 재료를 들여 만들다.', '시나 소설, 노래, 이름 따위를 창작하여 만들다.', '표정이나 미소를 얼굴에 나타내다.'],
-        def: '집이나 밥, 글, 표정 따위를 새로 만들거나 나타내다.',
-        syn: '만들다, 창작하다, 세우다',
-        ant: '허물다, 부수다'
-      },
-      '낫다': {
-        senses: ['병이나 상처가 고쳐져 본래대로 되다.', '보다 더 좋거나 앞서 있다.'],
-        def: '병이나 상처가 회복되거나 다른 것보다 더 좋다.',
-        syn: '회복되다, 치유되다, 우월하다',
-        ant: '악화되다, 못하다'
-      },
-      '살다': {
-        senses: ['생명을 지니고 존재하다.', '어느 곳에서 거주하며 생활하다.', '불이나 기운이 꺼지지 않고 타오르다.'],
-        def: '생명을 지니고 존재하거나 어느 곳에 거주하며 생활하다.',
-        syn: '생존하다, 거주하다, 생활하다',
-        ant: '죽다, 사망하다'
-      },
-      '쓰다': {
-        senses: ['글씨나 글을 종이 위에 적다.', '재료나 도구, 돈, 시간 따위를 사용하다.', '모자나 안경, 우산 따위를 머리에 얹거나 얼굴에 걸다.', '약이나 음식의 맛이 씀바귀나 한약처럼 쓰다.'],
-        def: '글을 적거나 도구·돈·시간 따위를 사용하다.',
-        syn: '적다, 기록하다, 사용하다',
-        ant: '지우다, 아끼다, 달다'
-      },
-      '집': {
-        senses: [
-          '사람이나 동물이 추위, 더위, 비바람 따위를 막고 들어 살기 위하여 지은 건물.',
-          '가정을 이루고 생활하는 집안이나 식구.',
-          '칼, 총, 안경 따위를 넣어서 보관하는 물건.'
-        ],
-        def: '사람이나 동물이 추위, 더위, 비바람을 막고 들어 살기 위하여 지은 건물.',
-        syn: '가옥, 주택, 거처',
-        ant: '바깥, 외부, 타향'
-      },
+      '짓다': { senses: ['집이나 건물을 세워 만들다.', '밥이나 옷, 약 따위를 재료를 들여 만들다.', '시나 소설, 노래, 이름 따위를 창작하여 만들다.', '표정이나 미소를 얼굴에 나타내다.'], def: '집이나 밥, 글, 표정 따위를 새로 만들거나 나타내다.', syn: '만들다, 창작하다, 세우다', ant: '허물다, 부수다' },
+      '낫다': { senses: ['병이나 상처가 고쳐져 본래대로 되다.', '보다 더 좋거나 앞서 있다.'], def: '병이나 상처가 회복되거나 다른 것보다 더 좋다.', syn: '회복되다, 치유되다, 우월하다', ant: '악화되다, 못하다' },
+      '살다': { senses: ['생명을 지니고 존재하다.', '어느 곳에서 거주하며 생활하다.', '불이나 기운이 꺼지지 않고 타오르다.'], def: '생명을 지니고 존재하거나 어느 곳에 거주하며 생활하다.', syn: '생존하다, 거주하다, 생활하다', ant: '죽다, 사망하다' },
+      '쓰다': { senses: ['글씨나 글을 종이 위에 적다.', '재료나 도구, 돈, 시간 따위를 사용하다.', '모자나 안경, 우산 따위를 머리에 얹거나 얼굴에 걸다.', '약이나 음식의 맛이 씀바귀나 한약처럼 쓰다.'], def: '글을 적거나 도구·돈·시간 따위를 사용하다.', syn: '적다, 기록하다, 사용하다', ant: '지우다, 아끼다, 달다' },
+      '집': { senses: ['사람이나 동물이 추위, 더위, 비바람 따위를 막고 들어 살기 위하여 지은 건물.', '가정을 이루고 생활하는 집안이나 식구.', '칼, 총, 안경 따위를 넣어서 보관하는 물건.'], def: '사람이나 동물이 추위, 더위, 비바람을 막고 들어 살기 위하여 지은 건물.', syn: '가옥, 주택, 거처', ant: '바깥, 외부, 타향' },
       '학교': { def: '교사가 계속적으로 학생에게 교육을 실시하는 기관.', syn: '교정, 배움터, 학원', ant: '가정, 사회' },
       '친구': { def: '가깝게 오래 사귄 사람.', syn: '벗, 동무, 교우', ant: '원수, 적' },
       '마음': { def: '사람이 본래부터 지닌 성격이나 감정, 정신.', syn: '심성, 정신, 내면', ant: '육체, 겉모습' },
@@ -1456,12 +1112,12 @@
     };
 
     const FALLBACK_VOCAB = [
-      { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴' },
-      { word: '고찰', meaning: '사물이나 현상을 깊이 생각하여 살핌' },
-      { word: '역설', meaning: '겉으로는 모순되나 그 속에 진리가 담긴 표현' },
-      { word: '간과', meaning: '큰 관심 없이 대강 보아 넘김' },
-      { word: '귀결', meaning: '어떤 결말이나 결과에 이르게 됨' },
-      { word: '사상', meaning: '공통점만 취하고 차이점을 버림' }
+      { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴.' },
+      { word: '고찰', meaning: '사물이나 현상을 깊이 생각하여 살핌.' },
+      { word: '역설', meaning: '겉으로는 모순되나 그 속에 진리가 담긴 표현.' },
+      { word: '간과', meaning: '큰 관심 없이 대강 보아 넘김.' },
+      { word: '귀결', meaning: '어떤 결말이나 결과에 이르게 됨.' },
+      { word: '사상', meaning: '공통점만 취하고 차이점을 버림.' }
     ];
 
     function getNowKST() {
@@ -1477,19 +1133,14 @@
     function getDailyQuizState() {
       const today = getNowKST().date;
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      const storageKey = `madevoca_qstate_${uid}_${today}`;
-      const raw = localStorage.getItem(storageKey);
-      if (raw) {
-        try { return JSON.parse(raw); } catch (e) {}
-      }
+      const raw = localStorage.getItem(`madevoca_qstate_${uid}_${today}`);
+      if (raw) { try { return JSON.parse(raw); } catch (e) {} }
       return { used: 0, adWatched: 0 };
     }
-
     function saveDailyQuizState(state) {
       const today = getNowKST().date;
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      const storageKey = `madevoca_qstate_${uid}_${today}`;
-      localStorage.setItem(storageKey, JSON.stringify(state));
+      localStorage.setItem(`madevoca_qstate_${uid}_${today}`, JSON.stringify(state));
     }
 
     function getLevelInfo(xp) {
@@ -1513,13 +1164,7 @@
       if (!soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const notes = {
-          'BRONZE': [523.25, 659.25],
-          'SILVER': [587.33, 783.99, 987.77],
-          'GOLD': [523.25, 659.25, 783.99, 1046.50],
-          'QUIZ': [659.25, 880.00]
-        }[type] || [523.25, 659.25];
-
+        const notes = { 'BRONZE': [523.25, 659.25], 'SILVER': [587.33, 783.99, 987.77], 'GOLD': [523.25, 659.25, 783.99, 1046.50], 'QUIZ': [659.25, 880.00] }[type] || [523.25, 659.25];
         notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -1527,21 +1172,15 @@
           osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.09);
           gain.gain.setValueAtTime(0.15, ctx.currentTime + idx * 0.09);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.09 + 0.28);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + idx * 0.09);
-          osc.stop(ctx.currentTime + idx * 0.09 + 0.28);
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.09); osc.stop(ctx.currentTime + idx * 0.09 + 0.28);
         });
       } catch (e) {}
     }
 
     function fireConfetti(isBig) {
       if (typeof confetti !== 'function') return;
-      confetti({
-        particleCount: isBig ? 70 : 30,
-        spread: isBig ? 70 : 50,
-        origin: { y: 0.65 }
-      });
+      confetti({ particleCount: isBig ? 70 : 30, spread: isBig ? 70 : 50, origin: { y: 0.65 } });
     }
 
     function toggleSound() {
@@ -1573,7 +1212,6 @@
       if (session && session.user) {
         await handleAuthenticatedUser(session.user);
       }
-
       sb.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session && session.user && !myUser) {
           await handleAuthenticatedUser(session.user);
@@ -1605,9 +1243,7 @@
       document.getElementById('navBtnProfile').className = 'tab-btn' + (tabName === 'profile' ? ' active' : '');
 
       if (tabName === 'quiz') {
-        renderMyList();
-        renderBadges();
-        generateQuiz();
+        renderMyList(); renderBadges(); generateQuiz();
       } else if (tabName === 'rank') {
         loadRanking();
       } else if (tabName === 'profile') {
@@ -1615,34 +1251,22 @@
       }
     }
 
-    function goToList() {
-      renderMyList();
-      showScreen('screen-list');
-    }
+    function goToList() { renderMyList(); showScreen('screen-list'); }
 
     // =========================================================================
-    // 2. Google OAuth 로그인 & 이메일 즉시 회원가입 / 로그인
+    // 2. 로그인 & 회원가입 & 프로필 관리
     // =========================================================================
     async function signInWithRealOAuth(provider) {
       const redirectUrl = window.location.origin + window.location.pathname;
-      const { error } = await sb.auth.signInWithOAuth({
-        provider: provider,
-        options: { redirectTo: redirectUrl }
-      });
-
-      if (error) {
-        alert(`Google 로그인 연동 중 오류가 발생했습니다: ${error.message}`);
-      }
+      const { error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: redirectUrl } });
+      if (error) alert(`Google 로그인 연동 중 오류가 발생했습니다: ${error.message}`);
     }
 
     function openEmailAuthModal(defaultTab = 'SIGNUP') {
       switchEmailAuthTab(defaultTab);
       document.getElementById('emailAuthModal').classList.add('open');
     }
-
-    function closeEmailAuthModal() {
-      document.getElementById('emailAuthModal').classList.remove('open');
-    }
+    function closeEmailAuthModal() { document.getElementById('emailAuthModal').classList.remove('open'); }
 
     function switchEmailAuthTab(mode) {
       const isSignup = (mode === 'SIGNUP');
@@ -1665,39 +1289,26 @@
       if (pw !== pwConfirm) { alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.'); return; }
 
       const btn = document.getElementById('btnSubmitDirectSignup');
-      btn.disabled = true;
-      btn.innerText = '가입 처리 중...';
+      btn.disabled = true; btn.innerText = '가입 처리 중...';
 
       try {
         const { data, error } = await sb.auth.signUp({
-          email: email,
-          password: pw,
-          options: {
-            data: {
-              full_name: name,
-              school_info: school
-            }
-          }
+          email, password: pw,
+          options: { data: { full_name: name, school_info: school } }
         });
-
         if (error) throw error;
-
-        btn.disabled = false;
-        btn.innerText = '회원가입 완료하기';
+        btn.disabled = false; btn.innerText = '회원가입 완료하기';
 
         if (data && data.session && data.user) {
           closeEmailAuthModal();
           await finalizeEmailSignupRecord(email, name, school);
         } else {
-          alert(
-            '수파베이스의 [Authentication] → [Providers] → [Email]에서 "Confirm email" 스위치를 끄고 Save를 눌러주시면 인증 없이 즉시 가입됩니다.\n\n(또는 방금 발송된 이메일의 확인 링크를 누른 뒤 로그인해 주세요.)'
-          );
+          alert('수파베이스의 [Authentication] → [Providers] → [Email]에서 "Confirm email" 스위치를 끄고 Save를 눌러주시면 인증 없이 즉시 가입됩니다.');
           switchEmailAuthTab('LOGIN');
           document.getElementById('liEmail').value = email;
         }
       } catch (err) {
-        btn.disabled = false;
-        btn.innerText = '회원가입 완료하기';
+        btn.disabled = false; btn.innerText = '회원가입 완료하기';
         alert('회원가입 중 오류가 발생했습니다: ' + err.message);
       }
     }
@@ -1705,29 +1316,11 @@
     async function finalizeEmailSignupRecord(email, name, school) {
       const kst = getNowKST();
       const isAdmin = (email === ADMIN_EMAIL) || name.includes('용아국어');
-
       await sb.from('students').upsert({
-        user_id: email,
-        user_name: name,
-        provider: 'EMAIL',
-        pin: 'EMAIL_AUTH',
-        school_info: school,
-        streak: 1,
-        bonus_xp: 0,
-        last_study_date: kst.date,
-        created_at: kst.full,
-        last_access_at: kst.full
+        user_id: email, user_name: name, provider: 'EMAIL', pin: 'EMAIL_AUTH',
+        school_info: school, streak: 1, bonus_xp: 0, last_study_date: kst.date, created_at: kst.full, last_access_at: kst.full
       });
-
-      myUser = {
-        userId: email,
-        name: name,
-        provider: 'EMAIL',
-        schoolInfo: school,
-        isAdmin: isAdmin,
-        streak: 1,
-        bonusXp: 0
-      };
+      myUser = { userId: email, name, provider: 'EMAIL', schoolInfo: school, isAdmin, streak: 1, bonusXp: 0 };
       myWords = await fetchUserWords(email, isAdmin);
       await loadUserGroupsAndMap();
       setupUserView();
@@ -1738,33 +1331,18 @@
     async function loginWithEmailPassword() {
       const email = document.getElementById('liEmail').value.trim().toLowerCase();
       const pw = document.getElementById('liPassword').value;
-
-      if (!email || !pw) {
-        alert('이메일과 비밀번호를 모두 입력해 주세요.');
-        return;
-      }
+      if (!email || !pw) { alert('이메일과 비밀번호를 모두 입력해 주세요.'); return; }
 
       const btn = document.getElementById('btnSubmitEmailLogin');
-      btn.disabled = true;
-      btn.innerText = '로그인 중...';
-
+      btn.disabled = true; btn.innerText = '로그인 중...';
       try {
-        const { data, error } = await sb.auth.signInWithPassword({
-          email: email,
-          password: pw
-        });
+        const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
         if (error) throw error;
-
-        btn.disabled = false;
-        btn.innerText = '이메일로 로그인하기';
+        btn.disabled = false; btn.innerText = '이메일로 로그인하기';
         closeEmailAuthModal();
-
-        if (data && data.user) {
-          await handleAuthenticatedUser(data.user);
-        }
+        if (data && data.user) await handleAuthenticatedUser(data.user);
       } catch (err) {
-        btn.disabled = false;
-        btn.innerText = '이메일로 로그인하기';
+        btn.disabled = false; btn.innerText = '이메일로 로그인하기';
         alert('이메일 또는 비밀번호가 올바르지 않습니다.\n(' + err.message + ')');
       }
     }
@@ -1783,15 +1361,9 @@
       if (existing) {
         const kst = getNowKST();
         await sb.from('students').update({ last_access_at: kst.full }).eq('user_id', email);
-
         myUser = {
-          userId: existing.user_id,
-          name: existing.user_name,
-          provider: existing.provider || provider,
-          schoolInfo: existing.school_info || '',
-          isAdmin: isAdmin,
-          streak: existing.streak || 1,
-          bonusXp: existing.bonus_xp || 0
+          userId: existing.user_id, name: existing.user_name, provider: existing.provider || provider,
+          schoolInfo: existing.school_info || '', isAdmin, streak: existing.streak || 1, bonusXp: existing.bonus_xp || 0
         };
         myWords = await fetchUserWords(email, isAdmin);
         await loadUserGroupsAndMap();
@@ -1815,33 +1387,15 @@
 
       const btn = document.getElementById('btnCompleteJoin');
       btn.disabled = true; btn.innerText = '저장 중...';
-
       const kst = getNowKST();
       const { email, provider } = pendingOAuthSession;
       const isAdmin = (email === ADMIN_EMAIL) || sname.includes('용아국어');
 
       await sb.from('students').upsert({
-        user_id: email,
-        user_name: sname,
-        provider: provider,
-        pin: 'OAUTH',
-        school_info: school,
-        streak: 1,
-        bonus_xp: 0,
-        last_study_date: kst.date,
-        created_at: kst.full,
-        last_access_at: kst.full
+        user_id: email, user_name: sname, provider, pin: 'OAUTH',
+        school_info: school, streak: 1, bonus_xp: 0, last_study_date: kst.date, created_at: kst.full, last_access_at: kst.full
       });
-
-      myUser = {
-        userId: email,
-        name: sname,
-        provider: provider,
-        schoolInfo: school,
-        isAdmin: isAdmin,
-        streak: 1,
-        bonusXp: 0
-      };
+      myUser = { userId: email, name: sname, provider, schoolInfo: school, isAdmin, streak: 1, bonusXp: 0 };
       myWords = await fetchUserWords(email, isAdmin);
       await loadUserGroupsAndMap();
 
@@ -1864,122 +1418,75 @@
       if (!myUser) return;
       const newName = document.getElementById('editUserName').value.trim();
       const newSchool = document.getElementById('editSchoolInfo').value.trim();
-
-      if (!newName) {
-        alert('이름을 비워둘 수 없습니다.');
-        return;
-      }
+      if (!newName) { alert('이름을 비워둘 수 없습니다.'); return; }
 
       const btn = document.getElementById('btnSaveMyProfile');
-      btn.disabled = true;
-      btn.innerText = '저장 중...';
-
+      btn.disabled = true; btn.innerText = '저장 중...';
       try {
         const kst = getNowKST();
-        const { error: sErr } = await sb.from('students').update({
-          user_name: newName,
-          school_info: newSchool,
-          last_access_at: kst.full
-        }).eq('user_id', myUser.userId);
+        const { error: sErr } = await sb.from('students').update({ user_name: newName, school_info: newSchool, last_access_at: kst.full }).eq('user_id', myUser.userId);
         if (sErr) throw sErr;
+        await sb.from('words').update({ user_name: newName }).eq('user_id', myUser.userId);
 
-        await sb.from('words').update({
-          user_name: newName
-        }).eq('user_id', myUser.userId);
-
-        myUser.name = newName;
-        myUser.schoolInfo = newSchool;
+        myUser.name = newName; myUser.schoolInfo = newSchool;
         myUser.isAdmin = (myUser.userId === ADMIN_EMAIL) || newName.includes('용아국어');
         document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-flex' : 'none';
-
-        myWords.forEach(w => {
-          if (w.userId === myUser.userId) w.userName = newName;
-        });
+        myWords.forEach(w => { if (w.userId === myUser.userId) w.userName = newName; });
 
         updateHeaderUserLabel();
-        btn.disabled = false;
-        btn.innerText = '내 정보 저장하기';
+        btn.disabled = false; btn.innerText = '내 정보 저장하기';
         showToast('학번과 이름이 저장되었습니다.');
       } catch (err) {
-        btn.disabled = false;
-        btn.innerText = '내 정보 저장하기';
+        btn.disabled = false; btn.innerText = '내 정보 저장하기';
         alert('저장 중 오류가 발생했습니다: ' + err.message);
       }
     }
 
     // =========================================================================
-    // 단어 카드 우측 상단 점 3개(...) 메뉴 & 그룹 변경/생성/삭제 & 단어 편집
+    // 단어 카드 점 3개(...) 메뉴 & 그룹 변경/생성/삭제 & 단어 편집
     // =========================================================================
     function openWordDotMenu(e, wordId) {
       if (e) e.stopPropagation();
       const target = myWords.find(w => w.id === wordId);
       if (!target) return;
-
       dotMenuTargetWordId = wordId;
       document.getElementById('dotMenuWordTitle').innerText = target.word;
       document.getElementById('dotMenuWordSub').innerText = getCleanSingleDisplayMeaning(target);
       const gName = wordGroupMap[wordId] || '';
       document.getElementById('dotMenuCurGroupLabel').innerText = gName ? `${gName} →` : '미지정 →';
-
       document.getElementById('wordDotMenuModal').classList.add('open');
     }
-
-    function closeWordDotMenu() {
-      document.getElementById('wordDotMenuModal').classList.remove('open');
-    }
+    function closeWordDotMenu() { document.getElementById('wordDotMenuModal').classList.remove('open'); }
 
     function openGroupChangeModal() {
       const target = myWords.find(w => w.id === dotMenuTargetWordId);
       if (!target) return;
-
       closeWordDotMenu();
       selectedTempGroup = null;
       document.getElementById('btnGroupEditDone').disabled = true;
       document.getElementById('groupModalTargetWord').innerText = `'${target.word}'`;
       document.getElementById('inpNewGroupName').value = '';
-
       renderGroupOptionList();
       document.getElementById('groupChangeModal').classList.add('open');
     }
-
-    function closeGroupChangeModal() {
-      document.getElementById('groupChangeModal').classList.remove('open');
-    }
+    function closeGroupChangeModal() { document.getElementById('groupChangeModal').classList.remove('open'); }
 
     function renderGroupOptionList() {
       const listEl = document.getElementById('groupOptionList');
       const curGroup = wordGroupMap[dotMenuTargetWordId] || '';
-
       if (myGroups.length === 0) {
-        listEl.innerHTML = `
-          <div style="text-align:center; padding:22px 10px; color:var(--text-sub); font-size:13px; background:var(--surface); border:1px dashed var(--border); border-radius:12px;">
-            아직 만든 그룹이 없습니다.<br>아래에서 새 그룹을 만들어 보세요.
-          </div>
-        `;
+        listEl.innerHTML = `<div style="text-align:center; padding:22px 10px; color:var(--text-sub); font-size:13px; background:var(--surface); border:1px dashed var(--border); border-radius:12px;">아직 만든 그룹이 없습니다.<br>아래에서 새 그룹을 만들어 보세요.</div>`;
         return;
       }
-
       let html = myGroups.map(gName => {
         const isSel = (selectedTempGroup === gName);
         const isCurrent = (curGroup === gName && selectedTempGroup === null);
-        return `
-          <button type="button" class="group-option-item ${isSel ? 'selected' : ''}" onclick="selectGroupItemInModal('${escapeHtml(gName)}')">
-            <span>${escapeHtml(gName)}</span>
-            <span style="font-size:11px; opacity:0.85;">${isSel ? '선택됨 ✓' : (isCurrent ? '현재 그룹' : '')}</span>
-          </button>
-        `;
+        return `<button type="button" class="group-option-item ${isSel ? 'selected' : ''}" onclick="selectGroupItemInModal('${escapeHtml(gName)}')"><span>${escapeHtml(gName)}</span><span style="font-size:11px; opacity:0.85;">${isSel ? '선택됨 ✓' : (isCurrent ? '현재 그룹' : '')}</span></button>`;
       }).join('');
-
       if (curGroup) {
         const isUnassignSel = (selectedTempGroup === '__NONE__');
-        html += `
-          <button type="button" class="group-option-item ${isUnassignSel ? 'selected' : ''}" onclick="selectGroupItemInModal('__NONE__')">
-            <span>그룹 해제 (미지정)</span>
-            <span style="font-size:11px; opacity:0.85;">${isUnassignSel ? '선택됨 ✓' : ''}</span>
-          </button>
-        `;
+        html += `<button type="button" class="group-option-item ${isUnassignSel ? 'selected' : ''}" onclick="selectGroupItemInModal('__NONE__')"><span>그룹 해제 (미지정)</span><span style="font-size:11px; opacity:0.85;">${isUnassignSel ? '선택됨 ✓' : ''}</span></button>`;
       }
-
       listEl.innerHTML = html;
     }
 
@@ -1993,15 +1500,11 @@
       if (!dotMenuTargetWordId || selectedTempGroup === null) return;
       const target = myWords.find(w => w.id === dotMenuTargetWordId);
       if (!target) return;
-
       if (selectedTempGroup === '__NONE__') {
-        delete wordGroupMap[dotMenuTargetWordId];
-        target.groupName = '';
+        delete wordGroupMap[dotMenuTargetWordId]; target.groupName = '';
       } else {
-        wordGroupMap[dotMenuTargetWordId] = selectedTempGroup;
-        target.groupName = selectedTempGroup;
+        wordGroupMap[dotMenuTargetWordId] = selectedTempGroup; target.groupName = selectedTempGroup;
       }
-
       await saveUserGroupsAndMap();
       closeGroupChangeModal();
       renderMyList();
@@ -2016,58 +1519,37 @@
         if (!prompted || !prompted.trim()) return;
         gName = prompted.trim();
       }
-
-      if (myGroups.includes(gName)) {
-        alert('이미 존재하는 그룹 이름입니다.');
-        return;
-      }
-
+      if (myGroups.includes(gName)) { alert('이미 존재하는 그룹 이름입니다.'); return; }
       myGroups.push(gName);
       inp.value = '';
       selectedTempGroup = gName;
       document.getElementById('btnGroupEditDone').disabled = false;
-
       await saveUserGroupsAndMap();
-      renderGroupOptionList();
-      renderMyList();
+      renderGroupOptionList(); renderMyList();
       showToast(`'${gName}' 그룹이 생성되었습니다.`);
     }
 
     async function deleteSelectedWordGroup() {
       if (!selectedTempGroup || selectedTempGroup === '__NONE__') {
-        alert('위 목록에서 삭제할 그룹을 먼저 눌러 선택해 주세요.');
-        return;
+        alert('위 목록에서 삭제할 그룹을 먼저 눌러 선택해 주세요.'); return;
       }
-
-      const ok = confirm('그룹을 삭제하면 다시 되돌릴 수 없습니다. 그래도 삭제하시겠습니까?');
-      if (!ok) return;
+      if (!confirm('그룹을 삭제하면 다시 되돌릴 수 없습니다. 그래도 삭제하시겠습니까?')) return;
 
       const delGroup = selectedTempGroup;
       myGroups = myGroups.filter(g => g !== delGroup);
-
-      Object.keys(wordGroupMap).forEach(wId => {
-        if (wordGroupMap[wId] === delGroup) {
-          delete wordGroupMap[wId];
-        }
-      });
-
-      if (groupFilter === delGroup) {
-        groupFilter = 'ALL';
-      }
+      Object.keys(wordGroupMap).forEach(wId => { if (wordGroupMap[wId] === delGroup) delete wordGroupMap[wId]; });
+      if (groupFilter === delGroup) groupFilter = 'ALL';
 
       selectedTempGroup = null;
       document.getElementById('btnGroupEditDone').disabled = true;
-
       await saveUserGroupsAndMap();
-      renderGroupOptionList();
-      renderMyList();
+      renderGroupOptionList(); renderMyList();
       showToast(`'${delGroup}' 그룹이 삭제되었습니다.`);
     }
 
     function openWordEditModal() {
       const target = myWords.find(w => w.id === dotMenuTargetWordId);
       if (!target) return;
-
       closeWordDotMenu();
       document.getElementById('editModalWord').value = target.word || '';
       document.getElementById('editModalSource').value = target.sourceSentence || '';
@@ -2075,182 +1557,107 @@
       document.getElementById('editModalMySent').value = target.mySentence || '';
       document.getElementById('wordEditModal').classList.add('open');
     }
-
-    function closeWordEditModal() {
-      document.getElementById('wordEditModal').classList.remove('open');
-    }
+    function closeWordEditModal() { document.getElementById('wordEditModal').classList.remove('open'); }
 
     async function saveWordEditChanges() {
       const target = myWords.find(w => w.id === dotMenuTargetWordId);
       if (!target) return;
-
       const newW = document.getElementById('editModalWord').value.trim();
       const newSrc = document.getElementById('editModalSource').value.trim();
       const newM = document.getElementById('editModalMeaning').value.trim();
       const newMy = document.getElementById('editModalMySent').value.trim();
 
-      if (!newW || !newSrc) {
-        alert('단어(1단계)와 출처 문장(2단계)은 필수 입력 항목입니다.');
-        return;
-      }
+      if (!newW || !newSrc) { alert('단어(1단계)와 출처 문장(2단계)은 필수 입력 항목입니다.'); return; }
 
       const btn = document.getElementById('btnSaveWordEdit');
-      btn.disabled = true;
-      btn.innerText = '저장 중...';
-
+      btn.disabled = true; btn.innerText = '저장 중...';
       const kst = getNowKST();
-      let newStar = target.star;
-      if (newMy) newStar = 'GOLD';
+      let newStar = newMy ? 'GOLD' : target.star;
 
-      target.word = newW;
-      target.sourceSentence = newSrc;
-      if (newM) {
-        target.meaning = newM;
-        target.aiMeaning = newM;
-      }
-      target.mySentence = newMy;
-      target.star = newStar;
-      target.updatedAt = kst.full;
+      target.word = newW; target.sourceSentence = newSrc;
+      if (newM) { target.meaning = newM; target.aiMeaning = newM; }
+      target.mySentence = newMy; target.star = newStar; target.updatedAt = kst.full;
 
       await sb.from('words').update({
-        word: newW,
-        meaning: target.meaning,
-        source_sentence: newSrc,
-        ai_meaning: target.aiMeaning,
-        my_sentence: newMy,
-        star: newStar,
-        updated_at: kst.full
+        word: newW, meaning: target.meaning, source_sentence: newSrc,
+        ai_meaning: target.aiMeaning, my_sentence: newMy, star: newStar, updated_at: kst.full
       }).eq('id', target.id);
 
-      btn.disabled = false;
-      btn.innerText = '편집 저장하기';
-      closeWordEditModal();
-      renderMyList();
+      btn.disabled = false; btn.innerText = '편집 저장하기';
+      closeWordEditModal(); renderMyList();
       showToast('단어가 수정되었습니다.');
     }
 
     async function deleteWordFromDotMenu() {
       const target = myWords.find(w => w.id === dotMenuTargetWordId);
       if (!target) return;
-
       closeWordDotMenu();
       if (!confirm(`'${target.word}' 단어를 삭제하시겠습니까?`)) return;
-
       myWords = myWords.filter(w => w.id !== target.id);
-      if (wordGroupMap[target.id]) {
-        delete wordGroupMap[target.id];
-        saveUserGroupsAndMap();
-      }
+      if (wordGroupMap[target.id]) { delete wordGroupMap[target.id]; saveUserGroupsAndMap(); }
       renderMyList();
       await sb.from('words').delete().eq('id', target.id);
       showToast('단어가 삭제되었습니다.');
     }
 
     // =========================================================================
-    // CSV 내보내기 (1. 전체 내보내기 / 2. 그룹별 내보내기) 및 CSV 등록
+    // CSV 내보내기 (전체 / 그룹별) 및 CSV 등록
     // =========================================================================
     function escapeCsvCell(val) {
       const str = String(val == null ? '' : val).replace(/\r?\n/g, ' ');
-      if (str.includes(',') || str.includes('"')) {
-        return '"' + str.replace(/"/g, '""') + '"';
-      }
-      return str;
+      return (str.includes(',') || str.includes('"')) ? ('"' + str.replace(/"/g, '""') + '"') : str;
     }
 
     function openCsvExportModal() {
-      if (!myWords || myWords.length === 0) {
-        alert('현재 등록된 단어가 없어 내보낼 데이터가 없습니다.');
-        return;
-      }
-
-      document.getElementById('exportAllCountDesc').innerText =
-        `내 단어장에 등록된 모든 단어(총 ${myWords.length}개)를 CSV 파일로 내려받습니다.`;
+      if (!myWords || myWords.length === 0) { alert('현재 등록된 단어가 없어 내보낼 데이터가 없습니다.'); return; }
+      document.getElementById('exportAllCountDesc').innerText = `내 단어장에 등록된 모든 단어(총 ${myWords.length}개)를 CSV 파일로 내려받습니다.`;
 
       const sel = document.getElementById('selExportGroup');
       const groupCounts = {};
       let ungroupedCnt = 0;
-
       myWords.forEach(w => {
         const g = wordGroupMap[w.id] || '';
-        if (g) {
-          groupCounts[g] = (groupCounts[g] || 0) + 1;
-        } else {
-          ungroupedCnt++;
-        }
+        if (g) groupCounts[g] = (groupCounts[g] || 0) + 1;
+        else ungroupedCnt++;
       });
 
       const allGroupNames = Array.from(new Set([...myGroups, ...Object.keys(groupCounts)]));
       let optionsHtml = '';
-      allGroupNames.forEach(g => {
-        const cnt = groupCounts[g] || 0;
-        optionsHtml += `<option value="${escapeHtml(g)}">${escapeHtml(g)} (${cnt}개)</option>`;
-      });
+      allGroupNames.forEach(g => { optionsHtml += `<option value="${escapeHtml(g)}">${escapeHtml(g)} (${groupCounts[g] || 0}개)</option>`; });
       optionsHtml += `<option value="__UNGROUPED__">그룹 미지정 단어 (${ungroupedCnt}개)</option>`;
-
       sel.innerHTML = optionsHtml;
       document.getElementById('csvExportModal').classList.add('open');
     }
-
-    function closeCsvExportModal() {
-      document.getElementById('csvExportModal').classList.remove('open');
-    }
+    function closeCsvExportModal() { document.getElementById('csvExportModal').classList.remove('open'); }
 
     function exportWordsToCsvByOption(mode) {
       let targetWords = [];
       let fileSuffix = '전체';
-
       if (mode === 'ALL') {
         targetWords = myWords;
-        fileSuffix = '전체';
       } else {
         const selVal = document.getElementById('selExportGroup').value;
-        if (selVal === '__UNGROUPED__') {
-          targetWords = myWords.filter(w => !(wordGroupMap[w.id]));
-          fileSuffix = '미지정';
-        } else {
-          targetWords = myWords.filter(w => (wordGroupMap[w.id] || '') === selVal);
-          fileSuffix = selVal;
-        }
+        if (selVal === '__UNGROUPED__') { targetWords = myWords.filter(w => !(wordGroupMap[w.id])); fileSuffix = '미지정'; }
+        else { targetWords = myWords.filter(w => (wordGroupMap[w.id] || '') === selVal); fileSuffix = selVal; }
       }
-
-      if (!targetWords || targetWords.length === 0) {
-        alert('선택한 항목에 해당하는 단어가 없습니다.');
-        return;
-      }
+      if (!targetWords || targetWords.length === 0) { alert('선택한 항목에 해당하는 단어가 없습니다.'); return; }
 
       const headers = ['그룹', '단어', '출처문장', '문맥의미', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
       const stageLabelMap = { 'BRONZE': '1·2단계', 'SILVER': '3단계', 'GOLD': '4단계' };
-
       const rows = targetWords.map(w => [
-        wordGroupMap[w.id] || '',
-        w.word || '',
-        w.sourceSentence || '',
-        getCleanSingleDisplayMeaning(w),
-        w.synonyms || '',
-        w.antonyms || '',
-        w.mySentence || '',
-        w.aiFeedback || '',
-        stageLabelMap[w.star] || '1·2단계',
-        w.updatedAt || ''
+        wordGroupMap[w.id] || '', w.word || '', w.sourceSentence || '', getCleanSingleDisplayMeaning(w),
+        cleanSynAntText(w.synonyms, w.word), cleanSynAntText(w.antonyms, w.word),
+        w.mySentence || '', w.aiFeedback || '', stageLabelMap[w.star] || '1·2단계', w.updatedAt || ''
       ]);
 
-      const csvContent = [
-        headers.map(escapeCsvCell).join(','),
-        ...rows.map(r => r.map(escapeCsvCell).join(','))
-      ].join('\r\n');
-
+      const csvContent = [headers.map(escapeCsvCell).join(','), ...rows.map(r => r.map(escapeCsvCell).join(','))].join('\r\n');
       const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       const safeName = (myUser && myUser.name) ? myUser.name.replace(/[^가-힣a-zA-Z0-9_-]/g, '') : '단어장';
       const safeGroup = fileSuffix.replace(/[^가-힣a-zA-Z0-9_-]/g, '');
-      a.href = url;
-      a.download = `메이드보카_${safeName}_${safeGroup}_${getNowKST().date}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
+      a.href = url; a.download = `메이드보카_${safeName}_${safeGroup}_${getNowKST().date}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
       closeCsvExportModal();
       showToast(`'${fileSuffix}' 단어 ${targetWords.length}개를 CSV로 내보냈습니다.`);
     }
@@ -2258,48 +1665,33 @@
     function downloadCsvTemplate() {
       const headers = ['그룹', '단어', '출처문장', '문맥의미', '나의문장'];
       const sampleRows = [
-        ['수능필수', '배양', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '실력이나 품성 따위를 기르고 발전시킴', '꾸준한 연습으로 기초 체력을 배양했다.'],
-        ['모의고사', '고찰', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '사물이나 현상을 깊이 생각하여 살핌', '']
+        ['수능필수', '배양', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '실력이나 품성 따위를 기르고 발전시킴.', '꾸준한 연습으로 기초 체력을 배양했다.'],
+        ['모의고사', '고찰', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '사물이나 현상을 깊이 생각하여 살핌.', '']
       ];
-      const csvLines = [
-        headers.map(escapeCsvCell).join(','),
-        ...sampleRows.map(r => r.map(escapeCsvCell).join(','))
-      ];
+      const csvLines = [headers.map(escapeCsvCell).join(','), ...sampleRows.map(r => r.map(escapeCsvCell).join(','))];
       const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = '메이드보카_단어등록_양식.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      a.href = url; a.download = '메이드보카_단어등록_양식.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
       showToast('CSV 기본 양식이 다운로드되었습니다.');
     }
 
     async function handleUserCsvImport(inputEl) {
       const file = inputEl.files && inputEl.files[0];
-      if (!file) return;
-      if (!myUser) {
-        alert('로그인 후 이용해 주세요.');
-        return;
-      }
+      if (!file || !myUser) return;
 
       const statusEl = document.getElementById('userCsvStatus');
       const importBtn = document.getElementById('btnImportCsv');
-      statusEl.style.display = 'block';
-      statusEl.innerText = 'CSV 파일을 읽는 중...';
+      statusEl.style.display = 'block'; statusEl.innerText = 'CSV 파일을 읽는 중...';
       importBtn.disabled = true;
 
       try {
         const buffer = await file.arrayBuffer();
         let wb = null;
-
         if (file.name.toLowerCase().endsWith('.csv')) {
           let text = new TextDecoder('utf-8').decode(buffer);
-          if (text.includes('\uFFFD')) {
-            text = new TextDecoder('euc-kr').decode(buffer);
-          }
+          if (text.includes('\uFFFD')) text = new TextDecoder('euc-kr').decode(buffer);
           wb = XLSX.read(text, { type: 'string' });
         } else {
           wb = XLSX.read(buffer, { type: 'array' });
@@ -2307,18 +1699,12 @@
 
         const firstSheet = wb.Sheets[wb.SheetNames[0]];
         const matrix = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
-
-        if (!matrix || matrix.length === 0) {
-          throw new Error('파일 안에 데이터가 없습니다.');
-        }
+        if (!matrix || matrix.length === 0) throw new Error('파일 안에 데이터가 없습니다.');
 
         const firstRow = matrix[0].map(c => String(c || '').trim());
-        const hasHeader = firstRow.some(h =>
-          ['그룹', '단어', '어휘', '표제어', '뜻', '의미', '문맥의미', '출처문장', 'word', 'meaning', 'group'].includes(h.toLowerCase())
-        );
+        const hasHeader = firstRow.some(h => ['그룹', '단어', '어휘', '표제어', '뜻', '의미', '문맥의미', '출처문장', 'word', 'meaning', 'group'].includes(h.toLowerCase()));
 
         let gIdx = -1, wIdx = 0, mIdx = 1, srcIdx = 2, myIdx = 3, synIdx = -1, antIdx = -1, aiMeanIdx = -1, aiFbIdx = -1, starIdx = -1;
-
         if (hasHeader) {
           gIdx = firstRow.findIndex(h => h.includes('그룹') || h.toLowerCase() === 'group');
           wIdx = firstRow.findIndex(h => h.includes('단어') || h.includes('어휘') || h.includes('표제어') || h.toLowerCase() === 'word');
@@ -2330,7 +1716,6 @@
           myIdx = firstRow.findIndex(h => h.includes('나의문장') || h.includes('내문장') || h.includes('작문'));
           aiFbIdx = firstRow.findIndex(h => h.includes('피드백') || h.includes('첨삭'));
           starIdx = firstRow.findIndex(h => h.includes('단계') || h.includes('등급') || h.toLowerCase() === 'star');
-
           if (wIdx === -1) wIdx = (gIdx === 0 ? 1 : 0);
           if (mIdx === -1 && aiMeanIdx !== -1) mIdx = aiMeanIdx;
         }
@@ -2345,7 +1730,6 @@
         for (let i = startRow; i < matrix.length; i++) {
           const row = matrix[i];
           if (!row || row.length === 0) continue;
-
           const word = String(row[wIdx] || '').trim();
           if (!word) continue;
 
@@ -2354,21 +1738,17 @@
           const rawMeaning = (mIdx >= 0 && row[mIdx] != null) ? String(row[mIdx]).trim() : '';
           const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : rawMeaning;
           const finalMeaning = selectBestContextualMeaning(rawMeaning || aiMeaning, sourceSentence, '');
-          const synonyms = (synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]).trim() : '';
-          const antonyms = (antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]).trim() : '';
+          const synonyms = cleanSynAntText((synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]) : '', word);
+          const antonyms = cleanSynAntText((antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]) : '', word);
           const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim() : '';
           const aiFeedback = (aiFbIdx >= 0 && row[aiFbIdx] != null) ? String(row[aiFbIdx]).trim() : '';
           const rawStar = (starIdx >= 0 && row[starIdx] != null) ? String(row[starIdx]).trim().toUpperCase() : '';
 
           let star = 'BRONZE';
-          if (rawStar.includes('4') || rawStar === 'GOLD' || rawStar.includes('금') || mySentence) {
-            star = 'GOLD';
-          } else if (rawStar.includes('3') || rawStar === 'SILVER' || rawStar.includes('은') || synonyms) {
-            star = 'SILVER';
-          }
+          if (rawStar.includes('4') || rawStar === 'GOLD' || rawStar.includes('금') || mySentence) star = 'GOLD';
+          else if (rawStar.includes('3') || rawStar === 'SILVER' || rawStar.includes('은') || synonyms) star = 'SILVER';
 
           const newId = `W_${baseTs}_${i}_${Math.floor(Math.random() * 1000)}`;
-
           if (grpName) {
             if (!myGroups.includes(grpName)) myGroups.push(grpName);
             wordGroupMap[newId] = grpName;
@@ -2376,65 +1756,36 @@
           }
 
           dbRecords.push({
-            id: newId,
-            user_id: myUser.userId,
-            user_name: myUser.name,
-            word: word,
-            meaning: finalMeaning,
-            source_sentence: sourceSentence,
-            ai_meaning: finalMeaning,
-            synonyms: synonyms,
-            antonyms: antonyms,
-            my_sentence: mySentence,
-            ai_feedback: aiFeedback,
-            star: star,
-            updated_at: kst.full
+            id: newId, user_id: myUser.userId, user_name: myUser.name, word,
+            meaning: finalMeaning, source_sentence: sourceSentence, ai_meaning: finalMeaning,
+            synonyms, antonyms, my_sentence: mySentence, ai_feedback: aiFeedback, star, updated_at: kst.full
           });
-
           localItems.push({
-            id: newId,
-            userId: myUser.userId,
-            userName: myUser.name,
-            word: word,
-            meaning: finalMeaning,
-            sourceSentence: sourceSentence,
-            aiMeaning: finalMeaning,
-            synonyms: synonyms,
-            antonyms: antonyms,
-            mySentence: mySentence,
-            aiFeedback: aiFeedback,
-            star: star,
-            groupName: grpName,
-            updatedAt: kst.full
+            id: newId, userId: myUser.userId, userName: myUser.name, word,
+            meaning: finalMeaning, sourceSentence, aiMeaning: finalMeaning,
+            synonyms, antonyms, mySentence, aiFeedback, star, groupName: grpName, updatedAt: kst.full
           });
         }
 
-        if (dbRecords.length === 0) {
-          throw new Error('등록할 수 있는 단어 행을 찾지 못했습니다.');
-        }
+        if (dbRecords.length === 0) throw new Error('등록할 수 있는 단어 행을 찾지 못했습니다.');
 
-        const BATCH = 200;
-        for (let i = 0; i < dbRecords.length; i += BATCH) {
-          const chunk = dbRecords.slice(i, i + BATCH);
-          statusEl.innerText = `단어 등록 중... (${Math.min(i + BATCH, dbRecords.length)} / ${dbRecords.length}개)`;
+        for (let i = 0; i < dbRecords.length; i += 200) {
+          const chunk = dbRecords.slice(i, i + 200);
+          statusEl.innerText = `단어 등록 중... (${Math.min(i + 200, dbRecords.length)} / ${dbRecords.length}개)`;
           const { error } = await sb.from('words').insert(chunk);
           if (error) throw error;
         }
 
         myWords = [...localItems, ...myWords];
-        if (groupUpdated) {
-          await saveUserGroupsAndMap();
-        }
-        renderMyList();
-        fireConfetti(true);
+        if (groupUpdated) await saveUserGroupsAndMap();
+        renderMyList(); fireConfetti(true);
         statusEl.innerText = `총 ${dbRecords.length}개의 단어가 성공적으로 등록되었습니다.`;
         showToast(`CSV에서 단어 ${dbRecords.length}개를 등록했습니다.`);
       } catch (err) {
         statusEl.innerText = `오류: ${err.message}`;
         alert('CSV 등록 중 오류가 발생했습니다: ' + err.message);
       } finally {
-        inputEl.value = '';
-        importBtn.disabled = false;
+        inputEl.value = ''; importBtn.disabled = false;
       }
     }
 
@@ -2446,26 +1797,14 @@
 
     async function fetchUserWords(email, isAdmin) {
       let query = sb.from('words').select('*').order('created_ts', { ascending: false });
-      if (!isAdmin) {
-        query = query.eq('user_id', email);
-      }
+      if (!isAdmin) query = query.eq('user_id', email);
       const { data, error } = await query;
       if (error) throw error;
       return (data || []).map(row => ({
-        id: row.id,
-        userId: row.user_id,
-        userName: row.user_name,
-        word: row.word,
-        meaning: row.meaning,
-        sourceSentence: row.source_sentence || '',
-        aiMeaning: row.ai_meaning || '',
-        synonyms: row.synonyms || '',
-        antonyms: row.antonyms || '',
-        mySentence: row.my_sentence || '',
-        aiFeedback: row.ai_feedback || '',
-        star: row.star || 'BRONZE',
-        groupName: '',
-        updatedAt: row.updated_at || ''
+        id: row.id, userId: row.user_id, userName: row.user_name, word: row.word,
+        meaning: row.meaning, sourceSentence: row.source_sentence || '', aiMeaning: row.ai_meaning || '',
+        synonyms: row.synonyms || '', antonyms: row.antonyms || '', mySentence: row.my_sentence || '',
+        aiFeedback: row.ai_feedback || '', star: row.star || 'BRONZE', groupName: '', updatedAt: row.updated_at || ''
       }));
     }
 
@@ -2485,12 +1824,10 @@
     }
 
     function onSearchWordInput() {
-      const inp = document.getElementById('inpWordSearch');
-      searchQuery = inp.value.trim().toLowerCase();
+      searchQuery = document.getElementById('inpWordSearch').value.trim().toLowerCase();
       document.getElementById('btnClearSearch').style.display = searchQuery ? 'flex' : 'none';
       renderMyList();
     }
-
     function clearWordSearch() {
       document.getElementById('inpWordSearch').value = '';
       searchQuery = '';
@@ -2513,52 +1850,333 @@
 
     function renderGroupFilterBar() {
       const bar = document.getElementById('groupFilterBar');
-      if (!myGroups || myGroups.length === 0) {
-        bar.style.display = 'none';
-        return;
-      }
+      if (!myGroups || myGroups.length === 0) { bar.style.display = 'none'; return; }
       bar.style.display = 'flex';
       let html = `<button class="group-chip ${groupFilter === 'ALL' ? 'active' : ''}" onclick="setGroupFilter('ALL')">전체 그룹</button>`;
       myGroups.forEach(g => {
-        const isAct = (groupFilter === g);
-        html += `<button class="group-chip ${isAct ? 'active' : ''}" onclick="setGroupFilter('${escapeHtml(g)}')">${escapeHtml(g)}</button>`;
+        html += `<button class="group-chip ${groupFilter === g ? 'active' : ''}" onclick="setGroupFilter('${escapeHtml(g)}')">${escapeHtml(g)}</button>`;
       });
       bar.innerHTML = html;
     }
 
     function getMyTotalXp() {
       let xp = Number(myUser && myUser.bonusXp ? myUser.bonusXp : 0);
-      myWords.forEach(w => {
-        if (w.star === 'GOLD') xp += 60;
-        else if (w.star === 'SILVER') xp += 30;
-        else xp += 10;
-      });
+      myWords.forEach(w => { xp += (w.star === 'GOLD' ? 60 : (w.star === 'SILVER' ? 30 : 10)); });
       return xp;
     }
 
-    // [수정 3 & 4] 화면 출력용 단일 문맥 의미 정제기
-    // '[I] ... [I] ...'처럼 여러 뜻이 묶여 있거나 '「1」 「2」...'처럼 기호만 있는 경우를 완벽히 걸러내고 무조건 1개의 깨끗한 의미만 반환!
+    // =========================================================================
+    // 3. [핵심 해결 1 & 2] 기호 완벽 제거 + 문맥 의미 정밀 선택 + 유의어·반의어 중복/기호 정제
+    // =========================================================================
+
+    // [해결 1-A] 모든 사전 기호([I], [Ⅰ], [1], 「1」, (), ① 등)를 한 글자도 남김없이 제거
+    function cleanSenseMarkers(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/\[기본형:[^\]]+\]/g, ' ')
+        .replace(/\[[^\]]*\]|「[^」]*」|『[^』]*』|【[^】]*】|\(\d+\)|[①-⑳Ⅰ-Ⅻ]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function isValidKoreanDefinition(str) {
+      if (!str) return false;
+      const cleaned = cleanSenseMarkers(str);
+      if (cleaned === '문맥 의미 분석 중...' || cleaned.includes('분석하고 있습니다') || cleaned.includes('불러오는 중')) return false;
+      const hangulChars = cleaned.match(/[가-힣]/g);
+      return Boolean(hangulChars && hangulChars.length >= 3);
+    }
+
+    // [해결 2] 유의어·반의어 문자열에서 '() : [I][]「」 오다[I][]「」' 같은 찌꺼기와 중복 단어를 완벽히 정제!
+    function cleanSynAntText(rawStr, excludeWord = '', excludeBase = '') {
+      if (!rawStr) return '';
+      const s = String(rawStr).trim();
+      if (!s || s === '없음' || s === '유사 어휘 없음' || s === 'META') return '';
+
+      // 괄호류([I], [], (), 「」 등) 및 관계어 라벨, 숫자/특수기호 모두 제거
+      const stripped = s
+        .replace(/\[[^\]]*\]|「[^」]*」|『[^』]*』|【[^】]*】|\([^)]*\)/g, ',')
+        .replace(/(비슷한말|유의어|반대말|반의어|참고어|낮춤말|높임말|센말|여린말|준말|본말)/g, ',')
+        .replace(/[^가-힣\s,\/|;·]/g, ' ');
+
+      const rawTokens = stripped.split(/[,\/|;·]+/).map(t => t.trim()).filter(Boolean);
+      const uniqueWords = [];
+
+      rawTokens.forEach(tok => {
+        const cleanTok = tok.replace(/\s+/g, ' ').trim();
+        if (!cleanTok) return;
+        if (cleanTok === '없음' || cleanTok === '유사 어휘 없음') return;
+        if (cleanTok === excludeWord || cleanTok === excludeBase) return;
+        if (!uniqueWords.includes(cleanTok)) {
+          uniqueWords.push(cleanTok);
+        }
+      });
+
+      return uniqueWords.slice(0, 4).join(', ');
+    }
+
+    function combineJamoToSyllable(choIdx, jungIdx, jongIdx) {
+      return String.fromCharCode(0xAC00 + (choIdx * 588) + (jungIdx * 28) + jongIdx);
+    }
+    function decomposeHangulSyllable(ch) {
+      if (!ch) return null;
+      const code = ch.charCodeAt(0);
+      if (code < 0xAC00 || code > 0xD7A3) return null;
+      const offset = code - 0xAC00;
+      return { cho: Math.floor(offset / 588), jung: Math.floor((offset % 588) / 28), jong: offset % 28 };
+    }
+
+    // 국어 문법 기본형 후보 추출기
+    function getKoreanGrammarBaseCandidates(rawInput) {
+      const w = (rawInput || '').trim().replace(/[.?!~,"']/g, '');
+      if (!w) return [];
+
+      const candidates = [];
+      const pushUnique = (wordForm) => {
+        if (wordForm && wordForm.length >= 1 && !candidates.includes(wordForm)) candidates.push(wordForm);
+      };
+      const addVerbAndRoot = (stem) => {
+        if (!stem) return;
+        pushUnique(stem + '다');
+        if (/(하|되|시키|스럽|롭)$/.test(stem)) {
+          const nounRoot = stem.replace(/(하|되|시키|스럽|롭)$/, '');
+          if (nounRoot) pushUnique(nounRoot);
+        }
+      };
+
+      const isConjugatedDa = /(시|으시|었|았|겠|더|셨|으셨|했|됐|왔|갔|봤|줬|놨|썼|컸|몰랐|달랐|빨랐|불렀|골랐|흘렀|올랐|잘랐|길렀|눌렀|워졌|아졌|어졌|기뻤|슬펐|예뻤|바빴|아팠)다$/.test(w);
+      if (w.endsWith('다') && !isConjugatedDa) {
+        pushUnique(w);
+        const nounFromDa = w.replace(/(하다|되다|시키다)$/, '');
+        if (nounFromDa && nounFromDa !== w) pushUnique(nounFromDa);
+      }
+
+      // 1-A. '르' 불규칙
+      const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
+      if (reuTarget.length >= 2) {
+        const decPrev = decomposeHangulSyllable(reuTarget.slice(-2, -1));
+        const decLast = decomposeHangulSyllable(reuTarget.slice(-1));
+        if (decPrev && decPrev.jong === 8 && decLast && decLast.cho === 5 && (decLast.jung === 0 || decLast.jung === 4) && (decLast.jong === 0 || decLast.jong === 20)) {
+          const restoredFirst = combineJamoToSyllable(decPrev.cho, decPrev.jung, 0);
+          addVerbAndRoot(reuTarget.slice(0, -2) + restoredFirst + '르');
+        }
+      }
+
+      // 1-B. 'ㅂ' 불규칙
+      const bMatch = w.match(/^(.+?)(워|웠|워요|웠다|워서|워도|운|울|우니|우면|우시다|우셨다|와|왔|와요|왔다|와서|와도|오니)$/);
+      if (bMatch && bMatch[1]) {
+        const stemPrefix = bMatch[1];
+        const endingPart = bMatch[2];
+        const dec = decomposeHangulSyllable(stemPrefix.slice(-1));
+        if (w.startsWith('도와') || w.startsWith('도왔') || w.startsWith('도우') || w === '도운') addVerbAndRoot('돕');
+        else if (w.startsWith('고와') || w.startsWith('고왔') || w === '고운') addVerbAndRoot('곱');
+        else if (dec && dec.jong === 0 && !endingPart.startsWith('와') && !endingPart.startsWith('왔')) {
+          addVerbAndRoot(stemPrefix.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 17));
+        }
+      }
+
+      // 1-C. 'ㄷ' 불규칙
+      const dIrregRules = [
+        { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
+        { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
+        { regex: /^(걸|들|물|실|길)(어|었|어요|었다|어서|어도|으니|으면|으시|으셨)/, map: { '걸': '걷', '들': '듣', '물': '묻', '실': '싣', '길': '긷' } }
+      ];
+      for (const rule of dIrregRules) {
+        const m = w.match(rule.regex);
+        if (m) {
+          if (rule.stem) addVerbAndRoot(rule.stem);
+          else if (rule.map && rule.map[m[1]]) addVerbAndRoot(rule.map[m[1]]);
+        }
+      }
+
+      // 1-D. 'ㅅ' 불규칙
+      const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
+      if (sIrregMatch) {
+        const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
+        if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
+      }
+
+      // 1-E. 'ㅎ' 불규칙
+      const hIrregRules = [
+        { regex: /^그(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '그렇' },
+        { regex: /^이(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '이렇' },
+        { regex: /^저(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '저렇' },
+        { regex: /^어(때|땠|때요|땠다|떠니|떤|떨)/, stem: '어떻' },
+        { regex: /^(하얘|하얬|하얀|하얄)/, stem: '하얗' },
+        { regex: /^(까매|까맸|까만|까말)/, stem: '까맣' },
+        { regex: /^(빨개|빨갰|빨간|빨갈)/, stem: '빨갛' },
+        { regex: /^(파래|파랬|파란|파랄)/, stem: '파랗' },
+        { regex: /^(노래|노랬|노란|노랄)/, stem: '노랗' },
+        { regex: /^(동그래|동그랬|동그란)/, stem: '동그랗' },
+        { regex: /^(커다래|커다랬|커다란)/, stem: '커다랗' }
+      ];
+      for (const rule of hIrregRules) { if (rule.regex.test(w)) addVerbAndRoot(rule.stem); }
+
+      // 1-F. '러'·'여' 불규칙
+      const reoMatch = w.match(/^(이르|푸르|누르)(러|렀|러서|렀다|러요)$/);
+      if (reoMatch) addVerbAndRoot(reoMatch[1]);
+
+      const haMatch = w.match(/^(.*?)(해|했|해서|해도|해야|해요|했다|했어|했어요|하여|하였|하였다|하시다|하셨다|할|한|하는)$/);
+      if (haMatch) addVerbAndRoot((haMatch[1] || '') + '하');
+
+      const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
+      if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
+
+      // 선어말어미 제외 및 'ㄹ' 탈락 복원
+      const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
+      const preMatch = w.match(preFinalPattern);
+      if (preMatch && preMatch[1]) {
+        const rawStem = preMatch[1];
+        const preEnding = preMatch[2];
+        if (preEnding.startsWith('시') || preEnding.startsWith('셨')) {
+          const dec = decomposeHangulSyllable(rawStem.slice(-1));
+          if (dec && dec.jong === 0) {
+            const withRieul = rawStem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8);
+            if (['살', '알', '만들', '길', '멀', '달', '울', '열', '팔', '놀', '돌', '불', '줄', '걸', '밀', '날'].includes(withRieul)) addVerbAndRoot(withRieul);
+            addVerbAndRoot(rawStem);
+            addVerbAndRoot(withRieul);
+          } else addVerbAndRoot(rawStem);
+        } else addVerbAndRoot(rawStem);
+      }
+
+      // 일반 어말어미 분리
+      const generalEndingPattern = /^(.+?)(습니다|ㅂ니다|소서|어라|아라|어요|아요|여요|구나|구먼|는데|은데|지만|건만|아도|어도|더라도|아서|어서|여서|니까|으니까|므로|으므로|거든|려면|으려면|려고|으려고|고자|도록|듯이|어|아|여|지|고|며|면서|면|으면|니|으니|네|군|자|세|다|기|음|는|은|던|을)$/;
+      const endMatch = w.match(generalEndingPattern);
+      if (endMatch && endMatch[1]) {
+        let stem = endMatch[1].replace(/(으시|시|었|았|겠|더)$/, '');
+        if (stem) {
+          const dec = decomposeHangulSyllable(stem.slice(-1));
+          if (dec && (dec.jong === 4 || dec.jong === 17 || dec.jong === 8)) {
+            addVerbAndRoot(stem);
+            addVerbAndRoot(stem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 0));
+            addVerbAndRoot(stem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8));
+          } else addVerbAndRoot(stem);
+        }
+      }
+
+      // 모음 축약 및 'ㅡ' 탈락 ('-다' 기본형에는 미적용하여 '오르드다' 방지)
+      if (!w.endsWith('다') || isConjugatedDa) {
+        const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
+        if (strippedCore.length >= 1 && !strippedCore.endsWith('다')) {
+          const prefix = strippedCore.slice(0, -1);
+          const dec = decomposeHangulSyllable(strippedCore.slice(-1));
+          if (dec && (dec.jong === 0 || dec.jong === 20 || dec.jong === 4 || dec.jong === 8)) {
+            if (dec.jung === 9) {
+              if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓');
+              addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 8, 0));
+            }
+            if (dec.jung === 14) addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 13, 0));
+            if (dec.jung === 6) addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 20, 0));
+            if (dec.jung === 10) addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 11, 0));
+            if ((dec.jung === 0 || dec.jung === 4) && (dec.jong === 0 || dec.jong === 20)) {
+              if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸');
+              addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 18, 0));
+            }
+          }
+        }
+      }
+
+      // 체언 및 조사 분리
+      pushUnique(w);
+      if (!w.endsWith('다')) pushUnique(w + '다');
+      const josaStripped = w.replace(/(에서부터|으로부터|에게서|한테서|이라고|라고|이나마|나마|이라도|라도|야말로|이야말로|에서|에게|한테|으로|로|이나|나|이든|든|커녕|마다|조차|마저|까지|부터|밖에|처럼|같이|만큼|보다|이다|이야|야|이고|이니|이면|은|는|이|가|을|를|의|에|와|과|도|만)$/, '');
+      if (josaStripped && josaStripped.length >= 1) {
+        pushUnique(josaStripped); pushUnique(josaStripped + '다'); pushUnique(josaStripped + '하다');
+      }
+      const nounRootOnly = w.replace(/(하다|되다|시키다|스럽다|롭다|답다|지다|적)$/, '');
+      if (nounRootOnly && nounRootOnly.length >= 1) {
+        pushUnique(nounRootOnly); pushUnique(nounRootOnly + '하다'); pushUnique(nounRootOnly + '다');
+      }
+      return candidates;
+    }
+
+    // [해결 1-B] 문맥 의미 정밀 채점기
+    // 1글자 대명사('나', '너' 등)가 '~거나' 어미에 걸리던 버그를 차단하고, 장소 이동/탈것/사람 주어 단서를 정밀 반영!
+    const STOPWORD_ROOTS = new Set(['나', '너', '저', '그', '이', '것', '수', '등', '때', '중', '내', '네', '제', '우리', '그것', '이것', '저것', '여기', '거기', '저기']);
+
+    function selectBestContextualMeaning(rawDefinitionText, sourceSentence, fallbackMeaning) {
+      const sourceRaw = isValidKoreanDefinition(rawDefinitionText) ? rawDefinitionText : fallbackMeaning;
+      if (!isValidKoreanDefinition(sourceRaw)) return '';
+
+      // [I], [Ⅰ], [1], 「1」, ||, 마침표 뒤 공백 기준으로 다의어 뜻들을 개별 단일 문장으로 분리
+      const rawPieces = String(sourceRaw)
+        .replace(/\[기본형:[^\]]+\]/g, '')
+        .split(/\s*\|\|\s*|\s*\[[IVXⅠ-Ⅻ\d]+\]\s*|\s*「\d+」\s*|\s*[①-⑳]\s*|\s*(?:^|\s)[1-9]\.\s*|\r?\n|(?<=다|음|함|킴|됨)\.\s+/)
+        .map(s => cleanSenseMarkers(s))
+        .filter(s => isValidKoreanDefinition(s));
+
+      if (rawPieces.length === 0) {
+        const cleanedSingle = cleanSenseMarkers(sourceRaw);
+        return cleanedSingle.endsWith('.') ? cleanedSingle : (cleanedSingle + '.');
+      }
+
+      const sent = String(sourceSentence || '');
+      const hasPlaceDest = /(집|학교|회사|병원|산|바다|공원|방|교실|식당|가게|시장|역|공항|나라|서울|시골|고향|곳|밖)(에|으로|로|까지)/.test(sent);
+      const hasVehicle = /(자동차|수레|비행기|버스|기차|지하철|택시|배를|배가|자전거|열차|운전)/.test(sent);
+      const hasTimeCue = /(시간|세월|날이|해가|봄이|여름|가을|겨울|달이)/.test(sent);
+
+      // 대명사/불용어를 제외한 의미 있는 어근 키워드만 추출
+      const keywords = sent
+        .replace(/[^가-힣\s]/g, ' ')
+        .split(/\s+/)
+        .map(t => t.replace(/(에서|에게|으로|로|은|는|이|가|을|를|에|도|만|하다|되다|다)$/, ''))
+        .filter(t => t.length >= 2 && !STOPWORD_ROOTS.has(t));
+
+      let bestSense = rawPieces[0];
+      let bestScore = -999;
+
+      rawPieces.forEach((sense, idx) => {
+        // 기본 중심 의미(1번 뜻)에 기본 가중치 부여
+        let score = (idx === 0) ? 2.0 : Math.max(0, 0.8 - idx * 0.15);
+
+        // 장소 이동 문맥("집에 갔다", "학교에 가다" 등)일 때 장소 이동 뜻풀이에 가산점
+        if (hasPlaceDest && /(장소를 이동|다른 곳으로|이곳으로 이동|움직여 가)/.test(sense) && !/(수레|자동차|비행기|직업|직책)/.test(sense)) {
+          score += 6;
+        }
+
+        // 문장에 탈것(차, 배, 비행기 등)이 없는데 '수레, 배, 자동차, 비행기 따위가 운행' 뜻풀이가 선택되는 현상 방지!
+        if (!hasVehicle && /(수레|자동차|비행기 따위가 운행)/.test(sense)) {
+          score -= 5;
+        } else if (hasVehicle && /(수레|자동차|비행기|탈것)/.test(sense)) {
+          score += 6;
+        }
+
+        if (hasTimeCue && /(시간|세월|지나다|흐르다)/.test(sense)) {
+          score += 5;
+        }
+
+        // 2글자 이상 실질 어근이 단어 경계로 포함될 때만 가산점 부여 ('~거나' 어미 오매칭 원천 차단)
+        keywords.forEach(kw => {
+          const boundaryRegex = new RegExp('(^|[^가-힣])' + kw);
+          if (boundaryRegex.test(sense)) score += 3.5;
+        });
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestSense = sense;
+        }
+      });
+
+      bestSense = cleanSenseMarkers(bestSense);
+      if (bestSense && !/[.?!]$/.test(bestSense)) bestSense += '.';
+      return bestSense;
+    }
+
+    // 화면 출력용 단일 문맥 의미 반환기
     function getCleanSingleDisplayMeaning(wObj) {
       if (!wObj) return '';
       const rawAi = wObj.aiMeaning || '';
       const rawMean = wObj.meaning || '';
 
-      // '[기본형: ...]' 접두어 보존 추출
       const baseMatch = rawAi.match(/^(\[기본형:\s*[^\]]+\]\s*)/);
       const basePrefix = (baseMatch && !baseMatch[1].includes('드다]')) ? baseMatch[1] : '';
 
       let candidate = isValidKoreanDefinition(rawAi) ? rawAi : (isValidKoreanDefinition(rawMean) ? rawMean : '');
-
       if (!candidate) {
-        // 만약 DB에 '「1」 「2」...'만 저장되어 있다면 내장 사전에서 즉시 복원
         const cands = getKoreanGrammarBaseCandidates(wObj.word || '');
         for (const c of cands) {
           if (CORE_SYN_ANT_MAP[c]) {
-            const picked = selectBestContextualMeaning(
-              (CORE_SYN_ANT_MAP[c].senses || [CORE_SYN_ANT_MAP[c].def]).join(' || '),
-              wObj.sourceSentence || '',
-              CORE_SYN_ANT_MAP[c].def
-            );
+            const picked = selectBestContextualMeaning((CORE_SYN_ANT_MAP[c].senses || [CORE_SYN_ANT_MAP[c].def]).join(' || '), wObj.sourceSentence || '', CORE_SYN_ANT_MAP[c].def);
             const prefix = (c !== wObj.word) ? `[기본형: ${c}] ` : '';
             return prefix + picked;
           }
@@ -2571,33 +2189,204 @@
       return basePrefix + singleSense;
     }
 
-    // [자동 복구 엔진] 기존 단어장의 '가다([I] 여러개)' 또는 '집(「1」 「2」...)' 같은 오염 데이터를 백그라운드에서 즉시 1개 의미로 치료 후 DB 저장!
+    async function callGeminiDirect(prompt, schema) {
+      const models = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-lite'];
+      for (const modelName of models) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.1, maxOutputTokens: 170 }
+            })
+          });
+          if (res.ok) {
+            const json = await res.json();
+            const rawText = json.candidates[0].content.parts[0].text;
+            return JSON.parse(rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1));
+          }
+        } catch (e) {}
+      }
+      throw new Error('AI 응답 지연');
+    }
+
+    // 1·2단계 저장 시 문맥 의미 분석
+    async function findContextualMeaningFromDbAndAi(rawWord, sourceSentence) {
+      const cleanWord = rawWord.trim();
+      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
+      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
+
+      let dictHit = null;
+      let matchedBaseWord = cleanWord;
+      if (dictRows && dictRows.length > 0) {
+        for (const cand of candidates) {
+          const found = dictRows.find(r => r.word === cand && isValidKoreanDefinition(r.definition));
+          if (found) { dictHit = found; matchedBaseWord = cand; break; }
+        }
+      }
+
+      let coreHit = null;
+      for (const cand of candidates) {
+        if (CORE_SYN_ANT_MAP[cand]) {
+          coreHit = CORE_SYN_ANT_MAP[cand];
+          if (!dictHit) matchedBaseWord = cand;
+          break;
+        }
+      }
+
+      // 내장 사전(CORE_SYN_ANT_MAP)에 다의어 예문이 정교하게 있는 기본 어휘('가다', '집' 등)는 오염 없는 내장 뜻풀이를 함께 결합하여 최적 문맥 뜻 선택
+      const coreSensesJoined = coreHit ? (coreHit.senses ? coreHit.senses.join(' || ') : coreHit.def) : '';
+      const rawDictDef = (dictHit && isValidKoreanDefinition(dictHit.definition))
+        ? (coreSensesJoined ? (coreSensesJoined + ' || ' + dictHit.definition) : dictHit.definition)
+        : coreSensesJoined;
+
+      let finalContextMeaning = selectBestContextualMeaning(rawDictDef, sourceSentence, coreHit ? coreHit.def : '');
+
+      try {
+        const prompt =
+          `단어:"${cleanWord}" / 출처문장:"${sourceSentence}"\n` +
+          `${rawDictDef ? `(사전 후보 뜻들: "${cleanSenseMarkers(rawDictDef)}")\n` : ''}` +
+          `1. baseForm: 위 단어의 정확한 표준국어대사전 기본형 표제어(용언은 어간+'-다', 명사는 조사 제외 원형).\n` +
+          `2. contextMeaning: 오직 위 출처문장의 맥락에 해당하는 뜻 딱 1가지만 골라 기호([I], [1] 등) 없이 자연스러운 한 문장으로 작성. JSON 반환`;
+
+        const schema = {
+          type: 'OBJECT',
+          properties: { baseForm: { type: 'STRING' }, contextMeaning: { type: 'STRING' } },
+          required: ['baseForm', 'contextMeaning']
+        };
+        const aiRes = await callGeminiDirect(prompt, schema);
+        if (aiRes) {
+          const aiBase = (aiRes.baseForm || '').trim();
+          if (aiBase && !aiBase.endsWith('드다')) matchedBaseWord = aiBase;
+          if (isValidKoreanDefinition(aiRes.contextMeaning)) {
+            finalContextMeaning = selectBestContextualMeaning(aiRes.contextMeaning, sourceSentence, finalContextMeaning);
+          }
+        }
+      } catch (e) {}
+
+      if (!isValidKoreanDefinition(finalContextMeaning)) {
+        if (coreHit && coreHit.def) finalContextMeaning = coreHit.def;
+        else {
+          const rootKey = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
+          const { data: fallbackRows } = await sb.from('std_dict').select('definition').ilike('word', `${rootKey}%`).limit(10);
+          const validRow = (fallbackRows || []).find(r => isValidKoreanDefinition(r.definition));
+          if (validRow) finalContextMeaning = selectBestContextualMeaning(validRow.definition, sourceSentence, '');
+        }
+      }
+
+      if (!isValidKoreanDefinition(finalContextMeaning)) {
+        finalContextMeaning = `'${matchedBaseWord}'의 문맥적 의미입니다.`;
+      }
+
+      const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
+      const cleanFinalMeaning = selectBestContextualMeaning(finalContextMeaning, sourceSentence, finalContextMeaning);
+      return {
+        baseWord: matchedBaseWord || cleanWord,
+        pureMeaning: cleanFinalMeaning,
+        displayMeaning: basePrefix + cleanFinalMeaning
+      };
+    }
+
+    // 3단계 유의어·반의어 추출 (기호 찌꺼기 및 중복 단어 완전 정제)
+    async function fetchSynonymsAndAntonyms(rawWord, contextMeaning, sourceSentence) {
+      const cleanWord = rawWord.trim();
+      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
+
+      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
+      let dictHit = (dictRows && dictRows.length > 0) ? dictRows.find(r => r.antonyms !== 'META') : null;
+      let coreHit = null;
+      let matchedBaseWord = dictHit ? dictHit.word : cleanWord;
+
+      for (const cand of candidates) {
+        if (CORE_SYN_ANT_MAP[cand]) {
+          coreHit = CORE_SYN_ANT_MAP[cand];
+          matchedBaseWord = cand;
+          break;
+        }
+      }
+
+      let finalSynonyms = cleanSynAntText(dictHit && dictHit.synonyms, cleanWord, matchedBaseWord) || cleanSynAntText(coreHit && coreHit.syn, cleanWord, matchedBaseWord);
+      let finalAntonyms = cleanSynAntText(dictHit && dictHit.antonyms, cleanWord, matchedBaseWord) || cleanSynAntText(coreHit && coreHit.ant, cleanWord, matchedBaseWord);
+
+      try {
+        const prompt =
+          `단어:"${cleanWord}"(문맥뜻:"${contextMeaning}") / 문장:"${sourceSentence}"\n` +
+          `이 문맥에서의 유의어 2~3개(쉼표 구분, 기호 없이 순수 한글 단어만)와 반의어 1~2개(없으면 '없음')를 JSON으로 반환하세요.`;
+        const schema = {
+          type: 'OBJECT',
+          properties: { synonyms: { type: 'STRING' }, antonyms: { type: 'STRING' } },
+          required: ['synonyms', 'antonyms']
+        };
+        const aiRes = await callGeminiDirect(prompt, schema);
+        if (aiRes) {
+          const aiSyn = cleanSynAntText(aiRes.synonyms, cleanWord, matchedBaseWord);
+          const aiAnt = cleanSynAntText(aiRes.antonyms, cleanWord, matchedBaseWord);
+          if (aiSyn) finalSynonyms = aiSyn;
+          if (aiAnt) finalAntonyms = aiAnt;
+        }
+      } catch (e) {}
+
+      if (!finalSynonyms) {
+        const searchRoot = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
+        if (searchRoot.length >= 2) {
+          const { data: relRows } = await sb.from('std_dict').select('word').ilike('definition', `%${searchRoot}%`).neq('word', matchedBaseWord).limit(6);
+          if (relRows && relRows.length > 0) {
+            const foundSyns = relRows.map(r => r.word).filter(w => w && !w.startsWith('__') && w !== cleanWord && w !== matchedBaseWord);
+            finalSynonyms = cleanSynAntText(foundSyns.join(', '), cleanWord, matchedBaseWord);
+          }
+        }
+      }
+
+      return {
+        synonyms: finalSynonyms || '유사 어휘 없음',
+        antonyms: finalAntonyms || '없음'
+      };
+    }
+
+    // 기존 저장 단어들 중 '[I]', '() : [I][]「」', 오선택된 '수레, 배, 자동차' 등을 자동 복구하여 영구 저장!
     async function autoHealExistingWordMeanings() {
       if (!myWords || myWords.length === 0) return;
       let anyChanged = false;
 
       for (const w of myWords) {
         const rawText = w.aiMeaning || w.meaning || '';
-        const hasMultipleMarkers = /\[[IVX\d]+\]|「\d+」|\|\|/.test(rawText);
-        const sentenceCount = rawText.replace(/^\[기본형:[^\]]+\]\s*/, '').split(/다\.\s+/).filter(Boolean).length;
-        const isInvalid = !isValidKoreanDefinition(rawText);
+        const hasMarkers = /\[(?!기본형:)[^\]]*\]|「[^」]*」|\|\|/.test(rawText);
+        const wrongVehicleada = (w.word === '가다' && rawText.includes('수레, 배') && !/(차|배|비행기)/.test(w.sourceSentence || ''));
+        const dirtySyn = /[\[\]「」\(\):0-9]/.test(w.synonyms || '');
+        const dirtyAnt = /[\[\]「」\(\):0-9]/.test(w.antonyms || '');
 
-        if (isInvalid || hasMultipleMarkers || sentenceCount >= 2 || rawText.includes('드다]')) {
+        let needSave = false;
+        const updatePayload = {};
+
+        if (!isValidKoreanDefinition(rawText) || hasMarkers || wrongVehicleada || rawText.includes('드다]')) {
           const healed = await findContextualMeaningFromDbAndAi(w.word, w.sourceSentence || w.word);
           w.meaning = healed.pureMeaning;
           w.aiMeaning = healed.displayMeaning;
-          anyChanged = true;
+          updatePayload.meaning = w.meaning;
+          updatePayload.ai_meaning = w.aiMeaning;
+          needSave = true;
+        }
 
-          await sb.from('words').update({
-            meaning: w.meaning,
-            ai_meaning: w.aiMeaning
-          }).eq('id', w.id);
+        if (dirtySyn) {
+          w.synonyms = cleanSynAntText(w.synonyms, w.word) || '유사 어휘 없음';
+          updatePayload.synonyms = w.synonyms;
+          needSave = true;
+        }
+        if (dirtyAnt) {
+          w.antonyms = cleanSynAntText(w.antonyms, w.word) || '없음';
+          updatePayload.antonyms = w.antonyms;
+          needSave = true;
+        }
+
+        if (needSave) {
+          anyChanged = true;
+          await sb.from('words').update(updatePayload).eq('id', w.id);
         }
       }
 
-      if (anyChanged) {
-        renderMyList();
-      }
+      if (anyChanged) renderMyList();
     }
 
     function renderMyList() {
@@ -2641,22 +2430,17 @@
         if (!matchGroup) return false;
         if (!searchQuery) return true;
         const cleanMean = getCleanSingleDisplayMeaning(w).toLowerCase();
-        const inWord = (w.word || '').toLowerCase().includes(searchQuery);
-        const inGroup = wGroup.toLowerCase().includes(searchQuery);
-        return inWord || cleanMean.includes(searchQuery) || inGroup;
+        return (w.word || '').toLowerCase().includes(searchQuery) || cleanMean.includes(searchQuery) || wGroup.toLowerCase().includes(searchQuery);
       });
 
       const c = document.getElementById('wordListContainer');
       if (filtered.length === 0) {
-        if (searchQuery || groupFilter !== 'ALL') {
-          c.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--text-sub); font-size:13px;">해당 조건에 맞는 단어가 없습니다.</div>`;
-        } else {
-          c.innerHTML = '<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼을 눌러 첫 단어를 등록해 보세요.</div>';
-        }
+        c.innerHTML = (searchQuery || groupFilter !== 'ALL')
+          ? `<div style="text-align:center; padding:40px 0; color:var(--text-sub); font-size:13px;">해당 조건에 맞는 단어가 없습니다.</div>`
+          : `<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼을 눌러 첫 단어를 등록해 보세요.</div>`;
         return;
       }
 
-      // [수정 1] 단어 이름(.word-title-row)과 우측 점 3개(.btn-word-more)가 정확히 같은 높이(24px 행)에 나란히 배치됨
       c.innerHTML = filtered.map(w => {
         const gName = wordGroupMap[w.id] || '';
         const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
@@ -2681,519 +2465,6 @@
       }).join('');
     }
 
-    // =========================================================================
-    // 3. 국어 문법 기본형 변환 엔진 + 단일 문맥 의미 추출기
-    // =========================================================================
-    async function callGeminiDirect(prompt, schema) {
-      const models = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-lite'];
-
-      for (const modelName of models) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
-          const genConfig = {
-            responseMimeType: 'application/json',
-            responseSchema: schema,
-            temperature: 0.1,
-            maxOutputTokens: 170
-          };
-
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: genConfig
-            })
-          });
-
-          if (res.ok) {
-            const json = await res.json();
-            const rawText = json.candidates[0].content.parts[0].text;
-            const start = rawText.indexOf('{');
-            const end = rawText.lastIndexOf('}');
-            return JSON.parse(rawText.substring(start, end + 1));
-          }
-        } catch (e) {}
-      }
-      throw new Error('AI 응답 지연');
-    }
-
-    // '[1]', '[I]', '「1」' 등 모든 사전 기호를 걷어냈을 때 실제 한글 뜻풀이가 3글자 이상 있는지 검사
-    function isValidKoreanDefinition(str) {
-      if (!str) return false;
-      const cleaned = String(str)
-        .replace(/\[기본형:[^\]]+\]/g, '')
-        .replace(/\[[^\]]*\]|「[^」]*」|『[^』]*』|【[^】]*】|\(\d+\)/g, '')
-        .trim();
-      if (cleaned === '문맥 의미 분석 중...' || cleaned.includes('분석하고 있습니다')) return false;
-      const hangulChars = cleaned.match(/[가-힣]/g);
-      return Boolean(hangulChars && hangulChars.length >= 3);
-    }
-
-    function cleanSenseMarkers(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/\[[IVX\d]+\]|「[^」]*」|『[^』]*』|【[^】]*】|\(\d+\)|[①②③④⑤⑥⑦⑧⑨⑩]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function combineJamoToSyllable(choIdx, jungIdx, jongIdx) {
-      return String.fromCharCode(0xAC00 + (choIdx * 588) + (jungIdx * 28) + jongIdx);
-    }
-
-    function decomposeHangulSyllable(ch) {
-      if (!ch) return null;
-      const code = ch.charCodeAt(0);
-      if (code < 0xAC00 || code > 0xD7A3) return null;
-      const offset = code - 0xAC00;
-      const cho = Math.floor(offset / 588);
-      const jung = Math.floor((offset % 588) / 28);
-      const jong = offset % 28;
-      return { cho, jung, jong };
-    }
-
-    function getKoreanGrammarBaseCandidates(rawInput) {
-      const w = (rawInput || '').trim().replace(/[.?!~,"']/g, '');
-      if (!w) return [];
-
-      const candidates = [];
-      const pushUnique = (wordForm) => {
-        if (wordForm && wordForm.length >= 1 && !candidates.includes(wordForm)) {
-          candidates.push(wordForm);
-        }
-      };
-
-      const addVerbAndRoot = (stem) => {
-        if (!stem) return;
-        pushUnique(stem + '다');
-        if (stem.endsWith('하') || stem.endsWith('되') || stem.endsWith('시키') || stem.endsWith('스럽') || stem.endsWith('롭')) {
-          const nounRoot = stem.replace(/(하|되|시키|스럽|롭)$/, '');
-          if (nounRoot) pushUnique(nounRoot);
-        }
-      };
-
-      const isConjugatedDa = /(시|으시|었|았|겠|더|셨|으셨|했|됐|왔|갔|봤|줬|놨|썼|컸|몰랐|달랐|빨랐|불렀|골랐|흘렀|올랐|잘랐|길렀|눌렀|워졌|아졌|어졌|기뻤|슬펐|예뻤|바빴|아팠)다$/.test(w);
-      if (w.endsWith('다') && !isConjugatedDa) {
-        pushUnique(w);
-        const nounFromDa = w.replace(/(하다|되다|시키다)$/, '');
-        if (nounFromDa && nounFromDa !== w) pushUnique(nounFromDa);
-      }
-
-      // 1-A. '르' 불규칙 복원
-      const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
-      if (reuTarget.length >= 2) {
-        const prevCh = reuTarget.slice(-2, -1);
-        const lastCh = reuTarget.slice(-1);
-        const decPrev = decomposeHangulSyllable(prevCh);
-        const decLast = decomposeHangulSyllable(lastCh);
-        if (decPrev && decPrev.jong === 8 && decLast && decLast.cho === 5 && (decLast.jung === 0 || decLast.jung === 4) && (decLast.jong === 0 || decLast.jong === 20)) {
-          const restoredFirst = combineJamoToSyllable(decPrev.cho, decPrev.jung, 0);
-          const reuStem = reuTarget.slice(0, -2) + restoredFirst + '르';
-          addVerbAndRoot(reuStem);
-        }
-      }
-
-      // 1-B. 'ㅂ' 불규칙 복원
-      const bMatch = w.match(/^(.+?)(워|웠|워요|웠다|워서|워도|운|울|우니|우면|우시다|우셨다|와|왔|와요|왔다|와서|와도|오니)$/);
-      if (bMatch && bMatch[1]) {
-        const stemPrefix = bMatch[1];
-        const endingPart = bMatch[2];
-        const lastSyll = stemPrefix.slice(-1);
-        const dec = decomposeHangulSyllable(lastSyll);
-        if (w.startsWith('도와') || w.startsWith('도왔') || w.startsWith('도우') || w === '도운') {
-          addVerbAndRoot('돕');
-        } else if (w.startsWith('고와') || w.startsWith('고왔') || w === '고운') {
-          addVerbAndRoot('곱');
-        } else if (dec && dec.jong === 0 && !endingPart.startsWith('와') && !endingPart.startsWith('왔')) {
-          const withB = combineJamoToSyllable(dec.cho, dec.jung, 17);
-          addVerbAndRoot(stemPrefix.slice(0, -1) + withB);
-        }
-      }
-
-      // 1-C. 'ㄷ' 불규칙 복원
-      const dIrregRules = [
-        { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
-        { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
-        { regex: /^(걸|들|물|실|길)(어|었|어요|었다|어서|어도|으니|으면|으시|으셨)/, map: { '걸': '걷', '들': '듣', '물': '묻', '실': '싣', '길': '긷' } }
-      ];
-      for (const rule of dIrregRules) {
-        const m = w.match(rule.regex);
-        if (m) {
-          if (rule.stem) addVerbAndRoot(rule.stem);
-          else if (rule.map && rule.map[m[1]]) addVerbAndRoot(rule.map[m[1]]);
-        }
-      }
-
-      // 1-D. 'ㅅ' 불규칙 복원
-      const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
-      if (sIrregMatch) {
-        const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
-        if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
-      }
-
-      // 1-E. 'ㅎ' 불규칙 복원
-      const hIrregRules = [
-        { regex: /^그(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '그렇' },
-        { regex: /^이(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '이렇' },
-        { regex: /^저(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '저렇' },
-        { regex: /^어(때|땠|때요|땠다|떠니|떤|떨)/, stem: '어떻' },
-        { regex: /^(하얘|하얬|하얀|하얄)/, stem: '하얗' },
-        { regex: /^(까매|까맸|까만|까말)/, stem: '까맣' },
-        { regex: /^(빨개|빨갰|빨간|빨갈)/, stem: '빨갛' },
-        { regex: /^(파래|파랬|파란|파랄)/, stem: '파랗' },
-        { regex: /^(노래|노랬|노란|노랄)/, stem: '노랗' },
-        { regex: /^(동그래|동그랬|동그란)/, stem: '동그랗' },
-        { regex: /^(커다래|커다랬|커다란)/, stem: '커다랗' }
-      ];
-      for (const rule of hIrregRules) {
-        if (rule.regex.test(w)) addVerbAndRoot(rule.stem);
-      }
-
-      // 1-F. '러' 불규칙
-      const reoMatch = w.match(/^(이르|푸르|누르)(러|렀|러서|렀다|러요)$/);
-      if (reoMatch) addVerbAndRoot(reoMatch[1]);
-
-      // 1-G. '여' 불규칙 및 '하/되' 축약 복원
-      const haMatch = w.match(/^(.*?)(해|했|해서|해도|해야|해요|했다|했어|했어요|하여|하였|하였다|하시다|하셨다|할|한|하는)$/);
-      if (haMatch) addVerbAndRoot((haMatch[1] || '') + '하');
-
-      const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
-      if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
-
-      // [규칙 2] 선어말어미 제외 및 'ㄹ' 탈락 복원
-      const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
-      const preMatch = w.match(preFinalPattern);
-      if (preMatch && preMatch[1]) {
-        const rawStem = preMatch[1];
-        const preEnding = preMatch[2];
-        if (preEnding.startsWith('시') || preEnding.startsWith('셨')) {
-          const lastCh = rawStem.slice(-1);
-          const dec = decomposeHangulSyllable(lastCh);
-          if (dec && dec.jong === 0) {
-            const withRieul = rawStem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8);
-            if (['살', '알', '만들', '길', '멀', '달', '울', '열', '팔', '놀', '돌', '불', '줄', '걸', '밀', '날'].includes(withRieul)) {
-              addVerbAndRoot(withRieul);
-            }
-            addVerbAndRoot(rawStem);
-            addVerbAndRoot(withRieul);
-          } else {
-            addVerbAndRoot(rawStem);
-          }
-        } else {
-          addVerbAndRoot(rawStem);
-        }
-      }
-
-      // [규칙 3] 일반 어말어미 분리 후 종결어미 '-다' 결합
-      const generalEndingPattern = /^(.+?)(습니다|ㅂ니다|소서|어라|아라|어요|아요|여요|구나|구먼|는데|은데|지만|건만|아도|어도|더라도|아서|어서|여서|니까|으니까|므로|으므로|거든|려면|으려면|려고|으려고|고자|도록|듯이|어|아|여|지|고|며|면서|면|으면|니|으니|네|군|자|세|다|기|음|는|은|던|을)$/;
-      const endMatch = w.match(generalEndingPattern);
-      if (endMatch && endMatch[1]) {
-        let stem = endMatch[1].replace(/(으시|시|었|았|겠|더)$/, '');
-        if (stem) {
-          const lastCh = stem.slice(-1);
-          const dec = decomposeHangulSyllable(lastCh);
-          if (dec && (dec.jong === 4 || dec.jong === 17 || dec.jong === 8)) {
-            const withoutJong = stem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 0);
-            const withRieul = stem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8);
-            addVerbAndRoot(stem);
-            addVerbAndRoot(withoutJong);
-            addVerbAndRoot(withRieul);
-          } else {
-            addVerbAndRoot(stem);
-          }
-        }
-      }
-
-      // [규칙 4] 모음 축약 및 'ㅡ' 탈락 복원 ('-다' 기본형에는 적용하지 않음)
-      if (!w.endsWith('다') || isConjugatedDa) {
-        const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
-        if (strippedCore.length >= 1 && !strippedCore.endsWith('다')) {
-          const lastSyll = strippedCore.slice(-1);
-          const prefix = strippedCore.slice(0, -1);
-          const dec = decomposeHangulSyllable(lastSyll);
-
-          if (dec && (dec.jong === 0 || dec.jong === 20 || dec.jong === 4 || dec.jong === 8)) {
-            if (dec.jung === 9) {
-              if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓');
-              const restoredO = prefix + combineJamoToSyllable(dec.cho, 8, 0);
-              addVerbAndRoot(restoredO);
-            }
-            if (dec.jung === 14) {
-              const restoredU = prefix + combineJamoToSyllable(dec.cho, 13, 0);
-              addVerbAndRoot(restoredU);
-            }
-            if (dec.jung === 6) {
-              const restoredI = prefix + combineJamoToSyllable(dec.cho, 20, 0);
-              addVerbAndRoot(restoredI);
-            }
-            if (dec.jung === 10) {
-              const restoredOe = prefix + combineJamoToSyllable(dec.cho, 11, 0);
-              addVerbAndRoot(restoredOe);
-            }
-            if ((dec.jung === 0 || dec.jung === 4) && (dec.jong === 0 || dec.jong === 20)) {
-              if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸');
-              const restoredEu = prefix + combineJamoToSyllable(dec.cho, 18, 0);
-              addVerbAndRoot(restoredEu);
-            }
-          }
-        }
-      }
-
-      // [규칙 5] 체언(명사) 원형 및 조사 분리
-      pushUnique(w);
-      if (!w.endsWith('다')) {
-        pushUnique(w + '다');
-      }
-
-      const josaStripped = w.replace(/(에서부터|으로부터|에게서|한테서|이라고|라고|이나마|나마|이라도|라도|야말로|이야말로|에서|에게|한테|으로|로|이나|나|이든|든|커녕|마다|조차|마저|까지|부터|밖에|처럼|같이|만큼|보다|이다|이야|야|이고|이니|이면|은|는|이|가|을|를|의|에|와|과|도|만)$/, '');
-      if (josaStripped && josaStripped.length >= 1) {
-        pushUnique(josaStripped);
-        pushUnique(josaStripped + '다');
-        pushUnique(josaStripped + '하다');
-      }
-
-      const nounRootOnly = w.replace(/(하다|되다|시키다|스럽다|롭다|답다|지다|적)$/, '');
-      if (nounRootOnly && nounRootOnly.length >= 1) {
-        pushUnique(nounRootOnly);
-        pushUnique(nounRootOnly + '하다');
-        pushUnique(nounRootOnly + '다');
-      }
-
-      return candidates;
-    }
-
-    // [수정 3 핵심] 여러 개의 뜻풀이가 들어왔을 때('[I] ... [I] ...' 또는 여러 문장),
-    // 개별 의미 단위로 쪼갠 뒤 문맥(sourceSentence)과 가장 관련 있는 '단 하나의 의미(1문장)'만 골라 반환!
-    function selectBestContextualMeaning(rawDefinitionText, sourceSentence, fallbackMeaning) {
-      const sourceRaw = isValidKoreanDefinition(rawDefinitionText) ? rawDefinitionText : fallbackMeaning;
-      if (!isValidKoreanDefinition(sourceRaw)) {
-        return '';
-      }
-
-      // 1) 먼저 [I], [II], [1], 「1」, ||, 줄바꿈, 또는 '다. ' 기준으로 개별 뜻풀이들을 모두 분리
-      const rawPieces = String(sourceRaw)
-        .replace(/\[기본형:[^\]]+\]/g, '')
-        .split(/\s*\|\|\s*|\s*\[[IVX\d]+\]\s*|\s*「\d+」\s*|\s*[①②③④⑤⑥⑦⑧⑨⑩]\s*|\s*(?:^|\s)[1-9]\.\s*|\r?\n|(?<=다)\.\s+/)
-        .map(s => cleanSenseMarkers(s))
-        .filter(s => isValidKoreanDefinition(s));
-
-      if (rawPieces.length === 0) {
-        const cleanedSingle = cleanSenseMarkers(sourceRaw);
-        return cleanedSingle.endsWith('.') ? cleanedSingle : (cleanedSingle + '.');
-      }
-
-      // 2) 출처 문장(sourceSentence)에서 핵심 어근 키워드 추출
-      const keywords = String(sourceSentence || '')
-        .replace(/[^가-힣\s]/g, ' ')
-        .split(/\s+/)
-        .map(t => t.replace(/(에서|에게|으로|로|은|는|이|가|을|를|에|도|만|하다|되다|다)$/, ''))
-        .filter(t => t.length >= 1);
-
-      let bestSense = rawPieces[0];
-      let bestScore = -1;
-
-      rawPieces.forEach((sense, idx) => {
-        let score = (idx === 0) ? 0.6 : 0; // 동점일 때는 가장 기본이 되는 첫 번째 중심 의미 선택
-        keywords.forEach(kw => {
-          if (kw.length >= 2 && sense.includes(kw)) {
-            score += 3;
-          } else if (kw.length === 1 && sense.includes(kw)) {
-            score += 1;
-          }
-        });
-        if (score > bestScore) {
-          bestScore = score;
-          bestSense = sense;
-        }
-      });
-
-      // 마침표 정리 (단 1개의 문장으로 깔끔하게 마무리)
-      bestSense = bestSense.trim();
-      if (!bestSense.endsWith('.') && !bestSense.endsWith('음') && !bestSense.endsWith('함') && !bestSense.endsWith('킴') && !bestSense.endsWith('됨')) {
-        bestSense += '.';
-      }
-      return bestSense;
-    }
-
-    // [1·2단계 저장 시 실행] 문장의 문맥에 따라 모르는 단어의 의미를 DB + AI로 추출 (단일 의미 보장 & 빈칸 방지)
-    async function findContextualMeaningFromDbAndAi(rawWord, sourceSentence) {
-      const cleanWord = rawWord.trim();
-      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
-
-      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
-
-      let dictHit = null;
-      let matchedBaseWord = cleanWord;
-
-      if (dictRows && dictRows.length > 0) {
-        for (const cand of candidates) {
-          const found = dictRows.find(r => r.word === cand && isValidKoreanDefinition(r.definition));
-          if (found) {
-            dictHit = found;
-            matchedBaseWord = cand;
-            break;
-          }
-        }
-      }
-
-      let coreHit = null;
-      for (const cand of candidates) {
-        if (CORE_SYN_ANT_MAP[cand]) {
-          coreHit = CORE_SYN_ANT_MAP[cand];
-          if (!dictHit) matchedBaseWord = cand;
-          break;
-        }
-      }
-
-      const coreSensesJoined = coreHit
-        ? (coreHit.senses ? coreHit.senses.join(' || ') : coreHit.def)
-        : '';
-      const rawDictDef = (dictHit && isValidKoreanDefinition(dictHit.definition))
-        ? dictHit.definition
-        : coreSensesJoined;
-
-      let finalContextMeaning = selectBestContextualMeaning(
-        rawDictDef,
-        sourceSentence,
-        coreHit ? coreHit.def : ''
-      );
-
-      // AI를 돌려 문장 속 정확한 기본형과 '단 1개의 문맥 의미' 추출
-      try {
-        const prompt =
-          `단어:"${cleanWord}" / 출처문장:"${sourceSentence}"\n` +
-          `${rawDictDef ? `(사전 후보 뜻들: "${cleanSenseMarkers(rawDictDef)}")\n` : ''}` +
-          `1. baseForm: 위 단어의 정확한 표준국어대사전 기본형 표제어(용언은 선어말어미 제외 후 어간+'-다', 명사는 조사 제외한 원형. 절대 '오르드다' 같은 없는 말을 합성하지 말 것).\n` +
-          `2. contextMeaning: 여러 개의 뜻을 나열하지 말고, 오직 위 출처문장의 맥락에 해당하는 뜻 딱 1가지만 골라 한 문장(예: '~하다.' 또는 '~하는 것.')으로 작성. 절대 [I], [1], 「1」 같은 기호를 넣지 말 것. JSON 반환`;
-
-        const schema = {
-          type: 'OBJECT',
-          properties: {
-            baseForm: { type: 'STRING' },
-            contextMeaning: { type: 'STRING' }
-          },
-          required: ['baseForm', 'contextMeaning']
-        };
-
-        const aiRes = await callGeminiDirect(prompt, schema);
-        if (aiRes) {
-          const aiBase = (aiRes.baseForm || '').trim();
-          if (aiBase && !aiBase.endsWith('드다')) {
-            matchedBaseWord = aiBase;
-          }
-          if (isValidKoreanDefinition(aiRes.contextMeaning)) {
-            // AI가 혹시 2문장을 주더라도 selectBestContextualMeaning으로 무조건 1문장만 남김
-            finalContextMeaning = selectBestContextualMeaning(aiRes.contextMeaning, sourceSentence, finalContextMeaning);
-          }
-        }
-      } catch (e) {}
-
-      // 만약 AI도 실패하고 std_dict에도 없거나 기호('「1」 「2」')로 오염되어 있었다면, 어근 검색으로 뜻 보완
-      if (!isValidKoreanDefinition(finalContextMeaning)) {
-        if (coreHit && coreHit.def) {
-          finalContextMeaning = coreHit.def;
-        } else {
-          const rootKey = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
-          const { data: fallbackRows } = await sb
-            .from('std_dict')
-            .select('definition')
-            .ilike('word', `${rootKey}%`)
-            .limit(10);
-          const validRow = (fallbackRows || []).find(r => isValidKoreanDefinition(r.definition));
-          if (validRow) {
-            finalContextMeaning = selectBestContextualMeaning(validRow.definition, sourceSentence, '');
-          }
-        }
-      }
-
-      if (!isValidKoreanDefinition(finalContextMeaning)) {
-        finalContextMeaning = `'${matchedBaseWord}'의 문맥적 의미 (단어 편집에서 뜻을 직접 다듬을 수 있습니다).`;
-      }
-
-      const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
-      const cleanFinalMeaning = selectBestContextualMeaning(finalContextMeaning, sourceSentence, finalContextMeaning);
-      const displayMeaningWithBase = basePrefix + cleanFinalMeaning;
-
-      return {
-        baseWord: matchedBaseWord || cleanWord,
-        pureMeaning: cleanFinalMeaning,
-        displayMeaning: displayMeaningWithBase
-      };
-    }
-
-    // [3단계 실행] 유의어·반의어 DB + AI 추출
-    async function fetchSynonymsAndAntonyms(rawWord, contextMeaning, sourceSentence) {
-      const cleanWord = rawWord.trim();
-      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
-
-      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
-      let dictHit = (dictRows && dictRows.length > 0) ? dictRows[0] : null;
-      let coreHit = null;
-      let matchedBaseWord = dictHit ? dictHit.word : cleanWord;
-
-      for (const cand of candidates) {
-        if (CORE_SYN_ANT_MAP[cand]) {
-          coreHit = CORE_SYN_ANT_MAP[cand];
-          matchedBaseWord = cand;
-          break;
-        }
-      }
-
-      let finalSynonyms = (dictHit && dictHit.synonyms && dictHit.synonyms !== '없음' && dictHit.synonyms !== '유사 어휘 없음')
-        ? dictHit.synonyms
-        : ((coreHit && coreHit.syn) || '');
-      let finalAntonyms = (dictHit && dictHit.antonyms && dictHit.antonyms !== '없음')
-        ? dictHit.antonyms
-        : ((coreHit && coreHit.ant) || '');
-
-      try {
-        const prompt =
-          `단어:"${cleanWord}"(문맥뜻:"${contextMeaning}") / 문장:"${sourceSentence}"\n` +
-          `이 문맥에서의 유의어 2~3개(쉼표 구분)와 반의어 1~2개(없으면 '없음')를 JSON으로 반환하세요.`;
-
-        const schema = {
-          type: 'OBJECT',
-          properties: {
-            synonyms: { type: 'STRING' },
-            antonyms: { type: 'STRING' }
-          },
-          required: ['synonyms', 'antonyms']
-        };
-
-        const aiRes = await callGeminiDirect(prompt, schema);
-        if (aiRes) {
-          if (aiRes.synonyms && aiRes.synonyms.trim()) finalSynonyms = aiRes.synonyms.trim();
-          if (aiRes.antonyms && aiRes.antonyms.trim()) finalAntonyms = aiRes.antonyms.trim();
-        }
-      } catch (e) {}
-
-      if (!finalSynonyms || finalSynonyms === '없음') {
-        const searchRoot = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
-        if (searchRoot.length >= 2) {
-          const { data: relRows } = await sb
-            .from('std_dict')
-            .select('word')
-            .ilike('definition', `%${searchRoot}%`)
-            .neq('word', matchedBaseWord)
-            .limit(5);
-
-          if (relRows && relRows.length > 0) {
-            const foundSyns = relRows.map(r => r.word).filter(w => w && w !== cleanWord && w !== matchedBaseWord).slice(0, 3);
-            if (foundSyns.length > 0) finalSynonyms = foundSyns.join(', ');
-          }
-        }
-      }
-
-      if (!finalSynonyms) finalSynonyms = '유사 어휘 없음';
-      if (!finalAntonyms) finalAntonyms = '없음';
-
-      return {
-        synonyms: finalSynonyms,
-        antonyms: finalAntonyms
-      };
-    }
-
     async function openBuilder(wordId) {
       curItem = wordId ? myWords.find(w => w.id === wordId) : null;
       syncBuilder();
@@ -3201,17 +2472,27 @@
 
       if (curItem) {
         const rawText = curItem.aiMeaning || curItem.meaning || '';
-        const hasMultipleOrCorrupt = /\[[IVX\d]+\]|「\d+」|\|\|/.test(rawText) || !isValidKoreanDefinition(rawText) || rawText.includes('드다]');
-        if (hasMultipleOrCorrupt) {
-          const fixed = await findContextualMeaningFromDbAndAi(curItem.word, curItem.sourceSentence || curItem.word);
-          curItem.meaning = fixed.pureMeaning;
-          curItem.aiMeaning = fixed.displayMeaning;
-          renderStep12Summary();
+        const hasIssue = /\[(?!기본형:)[^\]]*\]|「[^」]*」|\|\|/.test(rawText) || !isValidKoreanDefinition(rawText) || (curItem.word === '가다' && rawText.includes('수레, 배') && !/(차|배|비행기)/.test(curItem.sourceSentence || ''));
+        const dirtyRel = /[\[\]「」\(\):0-9]/.test((curItem.synonyms || '') + (curItem.antonyms || ''));
+
+        if (hasIssue || dirtyRel) {
+          const updateObj = {};
+          if (hasIssue) {
+            const fixed = await findContextualMeaningFromDbAndAi(curItem.word, curItem.sourceSentence || curItem.word);
+            curItem.meaning = fixed.pureMeaning;
+            curItem.aiMeaning = fixed.displayMeaning;
+            updateObj.meaning = curItem.meaning;
+            updateObj.ai_meaning = curItem.aiMeaning;
+          }
+          if (dirtyRel) {
+            curItem.synonyms = cleanSynAntText(curItem.synonyms, curItem.word) || '유사 어휘 없음';
+            curItem.antonyms = cleanSynAntText(curItem.antonyms, curItem.word) || '없음';
+            updateObj.synonyms = curItem.synonyms;
+            updateObj.antonyms = curItem.antonyms;
+          }
+          syncBuilder();
           renderMyList();
-          await sb.from('words').update({
-            meaning: curItem.meaning,
-            ai_meaning: curItem.aiMeaning
-          }).eq('id', curItem.id);
+          await sb.from('words').update(updateObj).eq('id', curItem.id);
         }
       }
     }
@@ -3261,7 +2542,6 @@
         document.getElementById('card3').className = 'step-card current';
         document.getElementById('form3').style.display = 'block';
         document.getElementById('sum3').style.display = 'none';
-
         document.getElementById('card4').className = 'step-card locked';
         document.getElementById('sum4').style.display = 'none';
       } else {
@@ -3311,9 +2591,8 @@
     }
 
     function renderStep3Summary() {
-      const synText = (curItem.synonyms && curItem.synonyms.trim() !== '') ? curItem.synonyms : '유사 어휘 없음';
-      const antText = (curItem.antonyms && curItem.antonyms.trim() !== '') ? curItem.antonyms : '없음';
-
+      const synText = cleanSynAntText(curItem.synonyms, curItem.word) || '유사 어휘 없음';
+      const antText = cleanSynAntText(curItem.antonyms, curItem.word) || '없음';
       document.getElementById('sum3').innerHTML = `
         <div style="font-size:12px; background:var(--bg-app); border:1px solid var(--border); padding:10px 12px; border-radius:10px; line-height:1.6;">
           <strong>유의어:</strong> <span style="color:var(--primary); font-weight:700;">${escapeHtml(synText)}</span> &nbsp;|&nbsp;
@@ -3322,7 +2601,6 @@
       `;
     }
 
-    // [1·2단계 필수 저장]
     async function doSaveMandatoryStep12() {
       const w = document.getElementById('inpW').value.trim();
       const src = document.getElementById('inpSrc').value.trim();
@@ -3330,34 +2608,19 @@
       if (!src) { alert('2단계 모르는 단어가 나오는 문장을 입력해 주세요.'); document.getElementById('inpSrc').focus(); return; }
 
       const btn = document.getElementById('btnS12');
-      btn.disabled = true;
-      btn.innerText = '문맥에 따른 단어 의미 찾는 중...';
+      btn.disabled = true; btn.innerText = '문맥에 따른 단어 의미 찾는 중...';
 
       const kst = getNowKST();
       const newId = 'W_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
       const assignedGroup = (groupFilter !== 'ALL') ? groupFilter : '';
 
       const newItem = {
-        id: newId,
-        userId: myUser.userId,
-        userName: myUser.name,
-        word: w,
-        meaning: '',
-        sourceSentence: src,
-        aiMeaning: '',
-        synonyms: '',
-        antonyms: '',
-        mySentence: '',
-        aiFeedback: '',
-        star: 'BRONZE',
-        groupName: assignedGroup,
-        updatedAt: kst.full
+        id: newId, userId: myUser.userId, userName: myUser.name, word: w,
+        meaning: '', sourceSentence: src, aiMeaning: '', synonyms: '', antonyms: '',
+        mySentence: '', aiFeedback: '', star: 'BRONZE', groupName: assignedGroup, updatedAt: kst.full
       };
 
-      if (assignedGroup) {
-        wordGroupMap[newId] = assignedGroup;
-        saveUserGroupsAndMap();
-      }
+      if (assignedGroup) { wordGroupMap[newId] = assignedGroup; saveUserGroupsAndMap(); }
 
       myWords.unshift(newItem);
       curItem = newItem;
@@ -3369,43 +2632,27 @@
       curItem.aiMeaning = res.displayMeaning;
       renderStep12Summary();
 
-      btn.disabled = false;
-      btn.innerText = '1·2단계 저장하고 문맥 의미 찾기';
+      btn.disabled = false; btn.innerText = '1·2단계 저장하고 문맥 의미 찾기';
       showToast('1·2단계 저장 및 문맥 의미 추출 완료 (+10 XP)');
 
       await sb.from('words').insert({
-        id: newId,
-        user_id: myUser.userId,
-        user_name: myUser.name,
-        word: w,
-        meaning: curItem.meaning,
-        source_sentence: src,
-        ai_meaning: curItem.aiMeaning,
-        star: 'BRONZE',
-        updated_at: kst.full
+        id: newId, user_id: myUser.userId, user_name: myUser.name, word: w,
+        meaning: curItem.meaning, source_sentence: src, ai_meaning: curItem.aiMeaning, star: 'BRONZE', updated_at: kst.full
       });
     }
 
-    // [3단계 실행] 유의어·반의어 확인하기
     async function doStep3CheckSynAnt() {
       if (!curItem) return;
-
-      const remaining = getSynAntRemainingCount();
-      if (remaining <= 0) {
+      if (getSynAntRemainingCount() <= 0) {
         updateStep3QuotaUI();
         showToast('무료 확인 횟수를 모두 사용했습니다. 광고 시청 후 충전해 주세요.');
         return;
       }
 
       const btn = document.getElementById('btnS3');
-      btn.disabled = true;
-      btn.innerText = '유의어·반의어 분석 중...';
+      btn.disabled = true; btn.innerText = '유의어·반의어 분석 중...';
 
-      const res = await fetchSynonymsAndAntonyms(
-        curItem.word,
-        getCleanSingleDisplayMeaning(curItem),
-        curItem.sourceSentence
-      );
+      const res = await fetchSynonymsAndAntonyms(curItem.word, getCleanSingleDisplayMeaning(curItem), curItem.sourceSentence);
 
       const qState = getSynAntQuotaState();
       qState.used += 1;
@@ -3417,9 +2664,7 @@
       curItem.star = 'SILVER';
       curItem.updatedAt = kst.full;
 
-      btn.disabled = false;
-      btn.innerText = 'AI · 사전으로 유의어·반의어 확인하기';
-
+      btn.disabled = false; btn.innerText = 'AI · 사전으로 유의어·반의어 확인하기';
       playRewardSound('SILVER');
       fireConfetti(false);
       syncBuilder();
@@ -3427,18 +2672,14 @@
       showToast('3단계 유의어·반의어 확인 완료 (+20 XP)');
 
       await sb.from('words').update({
-        synonyms: curItem.synonyms,
-        antonyms: curItem.antonyms,
-        star: 'SILVER',
-        updated_at: kst.full
+        synonyms: curItem.synonyms, antonyms: curItem.antonyms, star: 'SILVER', updated_at: kst.full
       }).eq('id', curItem.id);
     }
 
     function triggerSynAntRewardedAd() {
       if (typeof window.adBreak === 'function') {
         window.adBreak({
-          type: 'reward',
-          name: 'madevoca_syn_refill',
+          type: 'reward', name: 'madevoca_syn_refill',
           beforeReward: function(showAdFn) { showAdFn(); },
           adViewed: function() { completeSynAntAdReward(); },
           adDismissed: function() { showToast('광고를 끝까지 시청해야 횟수가 충전됩니다.'); },
@@ -3449,9 +2690,7 @@
             }
           }
         });
-      } else {
-        completeSynAntAdReward();
-      }
+      } else completeSynAntAdReward();
     }
 
     function completeSynAntAdReward() {
@@ -3463,7 +2702,6 @@
       showToast(`광고 시청 완료! 유의어·반의어 확인 횟수가 +${SYN_ANT_REWARD_PER_AD}번 충전되었습니다.`);
     }
 
-    // [4단계 실행] 나만의 문장 만들기
     async function doStep4MySentence() {
       const my = document.getElementById('inpMy').value.trim();
       if (!my) { alert('직접 만든 문장을 입력해 주세요.'); return; }
@@ -3472,17 +2710,9 @@
 
       const kst = getNowKST();
       let evalResult = null;
-
       try {
         const prompt = `단어:"${curItem.word}"(뜻:"${getCleanSingleDisplayMeaning(curItem)}")/학생문장:"${my}" -> 단어가 문맥에 맞게 쓰였으면 isPassed:true와 다정한 칭찬(1문장), 어색하거나 단어가 빠졌으면 isPassed:false와 수정힌트(1문장) JSON반환`;
-        const schema = {
-          type: 'OBJECT',
-          properties: {
-            isPassed: { type: 'BOOLEAN' },
-            feedback: { type: 'STRING' }
-          },
-          required: ['isPassed', 'feedback']
-        };
+        const schema = { type: 'OBJECT', properties: { isPassed: { type: 'BOOLEAN' }, feedback: { type: 'STRING' } }, required: ['isPassed', 'feedback'] };
         evalResult = await callGeminiDirect(prompt, schema);
       } catch (e) {
         const cands = getKoreanGrammarBaseCandidates(curItem.word);
@@ -3491,34 +2721,25 @@
         const hasWord = my.includes(curItem.word) || (stem && my.includes(stem));
         evalResult = {
           isPassed: hasWord,
-          feedback: hasWord
-            ? `'${curItem.word}'의 의미를 살려 문장을 훌륭하게 완성했어요!`
-            : `문장 안에 '${curItem.word}' 단어가 자연스럽게 들어가도록 다시 작성해 볼까요?`
+          feedback: hasWord ? `'${curItem.word}'의 의미를 살려 문장을 훌륭하게 완성했어요!` : `문장 안에 '${curItem.word}' 단어가 자연스럽게 들어가도록 다시 작성해 볼까요?`
         };
       }
 
       const newStar = evalResult.isPassed ? 'GOLD' : 'SILVER';
-      curItem.mySentence = my;
-      curItem.aiFeedback = evalResult.feedback;
-      curItem.star = newStar;
-      curItem.updatedAt = kst.full;
+      curItem.mySentence = my; curItem.aiFeedback = evalResult.feedback; curItem.star = newStar; curItem.updatedAt = kst.full;
 
       btn.disabled = false; btn.innerText = 'AI 피드백 받고 완성하기';
       syncBuilder();
 
       if (evalResult.isPassed) {
-        playRewardSound('GOLD');
-        fireConfetti(true);
+        playRewardSound('GOLD'); fireConfetti(true);
         showToast('4단계 마스터 완성 (+30 XP)! 축하합니다.');
       } else {
         showToast('AI 힌트를 참고해 문장을 다듬어 보세요.');
       }
 
       await sb.from('words').update({
-        my_sentence: my,
-        ai_feedback: evalResult.feedback,
-        star: newStar,
-        updated_at: kst.full
+        my_sentence: my, ai_feedback: evalResult.feedback, star: newStar, updated_at: kst.full
       }).eq('id', curItem.id);
     }
 
@@ -3526,16 +2747,13 @@
       if (!confirm('이 단어를 삭제하시겠습니까?')) return;
       const targetId = curItem.id;
       myWords = myWords.filter(w => w.id !== targetId);
-      if (wordGroupMap[targetId]) {
-        delete wordGroupMap[targetId];
-        saveUserGroupsAndMap();
-      }
+      if (wordGroupMap[targetId]) { delete wordGroupMap[targetId]; saveUserGroupsAndMap(); }
       goToList();
       await sb.from('words').delete().eq('id', targetId);
     }
 
     // =========================================================================
-    // 4. 일일 10회 퀴즈 & Google AdSense H5 전면 광고 호출
+    // 4. 활동·기록 (스피드 퀴즈 & 도감)
     // =========================================================================
     function renderBadges() {
       const goldCnt = myWords.filter(w => w.star === 'GOLD').length;
@@ -3564,7 +2782,6 @@
       const qState = getDailyQuizState();
       const maxAllowed = DAILY_BASE_QUIZ_LIMIT + (qState.adWatched * QUIZ_REWARD_PER_AD);
       const remaining = Math.max(0, maxAllowed - qState.used);
-
       document.getElementById('quizRemainLabel').innerText = `오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
       document.getElementById('quizAdRemainLabel').innerText = `광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
       return { qState, maxAllowed, remaining };
@@ -3577,39 +2794,29 @@
       const adBtn = document.getElementById('btnWatchAdUnlock');
 
       if (remaining <= 0) {
-        playArea.style.display = 'none';
-        limitArea.style.display = 'block';
-
+        playArea.style.display = 'none'; limitArea.style.display = 'block';
         const adsLeft = MAX_DAILY_ADS - qState.adWatched;
         if (adsLeft > 0) {
           document.getElementById('limitIcon').innerHTML = getLineIcon('lock', 28);
-          document.getElementById('limitTitle').innerText =
-            qState.adWatched === 0
-              ? '오늘의 기본 10문제를 모두 풀었습니다.'
-              : '충전한 퀴즈를 모두 풀었습니다.';
-          document.getElementById('limitDesc').innerHTML =
-            `광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있습니다.<br>(오늘 남은 광고 시청 횟수: <strong>${adsLeft}회</strong> / 최대 ${MAX_DAILY_ADS}회)`;
+          document.getElementById('limitTitle').innerText = qState.adWatched === 0 ? '오늘의 기본 10문제를 모두 풀었습니다.' : '충전한 퀴즈를 모두 풀었습니다.';
+          document.getElementById('limitDesc').innerHTML = `광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있습니다.<br>(오늘 남은 광고 시청 횟수: <strong>${adsLeft}회</strong> / 최대 ${MAX_DAILY_ADS}회)`;
           adBtn.disabled = false;
           adBtn.innerText = `광고 보고 +${QUIZ_REWARD_PER_AD}문제 더 풀기 (${adsLeft}/${MAX_DAILY_ADS} 남음)`;
         } else {
           document.getElementById('limitIcon').innerHTML = getLineIcon('check', 28);
           document.getElementById('limitTitle').innerText = '오늘의 모든 퀴즈와 충전을 완료했습니다.';
-          document.getElementById('limitDesc').innerHTML =
-            `오늘 기본 10문제와 광고 충전(${MAX_DAILY_ADS}회)을 모두 마쳤습니다.<br>내일 자정에 새로운 퀴즈가 열립니다.`;
+          document.getElementById('limitDesc').innerHTML = `오늘 기본 10문제와 광고 충전(${MAX_DAILY_ADS}회)을 모두 마쳤습니다.<br>내일 자정에 새로운 퀴즈가 열립니다.`;
           adBtn.disabled = true;
           adBtn.innerText = '오늘 광고 시청 한도 완료 (3/3)';
         }
         return;
       }
 
-      playArea.style.display = 'block';
-      limitArea.style.display = 'none';
+      playArea.style.display = 'block'; limitArea.style.display = 'none';
       document.getElementById('btnNextQuiz').style.display = 'none';
 
       const pool = myWords.map(w => ({ word: w.word, meaning: getCleanSingleDisplayMeaning(w) }));
-      FALLBACK_VOCAB.forEach(fb => {
-        if (!pool.some(p => p.word === fb.word)) pool.push(fb);
-      });
+      FALLBACK_VOCAB.forEach(fb => { if (!pool.some(p => p.word === fb.word)) pool.push(fb); });
 
       const targetPool = myWords.length > 0 ? myWords.map(w => ({ word: w.word, meaning: getCleanSingleDisplayMeaning(w) })) : pool;
       const answerItem = targetPool[Math.floor(Math.random() * targetPool.length)];
@@ -3618,7 +2825,6 @@
 
       document.getElementById('quizQuestion').innerText = `Q. "${answerItem.word}"`;
       document.getElementById('quizSub').innerText = '이 단어의 가장 알맞은 뜻은 무엇일까요?';
-
       document.getElementById('quizOptions').innerHTML = choices.map((c, idx) => `
         <button class="quiz-option-btn" onclick="checkQuizAnswer(this, ${c.word === answerItem.word})">
           ${idx + 1}. ${escapeHtml(c.meaning)}
@@ -3628,7 +2834,6 @@
 
     async function checkQuizAnswer(btnEl, isCorrect) {
       document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
-
       const qState = getDailyQuizState();
       qState.used += 1;
       saveDailyQuizState(qState);
@@ -3636,13 +2841,10 @@
 
       if (isCorrect) {
         btnEl.classList.add('correct');
-        playRewardSound('QUIZ');
-        fireConfetti(false);
-        quizSolveCount++;
-        localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
+        playRewardSound('QUIZ'); fireConfetti(false);
+        quizSolveCount++; localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
         myUser.bonusXp = (Number(myUser.bonusXp) || 0) + 15;
-        renderMyList();
-        renderBadges();
+        renderMyList(); renderBadges();
         showToast('정답입니다! 보너스 +15 XP 획득');
         await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
@@ -3658,15 +2860,10 @@
 
     function triggerRealGoogleRewardedAd() {
       const qState = getDailyQuizState();
-      if (qState.adWatched >= MAX_DAILY_ADS) {
-        alert('오늘 시청 가능한 광고 횟수(최대 3회)를 모두 사용하셨습니다.');
-        return;
-      }
-
+      if (qState.adWatched >= MAX_DAILY_ADS) { alert('오늘 시청 가능한 광고 횟수(최대 3회)를 모두 사용하셨습니다.'); return; }
       if (typeof window.adBreak === 'function') {
         window.adBreak({
-          type: 'reward',
-          name: 'madevoca_quiz_refill',
+          type: 'reward', name: 'madevoca_quiz_refill',
           beforeReward: function(showAdFn) { showAdFn(); },
           adViewed: function() { completeAdReward(); },
           adDismissed: function() { showToast('광고를 끝까지 시청해야 퀴즈가 충전됩니다.'); },
@@ -3677,25 +2874,21 @@
             }
           }
         });
-      } else {
-        alert('구글 광고 스크립트가 브라우저에서 차단되었습니다.');
-      }
+      } else alert('구글 광고 스크립트가 브라우저에서 차단되었습니다.');
     }
 
     function completeAdReward() {
       const qState = getDailyQuizState();
       if (qState.adWatched >= MAX_DAILY_ADS) return;
-
       qState.adWatched += 1;
       saveDailyQuizState(qState);
-      playRewardSound('SILVER');
-      fireConfetti(false);
+      playRewardSound('SILVER'); fireConfetti(false);
       showToast(`광고 시청 완료! +${QUIZ_REWARD_PER_AD}문제 충전 (${qState.adWatched}/${MAX_DAILY_ADS}회)`);
       generateQuiz();
     }
 
     // =========================================================================
-    // 5. 실시간 명예의 전당 & 관리자 대시보드 & 표준국어대사전 .xls 업로더
+    // 5. 실시간 명예의 전당 & 교사용 관리자 모드
     // =========================================================================
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
@@ -3709,29 +2902,19 @@
       const userMap = {};
       (sData || []).forEach(s => {
         if (!s.user_id || s.user_id === ADMIN_EMAIL) return;
-        userMap[s.user_id] = {
-          userId: s.user_id,
-          userName: s.user_name || '익명',
-          schoolInfo: s.school_info || '',
-          streak: s.streak || 1,
-          gold: 0,
-          xp: Number(s.bonus_xp) || 0
-        };
+        userMap[s.user_id] = { userId: s.user_id, userName: s.user_name || '익명', schoolInfo: s.school_info || '', streak: s.streak || 1, gold: 0, xp: Number(s.bonus_xp) || 0 };
       });
 
       (wData || []).forEach(w => {
         const uid = w.user_id;
         if (!uid || uid === ADMIN_EMAIL) return;
-        if (!userMap[uid]) {
-          userMap[uid] = { userId: uid, userName: w.user_name || '익명', schoolInfo: '', streak: 1, gold: 0, xp: 0 };
-        }
+        if (!userMap[uid]) userMap[uid] = { userId: uid, userName: w.user_name || '익명', schoolInfo: '', streak: 1, gold: 0, xp: 0 };
         if (w.star === 'GOLD') { userMap[uid].gold++; userMap[uid].xp += 60; }
-        else if (w.star === 'SILVER') { userMap[uid].xp += 30; }
-        else { userMap[uid].xp += 10; }
+        else if (w.star === 'SILVER') userMap[uid].xp += 30;
+        else userMap[uid].xp += 10;
       });
 
       const list = Object.values(userMap).sort((a, b) => b.xp - a.xp || b.gold - a.gold).slice(0, 50);
-
       if (list.length === 0) {
         box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub);">아직 랭킹 데이터가 없습니다.</div>';
         return;
@@ -3761,54 +2944,42 @@
       }).join('');
     }
 
-    function openAdminScreen() {
-      loadAdminData();
-      refreshStdDictCount();
-      showScreen('screen-admin');
-    }
+    function openAdminScreen() { loadAdminData(); refreshStdDictCount(); showScreen('screen-admin'); }
 
     async function refreshStdDictCount() {
       const { count } = await sb.from('std_dict').select('*', { count: 'exact', head: true });
       document.getElementById('dictCountBadge').innerText = `등록 어휘: ${(count || 0).toLocaleString()}개`;
     }
 
-    function extractSynAntFromRelationText(relText) {
+    function extractSynAntFromRelationText(relText, headword) {
       if (!relText) return { syn: '', ant: '' };
-      const clean = String(relText).replace(/[-^0-9]/g, '');
       let synList = [];
       let antList = [];
-
-      const lines = clean.split(/[\n\/]/);
-      lines.forEach(line => {
+      String(relText).split(/[\n\/]/).forEach(line => {
         const t = line.trim();
         if (!t) return;
         if (t.includes('반대') || t.includes('반의')) {
-          const val = t.replace(/.*?(반대말|반의어)[\s:」』\]]*/, '').trim();
-          if (val) antList.push(val);
+          const cleaned = cleanSynAntText(t, headword);
+          if (cleaned) antList.push(cleaned);
         } else if (t.includes('비슷') || t.includes('유의') || t.includes('참고')) {
-          const val = t.replace(/.*?(비슷한말|유의어|참고어)[\s:」』\]]*/, '').trim();
-          if (val) synList.push(val);
+          const cleaned = cleanSynAntText(t, headword);
+          if (cleaned) synList.push(cleaned);
         }
       });
-
       return {
-        syn: synList.join(', ').slice(0, 60),
-        ant: antList.join(', ').slice(0, 60)
+        syn: cleanSynAntText(synList.join(', '), headword).slice(0, 60),
+        ant: cleanSynAntText(antList.join(', '), headword).slice(0, 60)
       };
     }
 
     async function uploadStandardDictFiles() {
       const fileInput = document.getElementById('inpDictFiles');
       const files = fileInput.files;
-      if (!files || files.length === 0) {
-        alert('업로드할 표준국어대사전 엑셀(.xls, .xlsx, .csv) 파일을 먼저 선택해 주세요.');
-        return;
-      }
+      if (!files || files.length === 0) { alert('업로드할 표준국어대사전 엑셀(.xls, .xlsx, .csv) 파일을 먼저 선택해 주세요.'); return; }
 
       const btn = document.getElementById('btnUploadDict');
       const statusBox = document.getElementById('dictUploadStatus');
-      btn.disabled = true;
-      statusBox.style.display = 'block';
+      btn.disabled = true; statusBox.style.display = 'block';
 
       const kst = getNowKST();
       const wordMap = new Map();
@@ -3817,7 +2988,6 @@
         for (let fIdx = 0; fIdx < files.length; fIdx++) {
           const file = files[fIdx];
           statusBox.innerText = `파일 읽는 중 (${fIdx + 1}/${files.length}): ${file.name}...`;
-
           const buffer = await file.arrayBuffer();
           const wb = XLSX.read(buffer, { type: 'array' });
           const firstSheet = wb.Sheets[wb.SheetNames[0]];
@@ -3825,30 +2995,19 @@
           if (!rows || rows.length === 0) continue;
 
           const keys = Object.keys(rows[0]);
-          const wKey =
-            keys.find(k => k.trim() === '어휘' || k.trim() === '표제어' || k.toLowerCase() === 'word') ||
-            keys.find(k => k.includes('어휘') || k.includes('표제어') || k.includes('단어')) ||
-            keys[0];
-
-          let dKey =
-            keys.find(k => k.trim() === '뜻풀이' || k.toLowerCase() === 'definition') ||
-            keys.find(k => k.includes('뜻풀이') || (k.includes('뜻') && !k.includes('번호')) || (k.includes('정의') && !k.includes('번호')));
+          const wKey = keys.find(k => k.trim() === '어휘' || k.trim() === '표제어' || k.toLowerCase() === 'word') || keys.find(k => k.includes('어휘') || k.includes('표제어') || k.includes('단어')) || keys[0];
+          let dKey = keys.find(k => k.trim() === '뜻풀이' || k.toLowerCase() === 'definition') || keys.find(k => k.includes('뜻풀이') || (k.includes('뜻') && !k.includes('번호')) || (k.includes('정의') && !k.includes('번호')));
 
           if (!dKey) {
-            let bestCol = null;
-            let maxAvgLen = 0;
+            let bestCol = null, maxAvgLen = 0;
             keys.forEach(k => {
               if (k === wKey || k.includes('용례') || k.includes('예문') || k.includes('역사')) return;
               let sumLen = 0;
-              const sampleCount = Math.min(25, rows.length);
-              for (let s = 0; s < sampleCount; s++) {
+              for (let s = 0; s < Math.min(25, rows.length); s++) {
                 const val = String(rows[s][k] || '');
                 if (isValidKoreanDefinition(val)) sumLen += val.length;
               }
-              if (sumLen > maxAvgLen) {
-                maxAvgLen = sumLen;
-                bestCol = k;
-              }
+              if (sumLen > maxAvgLen) { maxAvgLen = sumLen; bestCol = k; }
             });
             dKey = bestCol || keys[1];
           }
@@ -3866,27 +3025,24 @@
             if (!cleanWord || cleanWord.length > 15) return;
 
             let cleanDef = rawDef.slice(0, 150);
-            let cleanSyn = sKey ? String(r[sKey] || '').replace(/[-^0-9]/g, '').trim() : '';
-            let cleanAnt = aKey ? String(r[aKey] || '').replace(/[-^0-9]/g, '').trim() : '';
+            let cleanSyn = sKey ? cleanSynAntText(r[sKey], cleanWord) : '';
+            let cleanAnt = aKey ? cleanSynAntText(r[aKey], cleanWord) : '';
 
             if (relKey && (!cleanSyn || !cleanAnt)) {
-              const parsedRel = extractSynAntFromRelationText(r[relKey]);
+              const parsedRel = extractSynAntFromRelationText(r[relKey], cleanWord);
               if (!cleanSyn && parsedRel.syn) cleanSyn = parsedRel.syn;
               if (!cleanAnt && parsedRel.ant) cleanAnt = parsedRel.ant;
             }
 
             if (!wordMap.has(cleanWord)) {
               wordMap.set(cleanWord, {
-                word: cleanWord,
-                definition: cleanDef,
-                synonyms: cleanSyn || '없음',
-                antonyms: cleanAnt || '없음',
-                updated_at: kst.full
+                word: cleanWord, definition: cleanDef,
+                synonyms: cleanSyn || '없음', antonyms: cleanAnt || '없음', updated_at: kst.full
               });
             } else {
               const prev = wordMap.get(cleanWord);
               const existingSenses = prev.definition.split(' || ');
-              if (existingSenses.length < 3 && !existingSenses.includes(cleanDef) && (prev.definition.length + cleanDef.length < 280)) {
+              if (existingSenses.length < 4 && !existingSenses.includes(cleanDef) && (prev.definition.length + cleanDef.length < 320)) {
                 prev.definition += ' || ' + cleanDef;
               }
               if (prev.synonyms === '없음' && cleanSyn) prev.synonyms = cleanSyn;
@@ -3896,29 +3052,21 @@
         }
 
         const allItems = Array.from(wordMap.values());
-        if (allItems.length === 0) {
-          alert('유효한 한글 뜻풀이가 담긴 행을 찾지 못했습니다.');
-          btn.disabled = false;
-          return;
-        }
+        if (allItems.length === 0) { alert('유효한 한글 뜻풀이가 담긴 행을 찾지 못했습니다.'); btn.disabled = false; return; }
 
-        const BATCH_SIZE = 500;
-        for (let i = 0; i < allItems.length; i += BATCH_SIZE) {
-          const chunk = allItems.slice(i, i + BATCH_SIZE);
-          statusBox.innerText = `수파베이스 업로드 중: ${Math.min(i + BATCH_SIZE, allItems.length).toLocaleString()} / ${allItems.length.toLocaleString()}개 완료...`;
+        for (let i = 0; i < allItems.length; i += 500) {
+          const chunk = allItems.slice(i, i + 500);
+          statusBox.innerText = `수파베이스 업로드 중: ${Math.min(i + 500, allItems.length).toLocaleString()} / ${allItems.length.toLocaleString()}개 완료...`;
           const { error } = await sb.from('std_dict').upsert(chunk);
           if (error) throw error;
         }
 
-        statusBox.innerText = `총 ${allItems.length.toLocaleString()}개의 표준국어대사전 어휘가 등록되었습니다.`;
-        fileInput.value = '';
-        btn.disabled = false;
-        refreshStdDictCount();
-        fireConfetti(true);
+        statusBox.innerText = `총 ${allItems.length.toLocaleString()}개의 표준국어대사전 어휘가 깨끗하게 등록되었습니다.`;
+        fileInput.value = ''; btn.disabled = false;
+        refreshStdDictCount(); fireConfetti(true);
         showToast(`사전 어휘 ${allItems.length.toLocaleString()}개 업로드 완료`);
       } catch (err) {
-        btn.disabled = false;
-        statusBox.innerText = `오류 발생: ${err.message}`;
+        btn.disabled = false; statusBox.innerText = `오류 발생: ${err.message}`;
         alert('업로드 중 오류가 발생했습니다: ' + err.message);
       }
     }
@@ -3931,9 +3079,7 @@
       ]);
 
       const schoolMap = {};
-      (sRows || []).forEach(s => {
-        schoolMap[s.user_id] = { name: s.user_name, school: s.school_info || '' };
-      });
+      (sRows || []).forEach(s => { schoolMap[s.user_id] = { name: s.user_name, school: s.school_info || '' }; });
 
       const studentMap = {};
       let totalWords = 0, goldTotal = 0;
@@ -3944,11 +3090,8 @@
         const uSchool = (schoolMap[uId] && schoolMap[uId].school) ? ` · ${schoolMap[uId].school}` : '';
         const star = r.star || 'BRONZE';
 
-        if (!studentMap[uId]) {
-          studentMap[uId] = { userId: uId, userName: uName + uSchool, bronze: 0, silver: 0, gold: 0, total: 0, words: [] };
-        }
-        studentMap[uId].total++;
-        totalWords++;
+        if (!studentMap[uId]) studentMap[uId] = { userId: uId, userName: uName + uSchool, bronze: 0, silver: 0, gold: 0, total: 0, words: [] };
+        studentMap[uId].total++; totalWords++;
         if (star === 'BRONZE') studentMap[uId].bronze++;
         else if (star === 'SILVER') studentMap[uId].silver++;
         else if (star === 'GOLD') { studentMap[uId].gold++; goldTotal++; }
@@ -3956,10 +3099,7 @@
         studentMap[uId].words.push({
           word: r.word,
           meaning: getCleanSingleDisplayMeaning({ word: r.word, meaning: r.meaning, aiMeaning: r.ai_meaning, sourceSentence: r.source_sentence }),
-          sourceSentence: r.source_sentence || '',
-          mySentence: r.my_sentence || '',
-          aiFeedback: r.ai_feedback || '',
-          star: star
+          sourceSentence: r.source_sentence || '', mySentence: r.my_sentence || '', aiFeedback: r.ai_feedback || '', star
         });
       });
 
