@@ -400,8 +400,8 @@
     .quiz-option-btn.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
 
     .btn-watch-ad {
-      width: 100%; padding: 14px; border-radius: 12px; border: none;
-      background: var(--primary); color: white;
+      width: 100%; padding: 13px; border-radius: 11px; border: none;
+      background: var(--primary-dark); color: white;
       font-size: 14px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
@@ -434,7 +434,7 @@
     .btn-csv-outline:active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
     .btn-csv-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* 화면 3: 단어 만들기 */
+    /* 화면 3: 단어 학습 (4단계 구조) */
     .builder-body { padding: 14px 16px 40px; flex: 1; }
     .hero-star-stage {
       background: var(--surface); border: 1px solid var(--border);
@@ -449,6 +449,11 @@
     }
     .step-card.current { border-color: var(--primary); }
     .step-card.locked { opacity: 0.45; pointer-events: none; background: #F4F2EC; }
+
+    .step-sub-label {
+      font-size: 12px; font-weight: 800; color: var(--primary);
+      margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
+    }
 
     .input-field {
       width: 100%; padding: 12px 13px; border-radius: 10px; border: 1px solid var(--border);
@@ -707,7 +712,7 @@
       </nav>
     </section>
 
-    <!-- 화면 3: 단어 학습 -->
+    <!-- 화면 3: 단어 학습 (개편된 4단계 구조) -->
     <section id="screen-builder" class="screen">
       <header class="top-navbar">
         <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 목록</button>
@@ -719,35 +724,73 @@
         <div id="heroStage" class="hero-star-stage">
           <div id="heroStarBox" style="margin-bottom:6px;"></div>
           <div id="heroTitle" style="font-size:15px; font-weight:800;">새 단어 추가</div>
-          <div id="heroDesc" style="font-size:12px; color:var(--text-sub); margin-top:2px;">1단계부터 순서대로 작성해 별을 채워보세요</div>
+          <div id="heroDesc" style="font-size:12px; color:var(--text-sub); margin-top:2px;">1·2단계를 저장하면 문맥에 맞는 단어 뜻을 찾아줍니다</div>
         </div>
 
-        <div id="card1" class="step-card current">
-          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar1"></span> 1단계. 단어와 뜻 (+10 XP)</div>
-          <div id="form1">
-            <input type="text" id="inpW" class="input-field" placeholder="모르는 단어 (예: 배양, 몰라, 가시다)">
-            <input type="text" id="inpM" class="input-field" placeholder="단어의 뜻">
-            <button id="btnS1" class="action-btn" onclick="doStep1()">1단계 저장하기</button>
+        <!-- [필수 구간] 1단계(모르는 단어) + 2단계(모르는 단어가 나오는 문장) -->
+        <div id="card12" class="step-card current">
+          <div style="font-size:13px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="display:flex; align-items:center; gap:6px;"><span id="bStar1"></span> 필수 입력 (1·2단계)</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:700;">+10 XP</span>
           </div>
-          <div id="sum1" style="display:none; font-weight:700;"></div>
-        </div>
 
-        <div id="card2" class="step-card locked">
-          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar2"></span> 2단계. 출처 문장 & 유의어·반의어 (+20 XP)</div>
-          <div id="form2">
-            <input type="text" id="inpSrc" class="input-field" placeholder="단어가 쓰인 출처 문장 입력">
-            <button id="btnS2" class="action-btn" onclick="doStep2()">2단계 저장하기</button>
+          <div id="form12">
+            <div class="step-sub-label">1단계. 모르는 단어</div>
+            <input type="text" id="inpW" class="input-field" placeholder="모르는 단어만 입력 (예: 배양, 오르다, 몰라)">
+
+            <div class="step-sub-label" style="margin-top:4px;">2단계. 모르는 단어가 나오는 문장</div>
+            <input type="text" id="inpSrc" class="input-field" placeholder="그 단어가 쓰인 문장을 그대로 입력해 주세요" onkeydown="if(event.key==='Enter') doSaveMandatoryStep12()">
+
+            <button id="btnS12" class="action-btn" onclick="doSaveMandatoryStep12()">1·2단계 저장하고 문맥 의미 찾기</button>
           </div>
-          <div id="sum2" style="display:none;"></div>
+
+          <!-- 저장 후 문맥 의미가 표시되는 영역 -->
+          <div id="sum12" style="display:none;"></div>
         </div>
 
+        <!-- [3단계] 유의어·반의어 확인하기 (무료 5회 + 광고 1회당 5번 충전) -->
         <div id="card3" class="step-card locked">
-          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:6px;"><span id="bStar3"></span> 3단계. 나만의 문장 만들기 (+30 XP)</div>
-          <div id="form3">
-            <input type="text" id="inpMy" class="input-field" placeholder="단어를 활용해 직접 문장 작성">
-            <button id="btnS3" class="action-btn" onclick="doStep3()">AI 피드백 받고 완성하기</button>
+          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="display:flex; align-items:center; gap:6px;"><span id="bStar2"></span> 3단계. 유의어·반의어 확인하기</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:700;">+20 XP</span>
           </div>
+
+          <div id="form3">
+            <div class="quiz-limit-bar" style="margin-bottom:10px;">
+              <span id="synFreeRemainLabel">무료 확인 가능: 5회 남음</span>
+              <span id="synQuotaSubLabel">광고 1회당 +5번 충전</span>
+            </div>
+
+            <div id="synPlayBtnWrap">
+              <button id="btnS3" class="action-btn" onclick="doStep3CheckSynAnt()">AI · 사전으로 유의어·반의어 확인하기</button>
+            </div>
+
+            <div id="synAdRechargeWrap" style="display:none; text-align:center; padding:6px 0 2px;">
+              <div style="font-size:12px; color:var(--text-sub); margin-bottom:10px; line-height:1.45;">
+                기본 무료 확인 횟수(5회)를 모두 사용했습니다.<br>광고를 1회 시청하면 <strong>5번 더 확인</strong>할 수 있습니다.
+              </div>
+              <button id="btnWatchAdSyn" class="btn-watch-ad" onclick="triggerSynAntRewardedAd()">
+                광고 보고 유의어·반의어 5번 충전하기
+              </button>
+            </div>
+          </div>
+
           <div id="sum3" style="display:none;"></div>
+        </div>
+
+        <!-- [4단계] 나만의 문장 만들기 -->
+        <div id="card4" class="step-card locked">
+          <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="display:flex; align-items:center; gap:6px;"><span id="bStar3"></span> 4단계. 나만의 문장 만들기</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:700;">+30 XP</span>
+          </div>
+
+          <div id="form4">
+            <input type="text" id="inpMy" class="input-field" placeholder="단어를 활용해 직접 나만의 문장 작성" onkeydown="if(event.key==='Enter') doStep4MySentence()">
+            <button id="btnS4" class="action-btn" onclick="doStep4MySentence()">AI 피드백 받고 완성하기</button>
+          </div>
+
+          <div id="sum4" style="display:none;"></div>
         </div>
       </div>
     </section>
@@ -779,7 +822,7 @@
         <div class="admin-stat-grid">
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">참여 학생</div><div id="admStudentCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0명</div></div>
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">총 등록 단어</div><div id="admWordCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
-          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">3단계 완성</div><div id="admGoldCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
+          <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">4단계 완성</div><div id="admGoldCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
         </div>
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">학생별 단어장 학습 현황</div>
         <div id="adminStudentList">불러오는 중...</div>
@@ -796,7 +839,6 @@
         <button onclick="closeEmailAuthModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
       </div>
 
-      <!-- 회원가입 / 로그인 전환 탭 -->
       <div class="auth-mode-tabs">
         <button id="tabBtnEmailSignup" class="auth-mode-tab active" onclick="switchEmailAuthTab('SIGNUP')">이메일 회원가입</button>
         <button id="tabBtnEmailLogin" class="auth-mode-tab" onclick="switchEmailAuthTab('LOGIN')">이메일 로그인</button>
@@ -829,7 +871,7 @@
         </button>
       </div>
 
-      <!-- 2. 이메일 로그인 폼 (기존 가입자용) -->
+      <!-- 2. 이메일 로그인 폼 -->
       <div id="emailLoginPane" style="display:none;">
         <label style="font-size:12px; font-weight:700; color:var(--text-main); display:block; margin-bottom:4px;">이메일 주소</label>
         <input type="email" id="liEmail" class="input-field" placeholder="가입한 이메일 입력">
@@ -908,16 +950,16 @@
         <button onclick="closeWordEditModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
       </div>
 
-      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">단어</label>
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">단어 (1단계)</label>
       <input type="text" id="editModalWord" class="input-field" placeholder="단어 입력">
 
-      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">뜻</label>
-      <input type="text" id="editModalMeaning" class="input-field" placeholder="단어의 뜻 입력">
-
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">출처 문장 (2단계)</label>
-      <input type="text" id="editModalSource" class="input-field" placeholder="출처 문장 (선택)">
+      <input type="text" id="editModalSource" class="input-field" placeholder="단어가 나오는 문장 입력">
 
-      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">나의 문장 (3단계)</label>
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">문맥 의미 (자동 추출된 뜻 수정 가능)</label>
+      <input type="text" id="editModalMeaning" class="input-field" placeholder="단어의 문맥 의미">
+
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">나의 문장 (4단계)</label>
       <input type="text" id="editModalMySent" class="input-field" placeholder="내가 만든 문장 (선택)">
 
       <div style="display:flex; gap:8px; margin-top:6px;">
@@ -980,9 +1022,14 @@
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
     const ICON_COLOR = '#3B82A6';
 
+    // 스피드 퀴즈 일일 한도
     const DAILY_BASE_QUIZ_LIMIT = 10;
     const MAX_DAILY_ADS = 3;
     const QUIZ_REWARD_PER_AD = 5;
+
+    // 3단계 유의어·반의어 AI 확인 무료 한도 (무료 5회 + 광고 1회당 5번 충전)
+    const FREE_SYN_ANT_LIMIT = 5;
+    const SYN_ANT_REWARD_PER_AD = 5;
 
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -1054,6 +1101,52 @@
       `;
     }
 
+    // 3단계 유의어·반의어 확인 횟수 상태 관리 (무료 5회 + 광고 1회당 5번 충전)
+    function getSynAntQuotaState() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const key = `madevoca_synquota_${uid}`;
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { return JSON.parse(raw); } catch (e) {}
+      }
+      return { used: 0, adRecharged: 0 };
+    }
+
+    function saveSynAntQuotaState(state) {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const key = `madevoca_synquota_${uid}`;
+      localStorage.setItem(key, JSON.stringify(state));
+    }
+
+    function getSynAntRemainingCount() {
+      const st = getSynAntQuotaState();
+      const totalAllowed = FREE_SYN_ANT_LIMIT + (st.adRecharged * SYN_ANT_REWARD_PER_AD);
+      return Math.max(0, totalAllowed - st.used);
+    }
+
+    function updateStep3QuotaUI() {
+      const st = getSynAntQuotaState();
+      const totalAllowed = FREE_SYN_ANT_LIMIT + (st.adRecharged * SYN_ANT_REWARD_PER_AD);
+      const remaining = Math.max(0, totalAllowed - st.used);
+
+      const labelEl = document.getElementById('synFreeRemainLabel');
+      const playWrap = document.getElementById('synPlayBtnWrap');
+      const adWrap = document.getElementById('synAdRechargeWrap');
+
+      if (labelEl) {
+        labelEl.innerText = `확인 가능 횟수: ${remaining}회 남음 (총 ${st.used}/${totalAllowed}회 사용)`;
+      }
+      if (playWrap && adWrap) {
+        if (remaining > 0) {
+          playWrap.style.display = 'block';
+          adWrap.style.display = 'none';
+        } else {
+          playWrap.style.display = 'none';
+          adWrap.style.display = 'block';
+        }
+      }
+    }
+
     // 그룹 데이터 저장 및 동기화
     function getGroupSyncKey() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
@@ -1108,6 +1201,28 @@
 
     // [내장 다의어·문맥 사전]
     const CORE_SYN_ANT_MAP = {
+      '오르다': {
+        senses: [
+          '사람이나 동물 따위가 아래에서 위나 높은 곳으로 이동하다.',
+          '물가, 성적, 기온, 가치 따위의 수치나 등급이 높아지다.',
+          '탈것에 몸을 싣다.',
+          '입방아, 화제, 기록 따위에 거론되거나 실리다.'
+        ],
+        def: '아래에서 위로 이동하거나 수치·등급 따위가 높아지다.',
+        syn: '상승하다, 올라가다, 등정하다',
+        ant: '내리다, 하락하다, 떨어지다'
+      },
+      '내리다': {
+        senses: [
+          '눈, 비, 서리 따위가 하늘에서 떨어지다.',
+          '높은 곳에서 낮은 곳으로 이동하거나 탈것에서 밖으로 나오다.',
+          '물가, 기온, 성적 따위가 낮아지다.',
+          '명령, 결정, 판결 따위를 공식적으로 알리다.'
+        ],
+        def: '위에서 아래로 이동하거나 수치·정도 따위가 낮아지다.',
+        syn: '하강하다, 하락하다, 내놓다',
+        ant: '오르다, 상승하다, 타다'
+      },
       '모르다': {
         senses: [
           '사실이나 내용을 알지 못하거나 이해하지 못하다.',
@@ -1508,7 +1623,6 @@
       document.getElementById('emailLoginPane').style.display = !isSignup ? 'block' : 'none';
     }
 
-    // 이메일 즉시 회원가입 실행
     async function submitDirectEmailSignup() {
       const name = document.getElementById('suName').value.trim();
       const school = document.getElementById('suSchool').value.trim();
@@ -1542,12 +1656,10 @@
         btn.disabled = false;
         btn.innerText = '회원가입 완료하기';
 
-        // Confirm email이 꺼져 있으면 data.session이 바로 생성되어 즉시 로그인됨
         if (data && data.session && data.user) {
           closeEmailAuthModal();
           await finalizeEmailSignupRecord(email, name, school);
         } else {
-          // 만약 아직 수파베이스에서 Confirm email 스위치를 끄기 전이라면 안내 표시
           alert(
             '수파베이스의 [Authentication] → [Providers] → [Email]에서 "Confirm email" 스위치를 끄고 Save를 눌러주시면 인증 없이 즉시 가입됩니다.\n\n(또는 방금 발송된 이메일의 확인 링크를 누른 뒤 로그인해 주세요.)'
           );
@@ -1594,7 +1706,6 @@
       showToast(`회원가입이 완료되었습니다. 환영합니다, ${name}님!`);
     }
 
-    // 기존 이메일 가입자 로그인
     async function loginWithEmailPassword() {
       const email = document.getElementById('liEmail').value.trim().toLowerCase();
       const pw = document.getElementById('liPassword').value;
@@ -1776,7 +1887,7 @@
 
       dotMenuTargetWordId = wordId;
       document.getElementById('dotMenuWordTitle').innerText = target.word;
-      document.getElementById('dotMenuWordSub').innerText = target.meaning;
+      document.getElementById('dotMenuWordSub').innerText = target.aiMeaning || target.meaning || '';
       const gName = wordGroupMap[wordId] || '';
       document.getElementById('dotMenuCurGroupLabel').innerText = gName ? `${gName} →` : '미지정 →';
 
@@ -1929,8 +2040,8 @@
 
       closeWordDotMenu();
       document.getElementById('editModalWord').value = target.word || '';
-      document.getElementById('editModalMeaning').value = target.meaning || '';
       document.getElementById('editModalSource').value = target.sourceSentence || '';
+      document.getElementById('editModalMeaning').value = target.aiMeaning || target.meaning || '';
       document.getElementById('editModalMySent').value = target.mySentence || '';
       document.getElementById('wordEditModal').classList.add('open');
     }
@@ -1944,12 +2055,12 @@
       if (!target) return;
 
       const newW = document.getElementById('editModalWord').value.trim();
-      const newM = document.getElementById('editModalMeaning').value.trim();
       const newSrc = document.getElementById('editModalSource').value.trim();
+      const newM = document.getElementById('editModalMeaning').value.trim();
       const newMy = document.getElementById('editModalMySent').value.trim();
 
-      if (!newW || !newM) {
-        alert('단어와 뜻은 필수 입력 항목입니다.');
+      if (!newW || !newSrc) {
+        alert('단어(1단계)와 출처 문장(2단계)은 필수 입력 항목입니다.');
         return;
       }
 
@@ -1960,20 +2071,22 @@
       const kst = getNowKST();
       let newStar = target.star;
       if (newMy) newStar = 'GOLD';
-      else if (newSrc) newStar = 'SILVER';
-      else newStar = 'BRONZE';
 
       target.word = newW;
-      target.meaning = newM;
       target.sourceSentence = newSrc;
+      if (newM) {
+        target.meaning = newM;
+        target.aiMeaning = newM;
+      }
       target.mySentence = newMy;
       target.star = newStar;
       target.updatedAt = kst.full;
 
       await sb.from('words').update({
         word: newW,
-        meaning: newM,
+        meaning: target.meaning,
         source_sentence: newSrc,
+        ai_meaning: target.aiMeaning,
         my_sentence: newMy,
         star: newStar,
         updated_at: kst.full
@@ -2075,20 +2188,19 @@
         return;
       }
 
-      const headers = ['그룹', '단어', '뜻', '출처문장', '문맥사전뜻', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
-      const stageLabelMap = { 'BRONZE': '1단계', 'SILVER': '2단계', 'GOLD': '3단계' };
+      const headers = ['그룹', '단어', '출처문장', '문맥의미', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
+      const stageLabelMap = { 'BRONZE': '1·2단계', 'SILVER': '3단계', 'GOLD': '4단계' };
 
       const rows = targetWords.map(w => [
         wordGroupMap[w.id] || '',
         w.word || '',
-        w.meaning || '',
         w.sourceSentence || '',
-        w.aiMeaning || '',
+        w.aiMeaning || w.meaning || '',
         w.synonyms || '',
         w.antonyms || '',
         w.mySentence || '',
         w.aiFeedback || '',
-        stageLabelMap[w.star] || '1단계',
+        stageLabelMap[w.star] || '1·2단계',
         w.updatedAt || ''
       ]);
 
@@ -2114,10 +2226,10 @@
     }
 
     function downloadCsvTemplate() {
-      const headers = ['그룹', '단어', '뜻', '출처문장', '나의문장'];
+      const headers = ['그룹', '단어', '출처문장', '문맥의미', '나의문장'];
       const sampleRows = [
-        ['수능필수', '배양', '실력이나 품성 따위를 기르고 발전시킴', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '꾸준한 연습으로 기초 체력을 배양했다.'],
-        ['모의고사', '고찰', '사물이나 현상을 깊이 생각하여 살핌', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '']
+        ['수능필수', '배양', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '실력이나 품성 따위를 기르고 발전시킴', '꾸준한 연습으로 기초 체력을 배양했다.'],
+        ['모의고사', '고찰', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '사물이나 현상을 깊이 생각하여 살핌', '']
       ];
       const csvLines = [
         headers.map(escapeCsvCell).join(','),
@@ -2172,7 +2284,7 @@
 
         const firstRow = matrix[0].map(c => String(c || '').trim());
         const hasHeader = firstRow.some(h =>
-          ['그룹', '단어', '어휘', '표제어', '뜻', '의미', '뜻풀이', 'word', 'meaning', 'group'].includes(h.toLowerCase())
+          ['그룹', '단어', '어휘', '표제어', '뜻', '의미', '문맥의미', '출처문장', 'word', 'meaning', 'group'].includes(h.toLowerCase())
         );
 
         let gIdx = -1, wIdx = 0, mIdx = 1, srcIdx = 2, myIdx = 3, synIdx = -1, antIdx = -1, aiMeanIdx = -1, aiFbIdx = -1, starIdx = -1;
@@ -2180,8 +2292,8 @@
         if (hasHeader) {
           gIdx = firstRow.findIndex(h => h.includes('그룹') || h.toLowerCase() === 'group');
           wIdx = firstRow.findIndex(h => h.includes('단어') || h.includes('어휘') || h.includes('표제어') || h.toLowerCase() === 'word');
-          mIdx = firstRow.findIndex(h => (h === '뜻' || h.includes('뜻풀이') || h.includes('의미') || h.toLowerCase() === 'meaning') && !h.includes('문맥'));
           srcIdx = firstRow.findIndex(h => h.includes('출처') || h.includes('예문') || h.toLowerCase() === 'sourcesentence');
+          mIdx = firstRow.findIndex(h => h === '뜻' || h.includes('뜻풀이') || h.includes('의미') || h.toLowerCase() === 'meaning');
           aiMeanIdx = firstRow.findIndex(h => h.includes('문맥') || h.toLowerCase() === 'aimeaning');
           synIdx = firstRow.findIndex(h => h.includes('유의어') || h.includes('비슷'));
           antIdx = firstRow.findIndex(h => h.includes('반의어') || h.includes('반대'));
@@ -2190,7 +2302,7 @@
           starIdx = firstRow.findIndex(h => h.includes('단계') || h.includes('등급') || h.toLowerCase() === 'star');
 
           if (wIdx === -1) wIdx = (gIdx === 0 ? 1 : 0);
-          if (mIdx === -1) mIdx = wIdx + 1;
+          if (mIdx === -1 && aiMeanIdx !== -1) mIdx = aiMeanIdx;
         }
 
         const startRow = hasHeader ? 1 : 0;
@@ -2205,12 +2317,13 @@
           if (!row || row.length === 0) continue;
 
           const word = String(row[wIdx] || '').trim();
-          const meaning = String(row[mIdx] || '').trim();
-          if (!word || !meaning) continue;
+          if (!word) continue;
 
           const grpName = (gIdx >= 0 && row[gIdx] != null) ? String(row[gIdx]).trim() : '';
           const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim() : '';
-          const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : '';
+          const rawMeaning = (mIdx >= 0 && row[mIdx] != null) ? String(row[mIdx]).trim() : '';
+          const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : rawMeaning;
+          const finalMeaning = rawMeaning || aiMeaning || '문맥 의미 확인 필요';
           const synonyms = (synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]).trim() : '';
           const antonyms = (antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]).trim() : '';
           const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim() : '';
@@ -2218,13 +2331,9 @@
           const rawStar = (starIdx >= 0 && row[starIdx] != null) ? String(row[starIdx]).trim().toUpperCase() : '';
 
           let star = 'BRONZE';
-          if (rawStar.includes('3') || rawStar === 'GOLD' || rawStar.includes('금')) {
+          if (rawStar.includes('4') || rawStar === 'GOLD' || rawStar.includes('금') || mySentence) {
             star = 'GOLD';
-          } else if (rawStar.includes('2') || rawStar === 'SILVER' || rawStar.includes('은')) {
-            star = 'SILVER';
-          } else if (mySentence) {
-            star = 'GOLD';
-          } else if (sourceSentence) {
+          } else if (rawStar.includes('3') || rawStar === 'SILVER' || rawStar.includes('은') || synonyms) {
             star = 'SILVER';
           }
 
@@ -2241,9 +2350,9 @@
             user_id: myUser.userId,
             user_name: myUser.name,
             word: word,
-            meaning: meaning,
+            meaning: finalMeaning,
             source_sentence: sourceSentence,
-            ai_meaning: aiMeaning || (sourceSentence ? meaning : ''),
+            ai_meaning: aiMeaning || finalMeaning,
             synonyms: synonyms,
             antonyms: antonyms,
             my_sentence: mySentence,
@@ -2257,9 +2366,9 @@
             userId: myUser.userId,
             userName: myUser.name,
             word: word,
-            meaning: meaning,
+            meaning: finalMeaning,
             sourceSentence: sourceSentence,
-            aiMeaning: aiMeaning || (sourceSentence ? meaning : ''),
+            aiMeaning: aiMeaning || finalMeaning,
             synonyms: synonyms,
             antonyms: antonyms,
             mySentence: mySentence,
@@ -2271,7 +2380,7 @@
         }
 
         if (dbRecords.length === 0) {
-          throw new Error('등록할 수 있는 단어와 뜻 행을 찾지 못했습니다.');
+          throw new Error('등록할 수 있는 단어 행을 찾지 못했습니다.');
         }
 
         const BATCH = 200;
@@ -2457,6 +2566,7 @@
       c.innerHTML = filtered.map(w => {
         const gName = wordGroupMap[w.id] || '';
         const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
+        const displayMeaning = w.aiMeaning || w.meaning || '문맥 의미 분석 중...';
         return `
           <div class="word-item-card" onclick="openBuilder('${w.id}')">
             <div style="flex:1; min-width:0; padding-right:8px;">
@@ -2464,7 +2574,7 @@
                 <span>${escapeHtml(w.word)}</span>
                 ${groupBadgeHtml}
               </div>
-              <div style="font-size:13px; color:var(--text-sub); margin-top:4px; word-break:break-all;">${escapeHtml(w.meaning)}</div>
+              <div style="font-size:13px; color:var(--text-sub); margin-top:4px; word-break:break-all;">${escapeHtml(displayMeaning)}</div>
             </div>
             <div class="word-card-right">
               <button type="button" class="btn-word-more" title="단어 메뉴" onclick="openWordDotMenu(event, '${w.id}')">
@@ -2478,7 +2588,7 @@
     }
 
     // =========================================================================
-    // 3. 국어 문법 사전 기본형 찾기 전체 규칙 + 문맥 의미 매칭 엔진
+    // 3. 국어 문법 기본형 변환 엔진 ('오르드다' 버그 완벽 차단) + 4단계 학습 엔진
     // =========================================================================
     async function callGeminiDirect(prompt, schema) {
       const models = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-lite'];
@@ -2490,7 +2600,7 @@
             responseMimeType: 'application/json',
             responseSchema: schema,
             temperature: 0.1,
-            maxOutputTokens: 160
+            maxOutputTokens: 170
           };
 
           const res = await fetch(url, {
@@ -2547,6 +2657,7 @@
       return { cho, jung, jong };
     }
 
+    // [국어 문법 기본형 후보 추출기 - '오르다 -> 오르드다' 오합성 버그 완벽 해결]
     function getKoreanGrammarBaseCandidates(rawInput) {
       const w = (rawInput || '').trim().replace(/[.?!~,"']/g, '');
       if (!w) return [];
@@ -2567,9 +2678,15 @@
         }
       };
 
-      const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
+      // [핵심 수정 1] 이미 기본형 '-다'로 끝나는 단어(선어말어미/과거형 결합이 아닌 경우, 예: '오르다', '가다', '모르다', '배양하다')는 원형 그대로를 1순위 후보로 보존!
+      const isConjugatedDa = /(시|으시|었|았|겠|더|셨|으셨|했|됐|왔|갔|봤|줬|놨|썼|컸|몰랐|달랐|빨랐|불렀|골랐|흘렀|올랐|잘랐|길렀|눌렀|워졌|아졌|어졌|기뻤|슬펐|예뻤|바빴|아팠)다$/.test(w);
+      if (w.endsWith('다') && !isConjugatedDa) {
+        pushUnique(w);
+        const nounFromDa = w.replace(/(하다|되다|시키다)$/, '');
+        if (nounFromDa && nounFromDa !== w) pushUnique(nounFromDa);
+      }
 
-      // 1-A. '르' 불규칙 복원
+      // 1-A. '르' 불규칙 복원 (몰라/몰랐다 -> 모르다, 올라/올랐다 -> 오르다, 달라 -> 다르다, 빨라 -> 빠르다, 불러 -> 부르다 등)
       const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
       if (reuTarget.length >= 2) {
         const prevCh = reuTarget.slice(-2, -1);
@@ -2583,7 +2700,7 @@
         }
       }
 
-      // 1-B. 'ㅂ' 불규칙 복원
+      // 1-B. 'ㅂ' 불규칙 복원 (아름다워/아름다운 -> 아름답다, 어려워 -> 어렵다, 쉬워 -> 쉽다, 도와 -> 돕다, 고와 -> 곱다)
       const bMatch = w.match(/^(.+?)(워|웠|워요|웠다|워서|워도|운|울|우니|우면|우시다|우셨다|와|왔|와요|왔다|와서|와도|오니)$/);
       if (bMatch && bMatch[1]) {
         const stemPrefix = bMatch[1];
@@ -2600,7 +2717,7 @@
         }
       }
 
-      // 1-C. 'ㄷ' 불규칙 복원
+      // 1-C. 'ㄷ' 불규칙 복원 (걸어 -> 걷다, 들어 -> 듣다, 물어 -> 묻다, 깨달아 -> 깨닫다, 실어 -> 싣다)
       const dIrregRules = [
         { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
         { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
@@ -2614,14 +2731,14 @@
         }
       }
 
-      // 1-D. 'ㅅ' 불규칙 복원
+      // 1-D. 'ㅅ' 불규칙 복원 (지어 -> 짓다, 나아 -> 낫다, 이어 -> 잇다, 부어 -> 붓다, 그어 -> 긋다)
       const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
       if (sIrregMatch) {
         const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
         if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
       }
 
-      // 1-E. 'ㅎ' 불규칙 복원
+      // 1-E. 'ㅎ' 불규칙 복원 (그래 -> 그렇다, 어때 -> 어떻다, 하얘 -> 하얗다, 까매 -> 까맣다 등)
       const hIrregRules = [
         { regex: /^그(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '그렇' },
         { regex: /^이(래|랬|래요|랬다|래서|런|럴|러니|러면)/, stem: '이렇' },
@@ -2639,7 +2756,7 @@
         if (rule.regex.test(w)) addVerbAndRoot(rule.stem);
       }
 
-      // 1-F. '러' 불규칙
+      // 1-F. '러' 불규칙 (이르러 -> 이르다, 푸르러 -> 푸르다)
       const reoMatch = w.match(/^(이르|푸르|누르)(러|렀|러서|렀다|러요)$/);
       if (reoMatch) addVerbAndRoot(reoMatch[1]);
 
@@ -2650,39 +2767,7 @@
       const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
       if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
 
-      // [규칙 2] 모음 축약 및 음운 탈락 복원
-      if (strippedCore.length >= 1) {
-        const lastSyll = strippedCore.slice(-1);
-        const prefix = strippedCore.slice(0, -1);
-        const dec = decomposeHangulSyllable(lastSyll);
-
-        if (dec && (dec.jong === 0 || dec.jong === 20 || dec.jong === 4 || dec.jong === 8)) {
-          if (dec.jung === 9) {
-            if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓');
-            const restoredO = prefix + combineJamoToSyllable(dec.cho, 8, 0);
-            addVerbAndRoot(restoredO);
-          }
-          if (dec.jung === 14) {
-            const restoredU = prefix + combineJamoToSyllable(dec.cho, 13, 0);
-            addVerbAndRoot(restoredU);
-          }
-          if (dec.jung === 6) {
-            const restoredI = prefix + combineJamoToSyllable(dec.cho, 20, 0);
-            addVerbAndRoot(restoredI);
-          }
-          if (dec.jung === 10) {
-            const restoredOe = prefix + combineJamoToSyllable(dec.cho, 11, 0);
-            addVerbAndRoot(restoredOe);
-          }
-          if ((dec.jung === 0 || dec.jung === 4) && (dec.jong === 0 || dec.jong === 20)) {
-            if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸');
-            const restoredEu = prefix + combineJamoToSyllable(dec.cho, 18, 0);
-            addVerbAndRoot(restoredEu);
-          }
-        }
-      }
-
-      // [규칙 3] 선어말어미 제외 및 'ㄹ' 탈락 복원
+      // [규칙 2] 선어말어미(-으시-, -시-, -었-, -았-, -겠-, -더-) 제외 및 'ㄹ' 탈락 복원
       const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
       const preMatch = w.match(preFinalPattern);
       if (preMatch && preMatch[1]) {
@@ -2706,7 +2791,7 @@
         }
       }
 
-      // [규칙 4] 일반 어말어미 분리 후 종결어미 '-다' 결합
+      // [규칙 3] 일반 어말어미 분리 후 종결어미 '-다' 결합
       const generalEndingPattern = /^(.+?)(습니다|ㅂ니다|소서|어라|아라|어요|아요|여요|구나|구먼|는데|은데|지만|건만|아도|어도|더라도|아서|어서|여서|니까|으니까|므로|으므로|거든|려면|으려면|려고|으려고|고자|도록|듯이|어|아|여|지|고|며|면서|면|으면|니|으니|네|군|자|세|다|기|음|는|은|던|을)$/;
       const endMatch = w.match(generalEndingPattern);
       if (endMatch && endMatch[1]) {
@@ -2722,6 +2807,42 @@
             addVerbAndRoot(withRieul);
           } else {
             addVerbAndRoot(stem);
+          }
+        }
+      }
+
+      // [규칙 4] 모음 축약(ㅘ, ㅝ, ㅕ, ㅙ) 및 'ㅡ' 탈락 복원
+      // [핵심 수정 2] 기본형 '-다'로 끝나는 단어에는 절대 'ㅡ' 탈락 복원을 적용하지 않아 '오르다 -> 오르드다' 현상을 원천 차단!
+      if (!w.endsWith('다') || isConjugatedDa) {
+        const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
+        if (strippedCore.length >= 1 && !strippedCore.endsWith('다')) {
+          const lastSyll = strippedCore.slice(-1);
+          const prefix = strippedCore.slice(0, -1);
+          const dec = decomposeHangulSyllable(lastSyll);
+
+          if (dec && (dec.jong === 0 || dec.jong === 20 || dec.jong === 4 || dec.jong === 8)) {
+            if (dec.jung === 9) {
+              if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓');
+              const restoredO = prefix + combineJamoToSyllable(dec.cho, 8, 0);
+              addVerbAndRoot(restoredO);
+            }
+            if (dec.jung === 14) {
+              const restoredU = prefix + combineJamoToSyllable(dec.cho, 13, 0);
+              addVerbAndRoot(restoredU);
+            }
+            if (dec.jung === 6) {
+              const restoredI = prefix + combineJamoToSyllable(dec.cho, 20, 0);
+              addVerbAndRoot(restoredI);
+            }
+            if (dec.jung === 10) {
+              const restoredOe = prefix + combineJamoToSyllable(dec.cho, 11, 0);
+              addVerbAndRoot(restoredOe);
+            }
+            if ((dec.jung === 0 || dec.jung === 4) && (dec.jong === 0 || dec.jong === 20)) {
+              if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸');
+              const restoredEu = prefix + combineJamoToSyllable(dec.cho, 18, 0);
+              addVerbAndRoot(restoredEu);
+            }
           }
         }
       }
@@ -2749,9 +2870,9 @@
       return candidates;
     }
 
-    function selectBestContextualMeaning(rawDefinitionText, studentMeaning, sourceSentence, fallbackMeaning) {
+    function selectBestContextualMeaning(rawDefinitionText, sourceSentence, fallbackMeaning) {
       if (!isValidKoreanDefinition(rawDefinitionText)) {
-        return isValidKoreanDefinition(fallbackMeaning) ? cleanSenseMarkers(fallbackMeaning) : studentMeaning;
+        return isValidKoreanDefinition(fallbackMeaning) ? cleanSenseMarkers(fallbackMeaning) : '문맥에 맞는 사전적 의미';
       }
 
       const cleanedRaw = cleanSenseMarkers(rawDefinitionText);
@@ -2760,11 +2881,10 @@
         .map(s => s.trim())
         .filter(s => isValidKoreanDefinition(s));
 
-      if (senseList.length === 0) return studentMeaning;
+      if (senseList.length === 0) return cleanSenseMarkers(fallbackMeaning || '');
       if (senseList.length === 1) return senseList[0];
 
-      const contextText = `${studentMeaning || ''} ${sourceSentence || ''}`;
-      const keywords = contextText
+      const keywords = String(sourceSentence || '')
         .replace(/[^가-힣\s]/g, ' ')
         .split(/\s+/)
         .map(t => t.replace(/(은|는|이|가|을|를|에|에서|으로|로|도|만|하다|되다|다)$/, ''))
@@ -2791,14 +2911,15 @@
       return bestSense;
     }
 
-    async function analyzeAndSaveStep2Once(rawWord, studentMeaning, sourceSentence) {
+    // [1·2단계 저장 시 실행] 문장의 문맥에 따라 모르는 단어의 의미를 DB + AI로 추출
+    async function findContextualMeaningFromDbAndAi(rawWord, sourceSentence) {
       const cleanWord = rawWord.trim();
       const candidates = getKoreanGrammarBaseCandidates(cleanWord);
 
       const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
 
       let dictHit = null;
-      let matchedBaseWord = candidates[0] || cleanWord;
+      let matchedBaseWord = cleanWord;
 
       if (dictRows && dictRows.length > 0) {
         for (const cand of candidates) {
@@ -2809,25 +2930,13 @@
             break;
           }
         }
-        if (!dictHit) {
-          for (const cand of candidates) {
-            const foundAny = dictRows.find(r => r.word === cand);
-            if (foundAny) {
-              dictHit = foundAny;
-              matchedBaseWord = cand;
-              break;
-            }
-          }
-        }
       }
 
       let coreHit = null;
       for (const cand of candidates) {
         if (CORE_SYN_ANT_MAP[cand]) {
           coreHit = CORE_SYN_ANT_MAP[cand];
-          if (!dictHit || !isValidKoreanDefinition(dictHit.definition)) {
-            matchedBaseWord = cand;
-          }
+          if (!dictHit) matchedBaseWord = cand;
           break;
         }
       }
@@ -2841,10 +2950,80 @@
 
       let finalContextMeaning = selectBestContextualMeaning(
         rawDictDef,
-        studentMeaning,
         sourceSentence,
-        coreHit ? coreHit.def : studentMeaning
+        coreHit ? coreHit.def : ''
       );
+
+      // AI를 돌려 문장 속 정확한 기본형과 문맥 의미 추출
+      try {
+        const prompt =
+          `단어:"${cleanWord}" / 출처문장:"${sourceSentence}"\n` +
+          `${rawDictDef ? `(참고 사전뜻: "${rawDictDef}")\n` : ''}` +
+          `1. baseForm: 위 단어를 국어사전에서 찾을 때의 정확한 표준국어대사전 기본형 표제어(용언은 선어말어미 제외 후 어간+'-다', 명사는 조사 제외한 원형. 예: '올랐다'->'오르다', '오르다'->'오르다', '몰라'->'모르다', '가시다'->'가다'). 절대 존재하지 않는 글자('오르드다' 등)를 합성하지 말 것.\n` +
+          `2. contextMeaning: 위 출처문장의 문맥에서 이 단어가 뜻하는 정확한 의미를 학생이 이해하기 쉽게 한 문장으로 설명. JSON 반환`;
+
+        const schema = {
+          type: 'OBJECT',
+          properties: {
+            baseForm: { type: 'STRING' },
+            contextMeaning: { type: 'STRING' }
+          },
+          required: ['baseForm', 'contextMeaning']
+        };
+
+        const aiRes = await callGeminiDirect(prompt, schema);
+        if (aiRes) {
+          const aiBase = (aiRes.baseForm || '').trim();
+          if (aiBase && !aiBase.endsWith('드다')) {
+            matchedBaseWord = aiBase;
+            // 만약 기존 dictHit가 없었는데 AI가 정확한 기본형을 찾았다면 std_dict 한 번 더 확인
+            if (!dictHit) {
+              const { data: retryRow } = await sb.from('std_dict').select('*').eq('word', aiBase).maybeSingle();
+              if (retryRow && isValidKoreanDefinition(retryRow.definition)) {
+                dictHit = retryRow;
+              }
+            }
+          }
+          if (isValidKoreanDefinition(aiRes.contextMeaning)) {
+            finalContextMeaning = cleanSenseMarkers(aiRes.contextMeaning);
+          }
+        }
+      } catch (e) {}
+
+      if (!isValidKoreanDefinition(finalContextMeaning)) {
+        finalContextMeaning = `${cleanWord}의 문맥적 의미`;
+      }
+
+      const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
+      const cleanFinalMeaning = cleanSenseMarkers(finalContextMeaning.replace(/^\[기본형:[^\]]+\]\s*/, ''));
+      const displayMeaningWithBase = basePrefix + cleanFinalMeaning;
+
+      return {
+        baseWord: matchedBaseWord || cleanWord,
+        pureMeaning: cleanFinalMeaning,
+        displayMeaning: displayMeaningWithBase,
+        cachedSyn: (dictHit && dictHit.synonyms && dictHit.synonyms !== '없음') ? dictHit.synonyms : ((coreHit && coreHit.syn) || ''),
+        cachedAnt: (dictHit && dictHit.antonyms && dictHit.antonyms !== '없음') ? dictHit.antonyms : ((coreHit && coreHit.ant) || '')
+      };
+    }
+
+    // [3단계 실행] 유의어·반의어 DB + AI 추출
+    async function fetchSynonymsAndAntonyms(rawWord, contextMeaning, sourceSentence) {
+      const cleanWord = rawWord.trim();
+      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
+
+      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
+      let dictHit = (dictRows && dictRows.length > 0) ? dictRows[0] : null;
+      let coreHit = null;
+      let matchedBaseWord = dictHit ? dictHit.word : cleanWord;
+
+      for (const cand of candidates) {
+        if (CORE_SYN_ANT_MAP[cand]) {
+          coreHit = CORE_SYN_ANT_MAP[cand];
+          matchedBaseWord = cand;
+          break;
+        }
+      }
 
       let finalSynonyms = (dictHit && dictHit.synonyms && dictHit.synonyms !== '없음' && dictHit.synonyms !== '유사 어휘 없음')
         ? dictHit.synonyms
@@ -2855,37 +3034,26 @@
 
       try {
         const prompt =
-          `입력단어:"${cleanWord}"(기본형후보:"${matchedBaseWord}", 사전뜻:"${finalContextMeaning}")/출처문장:"${sourceSentence}"\n` +
-          `1. baseForm: 국어 문법 규칙(선어말어미 제외, 불규칙 활용 복원, 어간+'-다')에 따른 정확한 사전 기본형.\n` +
-          `2. contextMeaning: 위 출처문장의 문맥에 해당하는 뜻풀이 딱 1개만 자연스러운 한국어 문장으로 작성(절대 [1], 「1」 같은 기호 쓰지 말 것).\n` +
-          `3. synonyms: 유의어 2개.\n` +
-          `4. antonyms: 반의어 1~2개(없으면 '없음'). JSON 반환`;
+          `단어:"${cleanWord}"(문맥뜻:"${contextMeaning}") / 문장:"${sourceSentence}"\n` +
+          `이 문맥에서의 유의어 2~3개(쉼표 구분)와 반의어 1~2개(없으면 '없음')를 JSON으로 반환하세요.`;
 
         const schema = {
           type: 'OBJECT',
           properties: {
-            baseForm: { type: 'STRING' },
-            contextMeaning: { type: 'STRING' },
             synonyms: { type: 'STRING' },
             antonyms: { type: 'STRING' }
           },
-          required: ['baseForm', 'contextMeaning', 'synonyms', 'antonyms']
+          required: ['synonyms', 'antonyms']
         };
 
         const aiRes = await callGeminiDirect(prompt, schema);
         if (aiRes) {
-          if (aiRes.baseForm && aiRes.baseForm.trim()) {
-            matchedBaseWord = aiRes.baseForm.trim();
-          }
-          if (isValidKoreanDefinition(aiRes.contextMeaning)) {
-            finalContextMeaning = cleanSenseMarkers(aiRes.contextMeaning);
-          }
-          if (!finalSynonyms && aiRes.synonyms) finalSynonyms = aiRes.synonyms;
-          if (!finalAntonyms && aiRes.antonyms) finalAntonyms = aiRes.antonyms;
+          if (aiRes.synonyms && aiRes.synonyms.trim()) finalSynonyms = aiRes.synonyms.trim();
+          if (aiRes.antonyms && aiRes.antonyms.trim()) finalAntonyms = aiRes.antonyms.trim();
         }
       } catch (e) {}
 
-      if (!finalSynonyms || finalSynonyms === '없음' || finalSynonyms === '유사 어휘 없음') {
+      if (!finalSynonyms || finalSynonyms === '없음') {
         const searchRoot = matchedBaseWord.replace(/(하다|되다|다)$/, '') || cleanWord;
         if (searchRoot.length >= 2) {
           const { data: relRows } = await sb
@@ -2905,21 +3073,7 @@
       if (!finalSynonyms) finalSynonyms = '유사 어휘 없음';
       if (!finalAntonyms) finalAntonyms = '없음';
 
-      const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
-      const cleanFinalMeaning = cleanSenseMarkers(finalContextMeaning.replace(/^\[기본형:[^\]]+\]\s*/, ''));
-      const savedMeaningText = basePrefix + (cleanFinalMeaning || studentMeaning);
-
-      const kst = getNowKST();
-      await sb.from('std_dict').upsert({
-        word: matchedBaseWord || cleanWord,
-        definition: cleanFinalMeaning || studentMeaning,
-        synonyms: finalSynonyms,
-        antonyms: finalAntonyms,
-        updated_at: kst.full
-      });
-
       return {
-        contextMeaning: savedMeaningText,
         synonyms: finalSynonyms,
         antonyms: finalAntonyms
       };
@@ -2930,21 +3084,16 @@
       syncBuilder();
       showScreen('screen-builder');
 
-      if (curItem && curItem.star !== 'BRONZE') {
-        const hasCorruptedSymbols = /\[\d+\]|「\d+」/.test(curItem.aiMeaning || '');
-        const hasWrongMolda = curItem.word === '몰라' && (curItem.aiMeaning || '').includes('몰다');
-        if (hasCorruptedSymbols || hasWrongMolda || !isValidKoreanDefinition(curItem.aiMeaning)) {
-          const fixed = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, curItem.sourceSentence || curItem.word);
-          curItem.aiMeaning = fixed.contextMeaning;
-          curItem.synonyms = fixed.synonyms;
-          curItem.antonyms = fixed.antonyms;
-          renderStep2Summary();
-          await sb.from('words').update({
-            ai_meaning: curItem.aiMeaning,
-            synonyms: curItem.synonyms,
-            antonyms: curItem.antonyms
-          }).eq('id', curItem.id);
-        }
+      // 만약 기존 저장 단어 중 '오르드다' 같은 잘못된 기본형 표기가 들어있다면 자동으로 즉시 교정
+      if (curItem && (curItem.aiMeaning || '').includes('드다]')) {
+        const fixed = await findContextualMeaningFromDbAndAi(curItem.word, curItem.sourceSentence || curItem.word);
+        curItem.meaning = fixed.pureMeaning;
+        curItem.aiMeaning = fixed.displayMeaning;
+        renderStep12Summary();
+        await sb.from('words').update({
+          meaning: curItem.meaning,
+          ai_meaning: curItem.aiMeaning
+        }).eq('id', curItem.id);
       }
     }
 
@@ -2954,26 +3103,27 @@
       const desc = document.getElementById('heroDesc');
       const del = document.getElementById('btnDel');
 
+      updateStep3QuotaUI();
+
       if (!curItem) {
         box.innerHTML = getStarSvg('NONE', 42);
         title.innerText = '새 단어 추가';
-        desc.innerText = '1단계부터 순서대로 작성해 별을 채워보세요';
+        desc.innerText = '1단계(단어)와 2단계(문장)를 저장하면 문맥 의미를 찾아줍니다';
         del.style.visibility = 'hidden';
 
-        document.getElementById('card1').className = 'step-card current';
-        document.getElementById('form1').style.display = 'block';
-        document.getElementById('sum1').style.display = 'none';
+        document.getElementById('card12').className = 'step-card current';
+        document.getElementById('form12').style.display = 'block';
+        document.getElementById('sum12').style.display = 'none';
         document.getElementById('inpW').value = '';
-        document.getElementById('inpM').value = '';
-
-        document.getElementById('card2').className = 'step-card locked';
-        document.getElementById('form2').style.display = 'block';
-        document.getElementById('sum2').style.display = 'none';
         document.getElementById('inpSrc').value = '';
 
         document.getElementById('card3').className = 'step-card locked';
         document.getElementById('form3').style.display = 'block';
         document.getElementById('sum3').style.display = 'none';
+
+        document.getElementById('card4').className = 'step-card locked';
+        document.getElementById('form4').style.display = 'block';
+        document.getElementById('sum4').style.display = 'none';
         document.getElementById('inpMy').value = '';
         return;
       }
@@ -2981,45 +3131,45 @@
       box.innerHTML = getStarSvg(curItem.star, 42);
       del.style.visibility = 'visible';
 
-      document.getElementById('card1').className = 'step-card';
-      document.getElementById('form1').style.display = 'none';
-      document.getElementById('sum1').style.display = 'block';
-      document.getElementById('sum1').innerHTML = `${escapeHtml(curItem.word)} : <span style="font-size:13px; color:var(--text-sub);">${escapeHtml(curItem.meaning)}</span>`;
+      document.getElementById('card12').className = 'step-card';
+      document.getElementById('form12').style.display = 'none';
+      document.getElementById('sum12').style.display = 'block';
+      renderStep12Summary();
 
       if (curItem.star === 'BRONZE') {
-        title.innerText = '1단계 완료 (+10 XP)';
-        desc.innerText = '2단계 출처 문장을 입력해 다음 별을 채워보세요';
-        document.getElementById('card2').className = 'step-card current';
-        document.getElementById('form2').style.display = 'block';
-        document.getElementById('sum2').style.display = 'none';
-        document.getElementById('inpSrc').value = '';
-        document.getElementById('card3').className = 'step-card locked';
+        title.innerText = '1·2단계 완료 (+10 XP)';
+        desc.innerText = '3단계 유의어·반의어를 확인해 다음 별을 채워보세요';
+        document.getElementById('card3').className = 'step-card current';
+        document.getElementById('form3').style.display = 'block';
         document.getElementById('sum3').style.display = 'none';
+
+        document.getElementById('card4').className = 'step-card locked';
+        document.getElementById('sum4').style.display = 'none';
       } else {
-        document.getElementById('card2').className = 'step-card';
-        document.getElementById('form2').style.display = 'none';
-        document.getElementById('sum2').style.display = 'block';
-        renderStep2Summary();
+        document.getElementById('card3').className = 'step-card';
+        document.getElementById('form3').style.display = 'none';
+        document.getElementById('sum3').style.display = 'block';
+        renderStep3Summary();
 
         if (curItem.star === 'SILVER') {
-          title.innerText = '2단계 완료 (+30 XP)';
-          desc.innerText = '3단계 나만의 문장을 만들어 학습을 완성하세요';
-          document.getElementById('card3').className = 'step-card current';
-          document.getElementById('form3').style.display = 'block';
+          title.innerText = '3단계 완료 (+30 XP)';
+          desc.innerText = '4단계 나만의 문장을 만들어 학습을 완성하세요';
+          document.getElementById('card4').className = 'step-card current';
+          document.getElementById('form4').style.display = 'block';
           document.getElementById('inpMy').value = curItem.mySentence || '';
           if (curItem.aiFeedback) {
-            document.getElementById('sum3').style.display = 'block';
-            document.getElementById('sum3').innerHTML = `<div style="font-size:12px; color:var(--primary-dark); background:var(--primary-soft); padding:9px 10px; border-radius:8px; margin-top:6px;"><strong>AI 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}</div>`;
+            document.getElementById('sum4').style.display = 'block';
+            document.getElementById('sum4').innerHTML = `<div style="font-size:12px; color:var(--primary-dark); background:var(--primary-soft); padding:9px 10px; border-radius:8px; margin-top:6px;"><strong>AI 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}</div>`;
           } else {
-            document.getElementById('sum3').style.display = 'none';
+            document.getElementById('sum4').style.display = 'none';
           }
         } else if (curItem.star === 'GOLD') {
           title.innerText = '마스터 완성 (+60 XP)';
-          desc.innerText = '3단계 문장 작성까지 모두 마친 단어입니다';
-          document.getElementById('card3').className = 'step-card';
-          document.getElementById('form3').style.display = 'none';
-          document.getElementById('sum3').style.display = 'block';
-          document.getElementById('sum3').innerHTML = `
+          desc.innerText = '4단계 문장 작성까지 모두 마친 단어입니다';
+          document.getElementById('card4').className = 'step-card';
+          document.getElementById('form4').style.display = 'none';
+          document.getElementById('sum4').style.display = 'block';
+          document.getElementById('sum4').innerHTML = `
             <div style="font-size:13px; font-weight:700;">내 문장: "${escapeHtml(curItem.mySentence)}"</div>
             <div style="font-size:12px; color:var(--primary-dark); background:var(--primary-soft); padding:9px 10px; border-radius:8px; margin-top:6px;">
               <strong>AI 피드백:</strong> ${escapeHtml(curItem.aiFeedback)}
@@ -3029,37 +3179,53 @@
       }
     }
 
-    function renderStep2Summary() {
-      const synText = (curItem.synonyms && curItem.synonyms.trim() !== '') ? curItem.synonyms : '없음';
-      const antText = (curItem.antonyms && curItem.antonyms.trim() !== '') ? curItem.antonyms : '없음';
-      const meanText = isValidKoreanDefinition(curItem.aiMeaning) ? curItem.aiMeaning : curItem.meaning;
-
-      document.getElementById('sum2').innerHTML = `
-        <div style="font-size:13px; margin-bottom:6px;">"${escapeHtml(curItem.sourceSentence)}"</div>
+    function renderStep12Summary() {
+      const meanText = curItem.aiMeaning || curItem.meaning || '문맥 의미 분석 중...';
+      document.getElementById('sum12').innerHTML = `
+        <div style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:4px;">${escapeHtml(curItem.word)}</div>
+        <div style="font-size:13px; color:var(--text-sub); margin-bottom:8px;">"${escapeHtml(curItem.sourceSentence)}"</div>
         <div style="font-size:12px; background:var(--bg-app); border:1px solid var(--border); padding:10px 12px; border-radius:10px; line-height:1.6;">
-          <span class="dict-badge">표준국어대사전 기본형 DB + 문맥 뜻</span><br>
-          <strong>문맥·사전 뜻:</strong> ${escapeHtml(meanText)}<br>
-          <strong>유의어:</strong> <span style="color:var(--primary); font-weight:700;">${escapeHtml(synText)}</span> &nbsp;|&nbsp; <strong>반의어:</strong> <span style="color:var(--text-main); font-weight:700;">${escapeHtml(antText)}</span>
+          <span class="dict-badge">문맥에 따른 단어의 의미 (DB + AI)</span><br>
+          <strong style="color:var(--text-main);">${escapeHtml(meanText)}</strong>
         </div>
       `;
     }
 
-    async function doStep1() {
+    function renderStep3Summary() {
+      const synText = (curItem.synonyms && curItem.synonyms.trim() !== '') ? curItem.synonyms : '유사 어휘 없음';
+      const antText = (curItem.antonyms && curItem.antonyms.trim() !== '') ? curItem.antonyms : '없음';
+
+      document.getElementById('sum3').innerHTML = `
+        <div style="font-size:12px; background:var(--bg-app); border:1px solid var(--border); padding:10px 12px; border-radius:10px; line-height:1.6;">
+          <strong>유의어:</strong> <span style="color:var(--primary); font-weight:700;">${escapeHtml(synText)}</span> &nbsp;|&nbsp;
+          <strong>반의어:</strong> <span style="color:var(--text-main); font-weight:700;">${escapeHtml(antText)}</span>
+        </div>
+      `;
+    }
+
+    // [1·2단계 필수 저장] 단어와 문장만 입력받아 저장하고, 아래에 문맥 의미를 DB + AI로 찾아 표시!
+    async function doSaveMandatoryStep12() {
       const w = document.getElementById('inpW').value.trim();
-      const m = document.getElementById('inpM').value.trim();
-      if (!w || !m) { alert('단어와 뜻을 입력하세요'); return; }
+      const src = document.getElementById('inpSrc').value.trim();
+      if (!w) { alert('1단계 모르는 단어를 입력해 주세요.'); document.getElementById('inpW').focus(); return; }
+      if (!src) { alert('2단계 모르는 단어가 나오는 문장을 입력해 주세요.'); document.getElementById('inpSrc').focus(); return; }
+
+      const btn = document.getElementById('btnS12');
+      btn.disabled = true;
+      btn.innerText = '문맥에 따른 단어 의미 찾는 중...';
 
       const kst = getNowKST();
       const newId = 'W_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
       const assignedGroup = (groupFilter !== 'ALL') ? groupFilter : '';
+
       const newItem = {
         id: newId,
         userId: myUser.userId,
         userName: myUser.name,
         word: w,
-        meaning: m,
-        sourceSentence: '',
-        aiMeaning: '',
+        meaning: '문맥 의미 분석 중...',
+        sourceSentence: src,
+        aiMeaning: '표준국어대사전 DB와 AI로 문맥 의미를 분석하고 있습니다...',
         synonyms: '',
         antonyms: '',
         mySentence: '',
@@ -3078,59 +3244,71 @@
       curItem = newItem;
       playRewardSound('BRONZE');
       syncBuilder();
-      document.getElementById('inpSrc').focus();
-      showToast('1단계 저장 완료 (+10 XP). 2단계 문장을 적어보세요.');
+
+      const res = await findContextualMeaningFromDbAndAi(w, src);
+      curItem.meaning = res.pureMeaning;
+      curItem.aiMeaning = res.displayMeaning;
+      renderStep12Summary();
+
+      btn.disabled = false;
+      btn.innerText = '1·2단계 저장하고 문맥 의미 찾기';
+      showToast('1·2단계 저장 및 문맥 의미 추출 완료 (+10 XP)');
 
       await sb.from('words').insert({
         id: newId,
         user_id: myUser.userId,
         user_name: myUser.name,
         word: w,
-        meaning: m,
+        meaning: curItem.meaning,
+        source_sentence: src,
+        ai_meaning: curItem.aiMeaning,
         star: 'BRONZE',
         updated_at: kst.full
       });
     }
 
-    async function doStep2() {
-      const src = document.getElementById('inpSrc').value.trim();
-      if (!src) { alert('문장을 입력하세요'); return; }
+    // [3단계 실행] 유의어·반의어 확인하기 (무료 5회 차감, 이후 광고 1회당 5회 충전)
+    async function doStep3CheckSynAnt() {
+      if (!curItem) return;
+
+      const remaining = getSynAntRemainingCount();
+      if (remaining <= 0) {
+        updateStep3QuotaUI();
+        showToast('무료 확인 횟수를 모두 사용했습니다. 광고 시청 후 충전해 주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('btnS3');
+      btn.disabled = true;
+      btn.innerText = '유의어·반의어 분석 중...';
+
+      const res = await fetchSynonymsAndAntonyms(
+        curItem.word,
+        curItem.aiMeaning || curItem.meaning,
+        curItem.sourceSentence
+      );
+
+      // 1회 사용 차감
+      const qState = getSynAntQuotaState();
+      qState.used += 1;
+      saveSynAntQuotaState(qState);
 
       const kst = getNowKST();
-      curItem.sourceSentence = src;
-      curItem.star = 'SILVER';
-      curItem.updatedAt = kst.full;
-      playRewardSound('SILVER');
-      fireConfetti(false);
-
-      document.getElementById('heroStarBox').innerHTML = getStarSvg('SILVER', 42);
-      document.getElementById('heroTitle').innerText = '2단계 완료 (+30 XP)';
-      document.getElementById('heroDesc').innerText = '3단계 나만의 문장을 만들어 학습을 완성하세요';
-
-      document.getElementById('card2').className = 'step-card';
-      document.getElementById('form2').style.display = 'none';
-      document.getElementById('sum2').style.display = 'block';
-      document.getElementById('sum2').innerHTML = `
-        <div style="font-size:13px; margin-bottom:4px;">"${escapeHtml(src)}"</div>
-        <div style="font-size:12px; background:var(--primary-soft); padding:9px 10px; border-radius:8px; color:var(--primary); font-weight:700;">
-          국어 문법 기본형 변환 및 문맥 뜻 저장 중... (바로 3단계 문장을 작성하세요)
-        </div>
-      `;
-
-      document.getElementById('card3').className = 'step-card current';
-      document.getElementById('form3').style.display = 'block';
-      document.getElementById('inpMy').focus();
-      showToast('2단계 완료 (+20 XP). 3단계 문장을 만들어보세요.');
-
-      const res = await analyzeAndSaveStep2Once(curItem.word, curItem.meaning, src);
-      curItem.aiMeaning = res.contextMeaning;
       curItem.synonyms = res.synonyms;
       curItem.antonyms = res.antonyms;
-      renderStep2Summary();
+      curItem.star = 'SILVER';
+      curItem.updatedAt = kst.full;
+
+      btn.disabled = false;
+      btn.innerText = 'AI · 사전으로 유의어·반의어 확인하기';
+
+      playRewardSound('SILVER');
+      fireConfetti(false);
+      syncBuilder();
+      document.getElementById('inpMy').focus();
+      showToast('3단계 유의어·반의어 확인 완료 (+20 XP)');
 
       await sb.from('words').update({
-        source_sentence: src,
-        ai_meaning: curItem.aiMeaning,
         synonyms: curItem.synonyms,
         antonyms: curItem.antonyms,
         star: 'SILVER',
@@ -3138,10 +3316,41 @@
       }).eq('id', curItem.id);
     }
 
-    async function doStep3() {
+    // 3단계 유의어·반의어 광고 1회 시청 시 +5번 충전
+    function triggerSynAntRewardedAd() {
+      if (typeof window.adBreak === 'function') {
+        window.adBreak({
+          type: 'reward',
+          name: 'madevoca_syn_refill',
+          beforeReward: function(showAdFn) { showAdFn(); },
+          adViewed: function() { completeSynAntAdReward(); },
+          adDismissed: function() { showToast('광고를 끝까지 시청해야 횟수가 충전됩니다.'); },
+          adBreakDone: function(placementInfo) {
+            if (placementInfo && placementInfo.breakStatus !== 'viewed' && placementInfo.breakStatus !== 'dismissed') {
+              alert('현재 구글 애드센스 심사 준비중 상태이므로 테스트 충전을 진행합니다.');
+              completeSynAntAdReward();
+            }
+          }
+        });
+      } else {
+        completeSynAntAdReward();
+      }
+    }
+
+    function completeSynAntAdReward() {
+      const st = getSynAntQuotaState();
+      st.adRecharged += 1;
+      saveSynAntQuotaState(st);
+      playRewardSound('SILVER');
+      updateStep3QuotaUI();
+      showToast(`광고 시청 완료! 유의어·반의어 확인 횟수가 +${SYN_ANT_REWARD_PER_AD}번 충전되었습니다.`);
+    }
+
+    // [4단계 실행] 나만의 문장 만들기
+    async function doStep4MySentence() {
       const my = document.getElementById('inpMy').value.trim();
-      if (!my) { alert('직접 만든 문장을 입력하세요'); return; }
-      const btn = document.getElementById('btnS3');
+      if (!my) { alert('직접 만든 문장을 입력해 주세요.'); return; }
+      const btn = document.getElementById('btnS4');
       btn.disabled = true; btn.innerText = 'AI 피드백 생성 중...';
 
       const kst = getNowKST();
@@ -3166,8 +3375,8 @@
         evalResult = {
           isPassed: hasWord,
           feedback: hasWord
-            ? `'${curItem.word}'(기본형: ${baseForm})의 의미를 살려 문장을 훌륭하게 완성했어요!`
-            : `문장 안에 '${curItem.word}'(기본형: ${baseForm})가 들어가도록 다시 작성해 볼까요?`
+            ? `'${curItem.word}'의 의미를 살려 문장을 훌륭하게 완성했어요!`
+            : `문장 안에 '${curItem.word}' 단어가 자연스럽게 들어가도록 다시 작성해 볼까요?`
         };
       }
 
@@ -3183,7 +3392,7 @@
       if (evalResult.isPassed) {
         playRewardSound('GOLD');
         fireConfetti(true);
-        showToast('마스터 완성 (+30 XP)! 축하합니다.');
+        showToast('4단계 마스터 완성 (+30 XP)! 축하합니다.');
       } else {
         showToast('AI 힌트를 참고해 문장을 다듬어 보세요.');
       }
@@ -3219,7 +3428,7 @@
       const badges = [
         { icon: 'spark', name: '첫 단어의 시작', desc: '첫 단어 등록', unlocked: myWords.length >= 1 },
         { icon: 'flame', name: '꾸준한 학습', desc: '3일 연속 학습', unlocked: streak >= 3 },
-        { icon: 'award', name: '마스터 수집가', desc: '3단계 완성 5개', unlocked: goldCnt >= 5 },
+        { icon: 'award', name: '마스터 수집가', desc: '4단계 완성 5개', unlocked: goldCnt >= 5 },
         { icon: 'target', name: '퀴즈 챔피언', desc: '퀴즈 5회 정답', unlocked: quizSolveCount >= 5 },
         { icon: 'book', name: '어휘 탐험가', desc: '단어 15개 등록', unlocked: myWords.length >= 15 },
         { icon: 'trophy', name: '국어 마스터', desc: '500 XP 돌파', unlocked: totalXp >= 500 }
@@ -3280,12 +3489,12 @@
       limitArea.style.display = 'none';
       document.getElementById('btnNextQuiz').style.display = 'none';
 
-      const pool = myWords.map(w => ({ word: w.word, meaning: w.meaning }));
+      const pool = myWords.map(w => ({ word: w.word, meaning: w.meaning || w.aiMeaning }));
       FALLBACK_VOCAB.forEach(fb => {
         if (!pool.some(p => p.word === fb.word)) pool.push(fb);
       });
 
-      const targetPool = myWords.length > 0 ? myWords : pool;
+      const targetPool = myWords.length > 0 ? myWords.map(w => ({ word: w.word, meaning: w.meaning || w.aiMeaning })) : pool;
       const answerItem = targetPool[Math.floor(Math.random() * targetPool.length)];
       const wrongPool = pool.filter(p => p.word !== answerItem.word).sort(() => Math.random() - 0.5).slice(0, 3);
       const choices = [answerItem, ...wrongPool].sort(() => Math.random() - 0.5);
@@ -3628,7 +3837,7 @@
 
         studentMap[uId].words.push({
           word: r.word,
-          meaning: r.meaning,
+          meaning: r.ai_meaning || r.meaning,
           sourceSentence: r.source_sentence || '',
           mySentence: r.my_sentence || '',
           aiFeedback: r.ai_feedback || '',
