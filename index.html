@@ -233,7 +233,7 @@
     }
 
     /* 내 단어 검색창 */
-    .search-box-wrap { padding: 0 16px 8px; position: relative; }
+    .search-box-wrap { padding: 0 16px 6px; position: relative; }
     .search-input {
       width: 100%; padding: 11px 36px 11px 38px; border-radius: 12px;
       border: 1px solid var(--border); background: var(--surface);
@@ -242,22 +242,99 @@
     .search-input:focus { border-color: var(--primary); }
     .search-icon-left {
       position: absolute; left: 28px; top: 50%; transform: translateY(-50%);
-      pointer-events: none; margin-top: -4px; display: flex; align-items: center;
+      pointer-events: none; margin-top: -3px; display: flex; align-items: center;
     }
     .search-clear-btn {
       position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
       background: #EDEBE4; border: none; width: 20px; height: 20px; border-radius: 50%;
       font-size: 11px; font-weight: 700; color: var(--text-sub); cursor: pointer;
-      display: none; align-items: center; justify-content: center; margin-top: -4px;
+      display: none; align-items: center; justify-content: center; margin-top: -3px;
     }
 
+    /* 그룹 필터 가로 스크롤 칩 바 */
+    .group-chip-bar {
+      padding: 2px 16px 8px;
+      display: flex; gap: 6px; overflow-x: auto;
+      scrollbar-width: none; -ms-overflow-style: none;
+    }
+    .group-chip-bar::-webkit-scrollbar { display: none; }
+    .group-chip {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
+      color: var(--text-sub); white-space: nowrap; cursor: pointer; transition: 0.15s;
+    }
+    .group-chip.active {
+      background: var(--primary); border-color: var(--primary); color: #FFFFFF;
+    }
+
+    /* 단어 카드 및 우측 상단 점 3개(...) 버튼 */
     .list-body { padding: 4px 16px 24px; flex: 1; }
     .word-item-card {
+      position: relative;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer;
+      border-radius: 14px; padding: 14px 44px 14px 16px; margin-bottom: 8px; cursor: pointer;
       display: flex; justify-content: space-between; align-items: center; transition: background 0.12s;
     }
     .word-item-card:active { background: #F4F2EC; }
+    .word-group-tag {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      color: var(--primary); background: var(--primary-soft);
+      padding: 2px 7px; border-radius: 6px; margin-left: 6px; vertical-align: middle;
+    }
+    .btn-word-more {
+      position: absolute; top: 6px; right: 6px;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: transparent; border: none; color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 5;
+    }
+    .btn-word-more:active { background: var(--primary-soft); }
+
+    /* 점 3개 메뉴 및 그룹 변경 모달 스타일 */
+    .menu-action-list {
+      display: flex; flex-direction: column; gap: 8px; margin-top: 14px;
+    }
+    .menu-action-btn {
+      width: 100%; padding: 14px 16px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 14px; font-weight: 700; color: var(--text-main);
+      text-align: left; display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; transition: 0.12s;
+    }
+    .menu-action-btn:active { background: var(--primary-soft); border-color: var(--primary); }
+    .menu-action-btn.danger { color: #B91C1C; border-color: #FECACA; background: #FFF5F5; }
+
+    .btn-header-done {
+      padding: 7px 13px; border-radius: 9px; border: none;
+      font-size: 13px; font-weight: 800;
+      background: var(--primary); color: #FFFFFF; cursor: pointer; transition: 0.15s;
+    }
+    .btn-header-done:disabled {
+      background: #E2E8F0; color: #94A3B8; cursor: not-allowed;
+    }
+
+    .group-select-list {
+      display: flex; flex-direction: column; gap: 8px;
+      max-height: 240px; overflow-y: auto; margin: 12px 0;
+    }
+    .group-option-item {
+      width: 100%; padding: 13px 15px; border-radius: 12px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      font-size: 14px; font-weight: 700; color: var(--text-main);
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; transition: 0.15s;
+    }
+    /* 그룹 중 1개를 누르면 색깔이 바뀌는 활성화 스타일 */
+    .group-option-item.selected {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .export-part-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 15px; margin-bottom: 12px;
+    }
 
     /* 하단 탭 네비게이션 */
     .bottom-tab-bar {
@@ -385,8 +462,9 @@
     .modal-overlay.open { display: flex; }
     .bottom-sheet {
       width: 100%; background: var(--bg-app);
-      border-radius: 22px 22px 0 0; padding: 24px 20px calc(28px + var(--safe-bottom));
+      border-radius: 22px 22px 0 0; padding: 22px 20px calc(28px + var(--safe-bottom));
       animation: slideUp 0.2s ease-out;
+      max-height: 88dvh; overflow-y: auto;
     }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
@@ -480,7 +558,7 @@
         <div style="font-size:12px; font-weight:800; color:var(--primary);" id="dailyQuestText">0 / 3</div>
       </div>
 
-      <!-- 탭 1: 내 단어장 (동별·은별·금별 텍스트 없이 색상 별 아이콘만 표시) -->
+      <!-- 탭 1: 내 단어장 -->
       <div id="tab-words" class="tab-pane">
         <div class="reward-summary">
           <div class="reward-pill" id="filterB" onclick="toggleStarFilter('BRONZE')"><span id="sumB"></span><span id="cntB">0</span></div>
@@ -493,6 +571,9 @@
           <input type="text" id="inpWordSearch" class="search-input" placeholder="내가 만든 단어나 뜻 검색..." oninput="onSearchWordInput()">
           <button id="btnClearSearch" class="search-clear-btn" onclick="clearWordSearch()">✕</button>
         </div>
+
+        <!-- 그룹별 필터 바 -->
+        <div id="groupFilterBar" class="group-chip-bar" style="display:none;"></div>
 
         <div class="list-body">
           <div id="wordListContainer"></div>
@@ -541,7 +622,7 @@
         <div id="rankingContainer">불러오는 중...</div>
       </div>
 
-      <!-- 탭 4: 내 정보 (프로필 수정 + CSV 파일 단어 등록/내보내기) -->
+      <!-- 탭 4: 내 정보 -->
       <div id="tab-profile" class="tab-pane" style="display:none; padding: 10px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">내 정보 관리</div>
 
@@ -558,14 +639,14 @@
           <button id="btnSaveMyProfile" class="action-btn btn-primary" style="margin-top:4px;" onclick="saveMyProfileChanges()">내 정보 저장하기</button>
         </div>
 
-        <!-- [신규] CSV 파일로 단어 등록하기 & 내보내기 카드 -->
+        <!-- CSV 파일로 단어 등록하기 & 내보내기 카드 -->
         <div class="profile-box-card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
             <div style="font-size:13px; font-weight:800;">단어장 CSV 파일 관리</div>
             <button onclick="downloadCsvTemplate()" style="background:none; border:none; color:var(--primary); font-size:11px; font-weight:700; cursor:pointer; padding:0; text-decoration:underline;">기본 양식 내려받기</button>
           </div>
           <div style="font-size:11px; color:var(--text-sub); line-height:1.45;">
-            CSV 파일(`단어, 뜻` 또는 `단어, 뜻, 출처문장, 나의문장`)로 단어를 한 번에 등록하거나, 내 단어장을 CSV 파일로 백업할 수 있습니다.
+            CSV 파일로 단어를 일괄 등록하거나, 전체 또는 그룹별로 나누어 내보낼 수 있습니다.
           </div>
 
           <input type="file" id="inpUserCsvImport" accept=".csv,.xls,.xlsx" style="display:none;" onchange="handleUserCsvImport(this)">
@@ -575,7 +656,7 @@
               <span id="iconCsvUpload"></span>
               <span>CSV로 단어 등록</span>
             </button>
-            <button id="btnExportCsv" class="btn-csv-outline" onclick="exportMyWordsToCsv()">
+            <button id="btnExportCsv" class="btn-csv-outline" onclick="openCsvExportModal()">
               <span id="iconCsvDownload"></span>
               <span>CSV로 내보내기</span>
             </button>
@@ -690,6 +771,118 @@
 
   </div>
 
+  <!-- [모달 1] 단어 우측 상단 점 3개(...) 클릭 시 뜨는 메뉴 팝업 -->
+  <div class="modal-overlay" id="wordDotMenuModal" onclick="if(event.target===this) closeWordDotMenu()">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; border-bottom:1px solid var(--border);">
+        <div>
+          <div id="dotMenuWordTitle" style="font-size:19px; font-weight:800; color:var(--text-main);">단어 이름</div>
+          <div id="dotMenuWordSub" style="font-size:12px; color:var(--text-sub); margin-top:2px;"></div>
+        </div>
+        <button onclick="closeWordDotMenu()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+
+      <div class="menu-action-list">
+        <button class="menu-action-btn" onclick="openGroupChangeModal()">
+          <span>그룹 변경</span>
+          <span style="color:var(--primary); font-size:12px;" id="dotMenuCurGroupLabel">미지정 →</span>
+        </button>
+        <button class="menu-action-btn" onclick="openWordEditModal()">
+          <span>단어 편집</span>
+          <span style="color:var(--text-sub); font-size:12px;">수정 →</span>
+        </button>
+        <button class="menu-action-btn danger" onclick="deleteWordFromDotMenu()">
+          <span>단어 삭제</span>
+          <span style="font-size:12px;">삭제</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- [모달 2] 그룹 변경 / 그룹 만들기 / 그룹 삭제하기 팝업 -->
+  <div class="modal-overlay" id="groupChangeModal" onclick="if(event.target===this) closeGroupChangeModal()">
+    <div class="bottom-sheet">
+      <!-- 상단 헤더: 좌측 닫기 / 중앙 제목 / 우측 상단 '편집 완료' 버튼 -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <button onclick="closeGroupChangeModal()" style="background:none; border:none; font-size:13px; font-weight:700; color:var(--text-sub); cursor:pointer; padding:4px 0;">← 취소</button>
+        <div style="font-size:16px; font-weight:800; color:var(--text-main);">그룹 변경</div>
+        <button id="btnGroupEditDone" class="btn-header-done" disabled onclick="applyGroupSelectionDone()">편집 완료</button>
+      </div>
+
+      <div style="font-size:12px; color:var(--text-sub); margin-top:10px;">
+        단어 <strong id="groupModalTargetWord" style="color:var(--primary);"></strong>의 그룹을 선택해 주세요.
+      </div>
+
+      <!-- 그룹 목록 (1개를 누르면 색상이 바뀌고 우측 상단 편집 완료 활성화) -->
+      <div id="groupOptionList" class="group-select-list"></div>
+
+      <!-- 그룹 만들기 영역 -->
+      <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:6px;">
+        <div style="display:flex; gap:6px;">
+          <input type="text" id="inpNewGroupName" class="input-field" style="margin-bottom:0; flex:1; padding:10px 12px; font-size:14px;" placeholder="새 그룹 이름 입력 (예: 수능필수)">
+          <button class="action-btn" style="width:auto; padding:0 14px; font-size:13px; white-space:nowrap;" onclick="createNewWordGroup()">그룹 만들기</button>
+        </div>
+
+        <!-- 그룹 삭제하기 버튼 -->
+        <button onclick="deleteSelectedWordGroup()" style="width:100%; margin-top:8px; padding:11px; border-radius:10px; background:#FFF5F5; border:1px solid #FECACA; color:#B91C1C; font-size:13px; font-weight:700; cursor:pointer;">
+          선택한 그룹 삭제하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- [모달 3] 단어 편집 팝업 -->
+  <div class="modal-overlay" id="wordEditModal" onclick="if(event.target===this) closeWordEditModal()">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <div style="font-size:17px; font-weight:800;">단어 편집</div>
+        <button onclick="closeWordEditModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">단어</label>
+      <input type="text" id="editModalWord" class="input-field" placeholder="단어 입력">
+
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">뜻</label>
+      <input type="text" id="editModalMeaning" class="input-field" placeholder="단어의 뜻 입력">
+
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">출처 문장 (2단계)</label>
+      <input type="text" id="editModalSource" class="input-field" placeholder="출처 문장 (선택)">
+
+      <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">나의 문장 (3단계)</label>
+      <input type="text" id="editModalMySent" class="input-field" placeholder="내가 만든 문장 (선택)">
+
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <button class="action-btn" style="background:var(--surface); border:1px solid var(--border); color:var(--text-main); width:40%;" onclick="closeWordEditModal()">취소</button>
+        <button id="btnSaveWordEdit" class="action-btn btn-primary" style="flex:1;" onclick="saveWordEditChanges()">편집 저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- [모달 4] CSV 내보내기 (파트 1: 전체 내보내기 / 파트 2: 그룹별 내보내기) -->
+  <div class="modal-overlay" id="csvExportModal" onclick="if(event.target===this) closeCsvExportModal()">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <div style="font-size:17px; font-weight:800;">CSV로 단어 내보내기</div>
+        <button onclick="closeCsvExportModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+
+      <!-- 파트 1: 전체 내보내기 -->
+      <div class="export-part-box">
+        <div style="font-size:14px; font-weight:800; color:var(--text-main); margin-bottom:4px;">1. 전체 내보내기</div>
+        <div id="exportAllCountDesc" style="font-size:12px; color:var(--text-sub); margin-bottom:10px;">내 단어장에 등록된 모든 단어를 CSV 파일로 내려받습니다.</div>
+        <button class="action-btn btn-primary" onclick="exportWordsToCsvByOption('ALL')">전체 단어 내보내기</button>
+      </div>
+
+      <!-- 파트 2: 그룹별 내보내기 -->
+      <div class="export-part-box" style="margin-bottom:4px;">
+        <div style="font-size:14px; font-weight:800; color:var(--text-main); margin-bottom:4px;">2. 그룹별 내보내기</div>
+        <div style="font-size:12px; color:var(--text-sub); margin-bottom:10px;">원하는 그룹을 선택하여 해당 그룹의 단어만 내려받습니다.</div>
+        <select id="selExportGroup" class="input-field" style="margin-bottom:10px; font-size:14px; font-weight:700;"></select>
+        <button class="action-btn" style="background:var(--primary-dark);" onclick="exportWordsToCsvByOption('GROUP')">선택한 그룹 내보내기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 최초 1회 이름·학번 설정 모달 -->
   <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
@@ -730,12 +923,18 @@
     let myWords = [];
     let curItem = null;
     let starFilter = 'ALL';
+    let groupFilter = 'ALL';
     let searchQuery = '';
     let soundEnabled = true;
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
 
-    // [미니멀 라인 SVG 아이콘 생성기 - 선 색상 #3B82A6 고정]
+    // 그룹 관리용 상태 변수
+    let myGroups = [];
+    let wordGroupMap = {}; // { [wordId]: groupName }
+    let dotMenuTargetWordId = null;
+    let selectedTempGroup = null;
+
     function getLineIcon(name, size = 18) {
       const s = `width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="line-icon"`;
       switch (name) {
@@ -767,12 +966,13 @@
           return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`;
         case 'download':
           return `<svg ${s}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+        case 'dots':
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${ICON_COLOR}" class="line-icon"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
         default:
           return `<svg ${s}><circle cx="12" cy="12" r="9"/></svg>`;
       }
     }
 
-    // [3단계 별 아이콘 - 선 색상 #3B82A6 / 채움색 #E19973, #E0E6ED, #FDE28A]
     function getStarSvg(tier, size = 18) {
       const fillMap = {
         'NONE': 'none',
@@ -786,6 +986,62 @@
             fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" />
         </svg>
       `;
+    }
+
+    // =========================================================================
+    // [그룹 데이터 저장 & 클라우드 동기화 엔진]
+    // 별도의 DB 테이블 수정 없이도 로컬 + 수파베이스(std_dict 메타 행)에 자동 동기화됩니다.
+    // =========================================================================
+    function getGroupSyncKey() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      return `__USER_GROUPS__:${uid}`;
+    }
+
+    async function loadUserGroupsAndMap() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const localRaw = localStorage.getItem(`madevoca_grpdata_${uid}`);
+      if (localRaw) {
+        try {
+          const parsed = JSON.parse(localRaw);
+          myGroups = Array.isArray(parsed.groups) ? parsed.groups : [];
+          wordGroupMap = parsed.map || {};
+        } catch (e) {}
+      }
+
+      try {
+        const { data } = await sb.from('std_dict').select('synonyms').eq('word', getGroupSyncKey()).maybeSingle();
+        if (data && data.synonyms && data.synonyms !== '없음') {
+          const remote = JSON.parse(data.synonyms);
+          if (Array.isArray(remote.groups)) myGroups = remote.groups;
+          if (remote.map) wordGroupMap = { ...wordGroupMap, ...remote.map };
+          localStorage.setItem(`madevoca_grpdata_${uid}`, JSON.stringify({ groups: myGroups, map: wordGroupMap }));
+        }
+      } catch (e) {}
+
+      // 단어 배열에 그룹 매핑 반영
+      myWords.forEach(w => {
+        w.groupName = wordGroupMap[w.id] || '';
+      });
+    }
+
+    async function saveUserGroupsAndMap() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const payload = JSON.stringify({ groups: myGroups, map: wordGroupMap });
+      localStorage.setItem(`madevoca_grpdata_${uid}`, payload);
+
+      myWords.forEach(w => {
+        w.groupName = wordGroupMap[w.id] || '';
+      });
+
+      try {
+        await sb.from('std_dict').upsert({
+          word: getGroupSyncKey(),
+          definition: '',
+          synonyms: payload,
+          antonyms: 'META',
+          updated_at: getNowKST().full
+        });
+      } catch (e) {}
     }
 
     // [내장 다의어·문맥 사전]
@@ -1158,7 +1414,7 @@
     }
 
     // =========================================================================
-    // 2. Google / Apple OAuth 로그인 & 내 정보 수정 & CSV 단어 등록/내보내기
+    // 2. Google / Apple OAuth 로그인 & 내 정보 수정 & CSV/그룹 관리
     // =========================================================================
     async function signInWithRealOAuth(provider) {
       const redirectUrl = window.location.origin + window.location.pathname;
@@ -1200,6 +1456,7 @@
           bonusXp: existing.bonus_xp || 0
         };
         myWords = await fetchUserWords(email, isAdmin);
+        await loadUserGroupsAndMap();
         setupUserView();
       } else {
         pendingOAuthSession = { email, provider, defaultName, isAdmin };
@@ -1245,6 +1502,7 @@
         bonusXp: 0
       };
       myWords = await fetchUserWords(email, isAdmin);
+      await loadUserGroupsAndMap();
 
       btn.disabled = false; btn.innerText = '메이드보카 시작하기';
       document.getElementById('firstProfileModal').classList.remove('open');
@@ -1309,7 +1567,252 @@
     }
 
     // =========================================================================
-    // [신규 기능] 내 단어장 CSV 파일 내보내기 / 등록하기 / 기본 양식 다운로드
+    // [기능 3] 단어 카드 우측 상단 점 3개(...) 메뉴 & 그룹 변경/생성/삭제 & 단어 편집
+    // =========================================================================
+    function openWordDotMenu(e, wordId) {
+      if (e) e.stopPropagation();
+      const target = myWords.find(w => w.id === wordId);
+      if (!target) return;
+
+      dotMenuTargetWordId = wordId;
+      document.getElementById('dotMenuWordTitle').innerText = target.word;
+      document.getElementById('dotMenuWordSub').innerText = target.meaning;
+      const gName = wordGroupMap[wordId] || '';
+      document.getElementById('dotMenuCurGroupLabel').innerText = gName ? `${gName} →` : '미지정 →';
+
+      document.getElementById('wordDotMenuModal').classList.add('open');
+    }
+
+    function closeWordDotMenu() {
+      document.getElementById('wordDotMenuModal').classList.remove('open');
+    }
+
+    // 3-1. 그룹 변경 모달 열기
+    function openGroupChangeModal() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+
+      closeWordDotMenu();
+      selectedTempGroup = null;
+      document.getElementById('btnGroupEditDone').disabled = true; // 초기에는 비활성화
+      document.getElementById('groupModalTargetWord').innerText = `'${target.word}'`;
+      document.getElementById('inpNewGroupName').value = '';
+
+      renderGroupOptionList();
+      document.getElementById('groupChangeModal').classList.add('open');
+    }
+
+    function closeGroupChangeModal() {
+      document.getElementById('groupChangeModal').classList.remove('open');
+    }
+
+    function renderGroupOptionList() {
+      const listEl = document.getElementById('groupOptionList');
+      const curGroup = wordGroupMap[dotMenuTargetWordId] || '';
+
+      if (myGroups.length === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center; padding:22px 10px; color:var(--text-sub); font-size:13px; background:var(--surface); border:1px dashed var(--border); border-radius:12px;">
+            아직 만든 그룹이 없습니다.<br>아래에서 새 그룹을 만들어 보세요.
+          </div>
+        `;
+        return;
+      }
+
+      let html = myGroups.map(gName => {
+        const isSel = (selectedTempGroup === gName);
+        const isCurrent = (curGroup === gName && selectedTempGroup === null);
+        return `
+          <button type="button" class="group-option-item ${isSel ? 'selected' : ''}" onclick="selectGroupItemInModal('${escapeHtml(gName)}')">
+            <span>${escapeHtml(gName)}</span>
+            <span style="font-size:11px; opacity:0.85;">${isSel ? '선택됨 ✓' : (isCurrent ? '현재 그룹' : '')}</span>
+          </button>
+        `;
+      }).join('');
+
+      if (curGroup) {
+        const isUnassignSel = (selectedTempGroup === '__NONE__');
+        html += `
+          <button type="button" class="group-option-item ${isUnassignSel ? 'selected' : ''}" onclick="selectGroupItemInModal('__NONE__')">
+            <span>그룹 해제 (미지정)</span>
+            <span style="font-size:11px; opacity:0.85;">${isUnassignSel ? '선택됨 ✓' : ''}</span>
+          </button>
+        `;
+      }
+
+      listEl.innerHTML = html;
+    }
+
+    // 그룹 중 1개를 누르면 그 그룹 색깔이 바뀌고 우측 상단에 편집 완료 활성화
+    function selectGroupItemInModal(gName) {
+      selectedTempGroup = gName;
+      document.getElementById('btnGroupEditDone').disabled = false;
+      renderGroupOptionList();
+    }
+
+    // 우측 상단 '편집 완료' 클릭 시 저장
+    async function applyGroupSelectionDone() {
+      if (!dotMenuTargetWordId || selectedTempGroup === null) return;
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+
+      if (selectedTempGroup === '__NONE__') {
+        delete wordGroupMap[dotMenuTargetWordId];
+        target.groupName = '';
+      } else {
+        wordGroupMap[dotMenuTargetWordId] = selectedTempGroup;
+        target.groupName = selectedTempGroup;
+      }
+
+      await saveUserGroupsAndMap();
+      closeGroupChangeModal();
+      renderMyList();
+      showToast(selectedTempGroup === '__NONE__' ? '그룹이 해제되었습니다.' : `'${selectedTempGroup}' 그룹으로 변경되었습니다.`);
+    }
+
+    // 그룹 만들기
+    async function createNewWordGroup() {
+      const inp = document.getElementById('inpNewGroupName');
+      let gName = inp.value.trim();
+      if (!gName) {
+        const prompted = prompt('새로 만들 그룹 이름을 입력해 주세요:');
+        if (!prompted || !prompted.trim()) return;
+        gName = prompted.trim();
+      }
+
+      if (myGroups.includes(gName)) {
+        alert('이미 존재하는 그룹 이름입니다.');
+        return;
+      }
+
+      myGroups.push(gName);
+      inp.value = '';
+      // 새로 만든 그룹을 즉시 선택 상태로 만들고 우측 상단 편집 완료 활성화
+      selectedTempGroup = gName;
+      document.getElementById('btnGroupEditDone').disabled = false;
+
+      await saveUserGroupsAndMap();
+      renderGroupOptionList();
+      renderMyList();
+      showToast(`'${gName}' 그룹이 생성되었습니다.`);
+    }
+
+    // 그룹 삭제하기 (확인 문구 정확히 출력)
+    async function deleteSelectedWordGroup() {
+      if (!selectedTempGroup || selectedTempGroup === '__NONE__') {
+        alert('위 목록에서 삭제할 그룹을 먼저 눌러 선택해 주세요.');
+        return;
+      }
+
+      const ok = confirm('그룹을 삭제하면 다시 되돌릴 수 없습니다. 그래도 삭제하시겠습니까?');
+      if (!ok) return;
+
+      const delGroup = selectedTempGroup;
+      myGroups = myGroups.filter(g => g !== delGroup);
+
+      Object.keys(wordGroupMap).forEach(wId => {
+        if (wordGroupMap[wId] === delGroup) {
+          delete wordGroupMap[wId];
+        }
+      });
+
+      if (groupFilter === delGroup) {
+        groupFilter = 'ALL';
+      }
+
+      selectedTempGroup = null;
+      document.getElementById('btnGroupEditDone').disabled = true;
+
+      await saveUserGroupsAndMap();
+      renderGroupOptionList();
+      renderMyList();
+      showToast(`'${delGroup}' 그룹이 삭제되었습니다.`);
+    }
+
+    // 3-2. 단어 편집 모달 열기 & 저장
+    function openWordEditModal() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+
+      closeWordDotMenu();
+      document.getElementById('editModalWord').value = target.word || '';
+      document.getElementById('editModalMeaning').value = target.meaning || '';
+      document.getElementById('editModalSource').value = target.sourceSentence || '';
+      document.getElementById('editModalMySent').value = target.mySentence || '';
+      document.getElementById('wordEditModal').classList.add('open');
+    }
+
+    function closeWordEditModal() {
+      document.getElementById('wordEditModal').classList.remove('open');
+    }
+
+    async function saveWordEditChanges() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+
+      const newW = document.getElementById('editModalWord').value.trim();
+      const newM = document.getElementById('editModalMeaning').value.trim();
+      const newSrc = document.getElementById('editModalSource').value.trim();
+      const newMy = document.getElementById('editModalMySent').value.trim();
+
+      if (!newW || !newM) {
+        alert('단어와 뜻은 필수 입력 항목입니다.');
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveWordEdit');
+      btn.disabled = true;
+      btn.innerText = '저장 중...';
+
+      const kst = getNowKST();
+      let newStar = target.star;
+      if (newMy) newStar = 'GOLD';
+      else if (newSrc) newStar = 'SILVER';
+      else newStar = 'BRONZE';
+
+      target.word = newW;
+      target.meaning = newM;
+      target.sourceSentence = newSrc;
+      target.mySentence = newMy;
+      target.star = newStar;
+      target.updatedAt = kst.full;
+
+      await sb.from('words').update({
+        word: newW,
+        meaning: newM,
+        source_sentence: newSrc,
+        my_sentence: newMy,
+        star: newStar,
+        updated_at: kst.full
+      }).eq('id', target.id);
+
+      btn.disabled = false;
+      btn.innerText = '편집 저장하기';
+      closeWordEditModal();
+      renderMyList();
+      showToast('단어가 수정되었습니다.');
+    }
+
+    // 3-3. 점 3개 메뉴에서 단어 삭제
+    async function deleteWordFromDotMenu() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+
+      closeWordDotMenu();
+      if (!confirm(`'${target.word}' 단어를 삭제하시겠습니까?`)) return;
+
+      myWords = myWords.filter(w => w.id !== target.id);
+      if (wordGroupMap[target.id]) {
+        delete wordGroupMap[target.id];
+        saveUserGroupsAndMap();
+      }
+      renderMyList();
+      await sb.from('words').delete().eq('id', target.id);
+      showToast('단어가 삭제되었습니다.');
+    }
+
+    // =========================================================================
+    // [기능 4] CSV 내보내기 (1. 전체 내보내기 / 2. 그룹별 내보내기) 및 CSV 등록
     // =========================================================================
     function escapeCsvCell(val) {
       const str = String(val == null ? '' : val).replace(/\r?\n/g, ' ');
@@ -1319,39 +1822,72 @@
       return str;
     }
 
-    function downloadCsvTemplate() {
-      const headers = ['단어', '뜻', '출처문장', '나의문장'];
-      const sampleRows = [
-        ['배양', '실력이나 품성 따위를 기르고 발전시킴', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '꾸준한 연습으로 기초 체력을 배양했다.'],
-        ['고찰', '사물이나 현상을 깊이 생각하여 살핌', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '']
-      ];
-      const csvLines = [
-        headers.map(escapeCsvCell).join(','),
-        ...sampleRows.map(r => r.map(escapeCsvCell).join(','))
-      ];
-      // 엑셀 한글 깨짐 방지를 위한 UTF-8 BOM(\uFEFF) 추가
-      const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = '메이드보카_단어등록_양식.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('CSV 기본 양식이 다운로드되었습니다.');
-    }
-
-    function exportMyWordsToCsv() {
+    function openCsvExportModal() {
       if (!myWords || myWords.length === 0) {
         alert('현재 등록된 단어가 없어 내보낼 데이터가 없습니다.');
         return;
       }
 
-      const headers = ['단어', '뜻', '출처문장', '문맥사전뜻', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
+      document.getElementById('exportAllCountDesc').innerText =
+        `내 단어장에 등록된 모든 단어(총 ${myWords.length}개)를 CSV 파일로 내려받습니다.`;
+
+      const sel = document.getElementById('selExportGroup');
+      const groupCounts = {};
+      let ungroupedCnt = 0;
+
+      myWords.forEach(w => {
+        const g = wordGroupMap[w.id] || '';
+        if (g) {
+          groupCounts[g] = (groupCounts[g] || 0) + 1;
+        } else {
+          ungroupedCnt++;
+        }
+      });
+
+      const allGroupNames = Array.from(new Set([...myGroups, ...Object.keys(groupCounts)]));
+      let optionsHtml = '';
+      allGroupNames.forEach(g => {
+        const cnt = groupCounts[g] || 0;
+        optionsHtml += `<option value="${escapeHtml(g)}">${escapeHtml(g)} (${cnt}개)</option>`;
+      });
+      optionsHtml += `<option value="__UNGROUPED__">그룹 미지정 단어 (${ungroupedCnt}개)</option>`;
+
+      sel.innerHTML = optionsHtml;
+      document.getElementById('csvExportModal').classList.add('open');
+    }
+
+    function closeCsvExportModal() {
+      document.getElementById('csvExportModal').classList.remove('open');
+    }
+
+    function exportWordsToCsvByOption(mode) {
+      let targetWords = [];
+      let fileSuffix = '전체';
+
+      if (mode === 'ALL') {
+        targetWords = myWords;
+        fileSuffix = '전체';
+      } else {
+        const selVal = document.getElementById('selExportGroup').value;
+        if (selVal === '__UNGROUPED__') {
+          targetWords = myWords.filter(w => !(wordGroupMap[w.id]));
+          fileSuffix = '미지정';
+        } else {
+          targetWords = myWords.filter(w => (wordGroupMap[w.id] || '') === selVal);
+          fileSuffix = selVal;
+        }
+      }
+
+      if (!targetWords || targetWords.length === 0) {
+        alert('선택한 항목에 해당하는 단어가 없습니다.');
+        return;
+      }
+
+      const headers = ['그룹', '단어', '뜻', '출처문장', '문맥사전뜻', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
       const stageLabelMap = { 'BRONZE': '1단계', 'SILVER': '2단계', 'GOLD': '3단계' };
 
-      const rows = myWords.map(w => [
+      const rows = targetWords.map(w => [
+        wordGroupMap[w.id] || '',
         w.word || '',
         w.meaning || '',
         w.sourceSentence || '',
@@ -1372,14 +1908,39 @@
       const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const safeName = (myUser && myUser.name) ? myUser.name.replace(/[^가-힣a-zA-Z0-9_-]/g, '') : '내단어장';
+      const safeName = (myUser && myUser.name) ? myUser.name.replace(/[^가-힣a-zA-Z0-9_-]/g, '') : '단어장';
+      const safeGroup = fileSuffix.replace(/[^가-힣a-zA-Z0-9_-]/g, '');
       a.href = url;
-      a.download = `메이드보카_${safeName}_${getNowKST().date}.csv`;
+      a.download = `메이드보카_${safeName}_${safeGroup}_${getNowKST().date}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast(`총 ${myWords.length}개의 단어를 CSV 파일로 내보냈습니다.`);
+
+      closeCsvExportModal();
+      showToast(`'${fileSuffix}' 단어 ${targetWords.length}개를 CSV로 내보냈습니다.`);
+    }
+
+    function downloadCsvTemplate() {
+      const headers = ['그룹', '단어', '뜻', '출처문장', '나의문장'];
+      const sampleRows = [
+        ['수능필수', '배양', '실력이나 품성 따위를 기르고 발전시킴', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '꾸준한 연습으로 기초 체력을 배양했다.'],
+        ['모의고사', '고찰', '사물이나 현상을 깊이 생각하여 살핌', '역사적 배경에 대한 깊이 있는 고찰이 필요하다.', '']
+      ];
+      const csvLines = [
+        headers.map(escapeCsvCell).join(','),
+        ...sampleRows.map(r => r.map(escapeCsvCell).join(','))
+      ];
+      const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '메이드보카_단어등록_양식.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('CSV 기본 양식이 다운로드되었습니다.');
     }
 
     async function handleUserCsvImport(inputEl) {
@@ -1400,7 +1961,6 @@
         const buffer = await file.arrayBuffer();
         let wb = null;
 
-        // .csv 파일인 경우 UTF-8 및 윈도우 엑셀 기본 EUC-KR(CP949) 인코딩 자동 감지
         if (file.name.toLowerCase().endsWith('.csv')) {
           let text = new TextDecoder('utf-8').decode(buffer);
           if (text.includes('\uFFFD')) {
@@ -1420,12 +1980,13 @@
 
         const firstRow = matrix[0].map(c => String(c || '').trim());
         const hasHeader = firstRow.some(h =>
-          ['단어', '어휘', '표제어', '뜻', '의미', '뜻풀이', 'word', 'meaning'].includes(h.toLowerCase())
+          ['그룹', '단어', '어휘', '표제어', '뜻', '의미', '뜻풀이', 'word', 'meaning', 'group'].includes(h.toLowerCase())
         );
 
-        let wIdx = 0, mIdx = 1, srcIdx = 2, myIdx = 3, synIdx = -1, antIdx = -1, aiMeanIdx = -1, aiFbIdx = -1, starIdx = -1;
+        let gIdx = -1, wIdx = 0, mIdx = 1, srcIdx = 2, myIdx = 3, synIdx = -1, antIdx = -1, aiMeanIdx = -1, aiFbIdx = -1, starIdx = -1;
 
         if (hasHeader) {
+          gIdx = firstRow.findIndex(h => h.includes('그룹') || h.toLowerCase() === 'group');
           wIdx = firstRow.findIndex(h => h.includes('단어') || h.includes('어휘') || h.includes('표제어') || h.toLowerCase() === 'word');
           mIdx = firstRow.findIndex(h => (h === '뜻' || h.includes('뜻풀이') || h.includes('의미') || h.toLowerCase() === 'meaning') && !h.includes('문맥'));
           srcIdx = firstRow.findIndex(h => h.includes('출처') || h.includes('예문') || h.toLowerCase() === 'sourcesentence');
@@ -1436,8 +1997,8 @@
           aiFbIdx = firstRow.findIndex(h => h.includes('피드백') || h.includes('첨삭'));
           starIdx = firstRow.findIndex(h => h.includes('단계') || h.includes('등급') || h.toLowerCase() === 'star');
 
-          if (wIdx === -1) wIdx = 0;
-          if (mIdx === -1) mIdx = 1;
+          if (wIdx === -1) wIdx = (gIdx === 0 ? 1 : 0);
+          if (mIdx === -1) mIdx = wIdx + 1;
         }
 
         const startRow = hasHeader ? 1 : 0;
@@ -1445,6 +2006,7 @@
         const dbRecords = [];
         const localItems = [];
         const baseTs = Date.now();
+        let groupUpdated = false;
 
         for (let i = startRow; i < matrix.length; i++) {
           const row = matrix[i];
@@ -1454,6 +2016,7 @@
           const meaning = String(row[mIdx] || '').trim();
           if (!word || !meaning) continue;
 
+          const grpName = (gIdx >= 0 && row[gIdx] != null) ? String(row[gIdx]).trim() : '';
           const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim() : '';
           const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : '';
           const synonyms = (synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]).trim() : '';
@@ -1474,6 +2037,12 @@
           }
 
           const newId = `W_${baseTs}_${i}_${Math.floor(Math.random() * 1000)}`;
+
+          if (grpName) {
+            if (!myGroups.includes(grpName)) myGroups.push(grpName);
+            wordGroupMap[newId] = grpName;
+            groupUpdated = true;
+          }
 
           dbRecords.push({
             id: newId,
@@ -1504,6 +2073,7 @@
             mySentence: mySentence,
             aiFeedback: aiFeedback,
             star: star,
+            groupName: grpName,
             updatedAt: kst.full
           });
         }
@@ -1521,6 +2091,9 @@
         }
 
         myWords = [...localItems, ...myWords];
+        if (groupUpdated) {
+          await saveUserGroupsAndMap();
+        }
         renderMyList();
         fireConfetti(true);
         statusEl.innerText = `총 ${dbRecords.length}개의 단어가 성공적으로 등록되었습니다.`;
@@ -1560,6 +2133,7 @@
         mySentence: row.my_sentence || '',
         aiFeedback: row.ai_feedback || '',
         star: row.star || 'BRONZE',
+        groupName: '',
         updatedAt: row.updated_at || ''
       }));
     }
@@ -1599,6 +2173,26 @@
       document.getElementById('filterS').className = 'reward-pill' + (starFilter === 'SILVER' ? ' active-filter' : '');
       document.getElementById('filterG').className = 'reward-pill' + (starFilter === 'GOLD' ? ' active-filter' : '');
       renderMyList();
+    }
+
+    function setGroupFilter(gName) {
+      groupFilter = (groupFilter === gName) ? 'ALL' : gName;
+      renderMyList();
+    }
+
+    function renderGroupFilterBar() {
+      const bar = document.getElementById('groupFilterBar');
+      if (!myGroups || myGroups.length === 0) {
+        bar.style.display = 'none';
+        return;
+      }
+      bar.style.display = 'flex';
+      let html = `<button class="group-chip ${groupFilter === 'ALL' ? 'active' : ''}" onclick="setGroupFilter('ALL')">전체 그룹</button>`;
+      myGroups.forEach(g => {
+        const isAct = (groupFilter === g);
+        html += `<button class="group-chip ${isAct ? 'active' : ''}" onclick="setGroupFilter('${escapeHtml(g)}')">${escapeHtml(g)}</button>`;
+      });
+      bar.innerHTML = html;
     }
 
     function getMyTotalXp() {
@@ -1642,35 +2236,51 @@
       document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
       document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료' : `${todayGold} / 3`;
 
+      renderGroupFilterBar();
+
       const filtered = myWords.filter(w => {
         const matchStar = (starFilter === 'ALL') || (w.star === starFilter);
         if (!matchStar) return false;
+        const wGroup = wordGroupMap[w.id] || '';
+        const matchGroup = (groupFilter === 'ALL') || (wGroup === groupFilter);
+        if (!matchGroup) return false;
         if (!searchQuery) return true;
         const inWord = (w.word || '').toLowerCase().includes(searchQuery);
         const inMeaning = (w.meaning || '').toLowerCase().includes(searchQuery);
         const inAiMeaning = (w.aiMeaning || '').toLowerCase().includes(searchQuery);
-        return inWord || inMeaning || inAiMeaning;
+        const inGroup = wGroup.toLowerCase().includes(searchQuery);
+        return inWord || inMeaning || inAiMeaning || inGroup;
       });
 
       const c = document.getElementById('wordListContainer');
       if (filtered.length === 0) {
-        if (searchQuery) {
-          c.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--text-sub); font-size:13px;">'<strong>${escapeHtml(searchQuery)}</strong>' 검색 결과가 없습니다.</div>`;
+        if (searchQuery || groupFilter !== 'ALL') {
+          c.innerHTML = `<div style="text-align:center; padding:40px 0; color:var(--text-sub); font-size:13px;">해당 조건에 맞는 단어가 없습니다.</div>`;
         } else {
           c.innerHTML = '<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼을 눌러 첫 단어를 등록해 보세요.</div>';
         }
         return;
       }
 
-      c.innerHTML = filtered.map(w => `
-        <div class="word-item-card" onclick="openBuilder('${w.id}')">
-          <div>
-            <div style="font-size:16px; font-weight:700; color:var(--text-main);">${escapeHtml(w.word)}</div>
-            <div style="font-size:13px; color:var(--text-sub); margin-top:2px;">${escapeHtml(w.meaning)}</div>
+      c.innerHTML = filtered.map(w => {
+        const gName = wordGroupMap[w.id] || '';
+        const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
+        return `
+          <div class="word-item-card" onclick="openBuilder('${w.id}')">
+            <button type="button" class="btn-word-more" title="단어 메뉴" onclick="openWordDotMenu(event, '${w.id}')">
+              ${getLineIcon('dots', 18)}
+            </button>
+            <div style="padding-right:8px;">
+              <div style="font-size:16px; font-weight:700; color:var(--text-main); display:flex; align-items:center; flex-wrap:wrap;">
+                <span>${escapeHtml(w.word)}</span>
+                ${groupBadgeHtml}
+              </div>
+              <div style="font-size:13px; color:var(--text-sub); margin-top:3px;">${escapeHtml(w.meaning)}</div>
+            </div>
+            <div style="margin-right:4px;">${getStarSvg(w.star, 22)}</div>
           </div>
-          <div>${getStarSvg(w.star, 24)}</div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // =========================================================================
@@ -2247,6 +2857,7 @@
 
       const kst = getNowKST();
       const newId = 'W_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      const assignedGroup = (groupFilter !== 'ALL') ? groupFilter : '';
       const newItem = {
         id: newId,
         userId: myUser.userId,
@@ -2260,8 +2871,14 @@
         mySentence: '',
         aiFeedback: '',
         star: 'BRONZE',
+        groupName: assignedGroup,
         updatedAt: kst.full
       };
+
+      if (assignedGroup) {
+        wordGroupMap[newId] = assignedGroup;
+        saveUserGroupsAndMap();
+      }
 
       myWords.unshift(newItem);
       curItem = newItem;
@@ -2389,6 +3006,10 @@
       if (!confirm('이 단어를 삭제하시겠습니까?')) return;
       const targetId = curItem.id;
       myWords = myWords.filter(w => w.id !== targetId);
+      if (wordGroupMap[targetId]) {
+        delete wordGroupMap[targetId];
+        saveUserGroupsAndMap();
+      }
       goToList();
       await sb.from('words').delete().eq('id', targetId);
     }
