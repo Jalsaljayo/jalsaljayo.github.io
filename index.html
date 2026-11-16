@@ -9,6 +9,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#FAF9F6">
   <title>메이드보카 (MadeVoca)</title>
+  <!-- 어플 로고 파비콘 & 스마트폰 홈 화면 아이콘 -->
+  <link rel="icon" type="image/jpeg" href="./logo.jpg">
+  <link rel="shortcut icon" type="image/jpeg" href="./logo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="./logo.jpg">
 
   <script>
     function fitMobileScreen() {
@@ -102,10 +106,22 @@
       justify-content: space-between; align-items: center; text-align: center; overflow: hidden;
     }
     .brand-logo-box {
-      width: 68px; height: 68px; border-radius: 20px;
-      background-color: var(--surface); border: 2px solid var(--icon-stroke);
+      width: 78px; height: 78px; border-radius: 22px;
+      background-color: var(--primary); border: 2px solid var(--icon-stroke);
       display: flex; align-items: center; justify-content: center;
       font-size: 32px; font-weight: 800; color: var(--icon-stroke); margin: 0 auto 16px;
+      overflow: hidden; box-shadow: 0 6px 18px rgba(59, 130, 166, 0.16);
+    }
+    .brand-logo-box img, .brand-logo-box svg {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .nav-logo-thumb {
+      width: 30px; height: 30px; border-radius: 9px;
+      background-color: var(--primary); border: 1.5px solid var(--icon-stroke);
+      overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-thumb img, .nav-logo-thumb svg {
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
 
     .social-btn-group { width: 100%; display: flex; flex-direction: column; gap: 10px; }
@@ -458,7 +474,7 @@
     <!-- 화면 1: 로그인 화면 -->
     <section id="screen-login" class="screen active">
       <div>
-        <div class="brand-logo-box">M</div>
+        <div class="brand-logo-box"><img src="./logo.jpg" alt="메이드보카 로고" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='block';"><svg style="display:none;" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="메이드보카 로고"><rect width="512" height="512" fill="#3E7FA5"/><path d="M22 512 C48 456 84 416 134 394 L378 394 C428 416 464 456 490 512 Z" fill="#F5E7CE"/><ellipse cx="256" cy="248" rx="212" ry="172" fill="#F5E7CE"/><rect x="132" y="362" width="248" height="52" fill="#F5E7CE"/><path d="M140 396 A212 172 0 1 1 372 396" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M142 397 Q128 395 118 401" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M370 397 Q384 395 394 401" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M126 396 C82 420 46 460 22 512" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M386 396 C430 420 466 460 490 512" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M114 472 Q104 494 98 512" fill="none" stroke="#0B0D10" stroke-width="15" stroke-linecap="round"/><path d="M392 476 Q400 495 405 512" fill="none" stroke="#0B0D10" stroke-width="15" stroke-linecap="round"/><ellipse cx="126" cy="312" rx="42" ry="27" fill="#F2A4A6"/><ellipse cx="368" cy="314" rx="41" ry="27" fill="#F2A4A6"/><path d="M132 224 Q158 197 192 204" fill="none" stroke="#0B0D10" stroke-width="13" stroke-linecap="round"/><path d="M302 202 Q336 196 364 220" fill="none" stroke="#0B0D10" stroke-width="13" stroke-linecap="round"/><circle cx="168" cy="274" r="33" fill="#0B0D10"/><circle cx="158" cy="263" r="10.5" fill="#FFFFFF"/><circle cx="180" cy="287" r="5.5" fill="#FFFFFF"/><circle cx="330" cy="274" r="33" fill="#0B0D10"/><circle cx="320" cy="263" r="10.5" fill="#FFFFFF"/><circle cx="342" cy="287" r="5.5" fill="#FFFFFF"/><ellipse cx="246" cy="287" rx="10" ry="7" fill="#0B0D10"/><path d="M222 311 Q234 340 248 317 Q262 340 275 310" fill="none" stroke="#0B0D10" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h1 style="font-size:26px; font-weight:800; margin:0; letter-spacing:-0.5px;">메이드보카</h1>
         <div style="font-size:11px; font-weight:700; color:var(--primary); letter-spacing:1.5px; margin-top:5px;">MADE VOCA</div>
       </div>
@@ -491,9 +507,12 @@
     <!-- 화면 2: 메인 화면 -->
     <section id="screen-list" class="screen">
       <header class="top-navbar">
-        <div onclick="switchMainTab('profile')" style="cursor:pointer;" title="내 정보 수정하기">
-          <div style="font-size:17px; font-weight:800; letter-spacing:-0.3px;">메이드보카</div>
-          <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:600; margin-top:1px;">내 단어장</div>
+        <div onclick="switchMainTab('profile')" style="cursor:pointer; display:flex; align-items:center; gap:9px;" title="내 정보 수정하기">
+          <div class="nav-logo-thumb"><img src="./logo.jpg" alt="메이드보카" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='block';"><svg style="display:none;" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="메이드보카 로고"><rect width="512" height="512" fill="#3E7FA5"/><path d="M22 512 C48 456 84 416 134 394 L378 394 C428 416 464 456 490 512 Z" fill="#F5E7CE"/><ellipse cx="256" cy="248" rx="212" ry="172" fill="#F5E7CE"/><rect x="132" y="362" width="248" height="52" fill="#F5E7CE"/><path d="M140 396 A212 172 0 1 1 372 396" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M142 397 Q128 395 118 401" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M370 397 Q384 395 394 401" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M126 396 C82 420 46 460 22 512" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M386 396 C430 420 466 460 490 512" fill="none" stroke="#0B0D10" stroke-width="16" stroke-linecap="round"/><path d="M114 472 Q104 494 98 512" fill="none" stroke="#0B0D10" stroke-width="15" stroke-linecap="round"/><path d="M392 476 Q400 495 405 512" fill="none" stroke="#0B0D10" stroke-width="15" stroke-linecap="round"/><ellipse cx="126" cy="312" rx="42" ry="27" fill="#F2A4A6"/><ellipse cx="368" cy="314" rx="41" ry="27" fill="#F2A4A6"/><path d="M132 224 Q158 197 192 204" fill="none" stroke="#0B0D10" stroke-width="13" stroke-linecap="round"/><path d="M302 202 Q336 196 364 220" fill="none" stroke="#0B0D10" stroke-width="13" stroke-linecap="round"/><circle cx="168" cy="274" r="33" fill="#0B0D10"/><circle cx="158" cy="263" r="10.5" fill="#FFFFFF"/><circle cx="180" cy="287" r="5.5" fill="#FFFFFF"/><circle cx="330" cy="274" r="33" fill="#0B0D10"/><circle cx="320" cy="263" r="10.5" fill="#FFFFFF"/><circle cx="342" cy="287" r="5.5" fill="#FFFFFF"/><ellipse cx="246" cy="287" rx="10" ry="7" fill="#0B0D10"/><path d="M222 311 Q234 340 248 317 Q262 340 275 310" fill="none" stroke="#0B0D10" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <div style="font-size:17px; font-weight:800; letter-spacing:-0.3px;">메이드보카</div>
+            <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:600; margin-top:1px;">내 단어장</div>
+          </div>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
           <button id="btnSoundToggle" class="btn-icon-sound" onclick="toggleSound()" title="효과음 켜기/끄기"></button>
@@ -2460,7 +2479,6 @@
       let finalSynonyms = '';
       let finalAntonyms = '';
 
-      // 1순위: 동음이의어·다의어 문맥 분기 사전 확인
       const senseRules = CONTEXT_SENSE_REL_MAP[matchedBaseWord] || CONTEXT_SENSE_REL_MAP[cleanWord];
       if (senseRules) {
         const matchedRule = senseRules.find(r => r.cue.test(combinedCueText));
@@ -2470,7 +2488,6 @@
         }
       }
 
-      // 2순위: std_dict 관계어 문맥 교차 검증 (동음이의어 오염 차단)
       const coreKeywords = extractMeaningCoreKeywords(pureContext);
       if (!finalSynonyms && dictHit && dictHit.synonyms && dictHit.synonyms !== '없음') {
         const posFilteredSyn = filterRelWordsByPos(dictHit.synonyms, isPred, cleanWord, matchedBaseWord);
@@ -2493,7 +2510,6 @@
         finalAntonyms = filterRelWordsByPos(dictHit.antonyms, isPred, cleanWord, matchedBaseWord);
       }
 
-      // 3순위: 내장 핵심 어휘 사전 (문맥 핵심어가 내장 기본 뜻과 모순 없을 때만 채택)
       if (coreHit) {
         const coreDefWords = extractMeaningCoreKeywords(coreHit.def || '');
         const isSameHomograph = !coreDefWords.length || !coreKeywords.length ||
@@ -2504,7 +2520,6 @@
         }
       }
 
-      // 4순위: 유효한 Google AI Studio 키가 설정되어 있을 때 문맥 맞춤 생성
       if (hasValidGeminiStudioKey()) {
         try {
           const prompt =
@@ -2525,7 +2540,6 @@
         } catch (e) {}
       }
 
-      // 5순위: 정밀 사전 역참조 (기존의 엉뚱한 단어가 나오던 ilike('definition','%어근%') 완전 폐기 -> 공인 관계어 컬럼 역참조)
       if (!finalSynonyms || !finalAntonyms) {
         const exactTokenCheck = (csvText, target) => {
           const cleaned = cleanSynAntText(csvText);
@@ -2566,7 +2580,6 @@
           }
         }
 
-        // 뜻풀이가 직접 동의어로 정의된 동일 품사 어휘만 엄격 매칭 (예: definition이 "배양하다." 또는 "'배양'과 같은 말")
         if (!finalSynonyms && matchedBaseWord.length >= 2) {
           const rootStem = matchedBaseWord.replace(/(하다|되다|다)$/, '');
           if (rootStem.length >= 2) {
@@ -2967,12 +2980,10 @@
       const pureMeaning = cleanSenseMarkers((wordObj.meaning || wordObj.aiMeaning || '').replace(/^\[기본형:[^\]]+\]\s*/, ''));
       const sourceSent = String(wordObj.sourceSentence || '').trim();
 
-      // 1) 자음·모음 남발, 동일 글자 반복, 무의미 기호 차단
       if (/[ㄱ-ㅎㅏ-ㅣ]{2,}/.test(my) || /(.)\1{3,}/.test(my)) {
         return { isPassed: false, feedback: '자음·모음 단순 나열이나 반복 글자 없이 바른 한국어 문장으로 작성해 주세요.' };
       }
 
-      // 2) 2단계 출처 문장 그대로 베끼기 차단
       const norm = s => s.replace(/[^가-힣0-9a-zA-Z]/g, '');
       const normMy = norm(my);
       const normSrc = norm(sourceSent);
@@ -2980,7 +2991,6 @@
         return { isPassed: false, feedback: '2단계에 입력한 출처 문장과 너무 비슷해요. 나만의 새로운 상황으로 문장을 직접 만들어 보세요.' };
       }
 
-      // 3) 목표 단어(원형·기본형·불규칙 활용형 포함) 사용 여부 정밀 검사
       const targetCands = getKoreanGrammarBaseCandidates(targetWord);
       const primaryBase = targetCands[0] || targetWord;
       const rootStem = primaryBase.replace(/(하다|되다|시키다|스럽다|롭다|다)$/, '');
@@ -3000,7 +3010,6 @@
         return { isPassed: false, feedback: `문장 안에 목표 단어 '${targetWord}'(또는 자연스러운 활용형)가 포함되도록 다시 작성해 보세요.` };
       }
 
-      // 4) 초단문·단어 단순 나열·어절 수 미달 차단
       const hangulOnly = (my.match(/[가-힣]/g) || []).join('');
       const contextHangulLen = Math.max(0, hangulOnly.length - targetWord.replace(/[^가-힣]/g, '').length);
       if (rawTokens.length < 3 || hangulOnly.length < 10 || contextHangulLen < 7) {
@@ -3010,14 +3019,12 @@
         };
       }
 
-      // 동일 어근 반복 도배 차단 (예: "배양 배양 열심히 배양했다")
       const checkUnit = rootStem.length >= 2 ? rootStem : targetWord;
       const repeatCnt = rawTokens.filter(t => t.includes(checkUnit)).length;
       if (repeatCnt >= 3 && repeatCnt >= Math.ceil(rawTokens.length * 0.6)) {
         return { isPassed: false, feedback: '같은 단어를 반복해 나열하기보다 구체적인 주어와 서술어를 갖추어 자연스러운 문장을 만들어 보세요.' };
       }
 
-      // 5) 용언 기본형('-다')을 문장 중간에 활용 없이 그대로 끼워 넣은 비문 차단 (인용문 제외)
       const isPredTarget = isPredicateHeadword(primaryBase, pureMeaning);
       if (isPredTarget && rawTokens.length >= 2) {
         const midTokens = rawTokens.slice(0, -1);
@@ -3031,7 +3038,6 @@
         }
       }
 
-      // 6) 서술어 호응 및 문장 종결 완결성 검사
       const lastToken = rawTokens[rawTokens.length - 1] || '';
       const incompleteEnding = /(은|는|이|가|을|를|의|에|에서|으로|로|와|과|도|만|부터|까지|고|며|면서|는데|지만|아서|어서|니까|으니까|려고|으려고)$/.test(lastToken) &&
         !/(이다|아니다|있다|없다|하다|되다|했다|됐다|어요|아요|해요|돼요|니다|구나|군|네|지|까|자|라)$/.test(lastToken);
@@ -3044,7 +3050,6 @@
         };
       }
 
-      // 7) 어떤 단어를 넣어도 통과되는 만능 껍데기·메타 문장 차단
       const strippedMeta = my.replace(/[.?!~\s]/g, '');
       const escapedW = targetWord.replace(/[.*+?^$${}()|[\]\\]/g, '\\$&');
       const lazyMetaPatterns = [
@@ -3059,7 +3064,6 @@
         };
       }
 
-      // 8) 추상·정신·행위 어휘에 음식 섭취·의복 착용 등 물리적으로 모순되는 서술어를 결합한 엉터리 문장 차단
       const isConcreteEdibleOrWearable = /(음식|먹|마시|열매|고기|채소|과일|빵|떡|국|물|술|차|약|옷|모자|신발|안경|천|입다|쓰다|신다)/.test(pureMeaning);
       if (!isConcreteEdibleOrWearable) {
         const absurdPhysicalVerb = new RegExp(`${escapedW}(을|를)\s*(맛있게|배부르게|꿀꺽|시원하게)?\s*(먹었|먹는|먹고|마셨|마시|씹었|삼켰|입었|신었|벗었)`);
@@ -3071,7 +3075,6 @@
         }
       }
 
-      // 9) 대명사만 결합한 무맥락 3어절 단문 차단 (예: "나는 그것을 배양했다", "철수는 오늘 배양했다")
       const nonTargetTokens = rawTokens.filter(t => !t.includes(checkUnit));
       const meaningfulContextTokens = nonTargetTokens.filter(t => {
         const cleanT = t.replace(/(에서|에게|으로|로|은|는|이|가|을|를|의|에|와|과|도|만)$/, '');
@@ -3100,10 +3103,8 @@
       const kst = getNowKST();
       const startedAt = Date.now();
 
-      // 1차: 로컬 엄격 문법·문맥 검증 (미달 시 즉시 구체적 힌트와 함께 반려)
       let evalResult = evaluateStudentSentenceStrict(curItem, my);
 
-      // 2차: 1차 검증을 통과했고 유효한 AI 키가 있을 경우 심층 문맥·호응 AI 검증 수행
       if (evalResult.isPassed && hasValidGeminiStudioKey()) {
         try {
           const cleanMean = getCleanSingleDisplayMeaning(curItem);
