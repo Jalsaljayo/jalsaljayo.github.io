@@ -8,6 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="메이드보카">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#FAF9F6">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./logo.jpg">
   <title>메이드보카 (MadeVoca)</title>
 
   <script>
@@ -23,14 +25,13 @@
     window.addEventListener('resize', fitMobileScreen);
   </script>
 
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" as="style" crossorigin="anonymous" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" crossorigin="anonymous"></script>
 
-  <!-- 구글 애드센스 H5 전면/보상형 광고 공식 스크립트 - ca-pub-8140838569673931 고정 -->
+  <!-- 구글 애드센스 H5 보상형 광고 공식 스크립트 (정식 운영 모드 - 테스트 우회 제거) -->
   <script async
-    data-adbreak-test="on"
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8140838569673931"
     crossorigin="anonymous">
   </script>
@@ -94,9 +95,7 @@
 
     .star-svg, .line-icon { display: inline-block; vertical-align: middle; overflow: visible; flex-shrink: 0; }
 
-    /* =====================================================================
-       오프닝 영상(opening.mp4) 전체 화면 오버레이
-       ===================================================================== */
+    /* 오프닝 영상(opening.mp4) 전체 화면 오버레이 */
     .opening-overlay {
       position: fixed; inset: 0; z-index: 500;
       background-color: var(--bg-app);
@@ -131,7 +130,7 @@
     #screen-login {
       height: 100vh; height: 100dvh; min-height: 0;
       background-color: var(--bg-app);
-      padding: 16vh 24px calc(36px + var(--safe-bottom));
+      padding: 15vh 24px calc(28px + var(--safe-bottom));
       justify-content: space-between; align-items: center; text-align: center; overflow: hidden;
     }
     .brand-logo-box {
@@ -166,6 +165,39 @@
       background: var(--surface); color: var(--primary); font-weight: 800;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
+
+    /* 약관 동의 체크박스 & AI 신고 버튼 */
+    .consent-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 12px; margin: 4px 0 12px;
+      display: flex; flex-direction: column; gap: 8px; text-align: left;
+    }
+    .consent-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      font-size: 12px; font-weight: 600; color: var(--text-main);
+    }
+    .consent-label {
+      display: flex; align-items: center; gap: 7px; cursor: pointer; flex: 1;
+    }
+    .consent-label input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; margin: 0;
+    }
+    .btn-link-sm {
+      background: none; border: none; color: var(--primary);
+      font-size: 11px; font-weight: 700; text-decoration: underline;
+      cursor: pointer; padding: 2px 4px; white-space: nowrap;
+    }
+    .ai-meta-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px; margin-top: 7px; padding-top: 6px; border-top: 1px dashed var(--border);
+      font-size: 10.5px; color: var(--text-sub);
+    }
+    .btn-ai-report {
+      background: none; border: 1px solid var(--border); color: var(--text-sub);
+      border-radius: 6px; padding: 2px 7px; font-size: 10.5px; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-ai-report:active { background: #FFF5F5; color: #B91C1C; border-color: #FECACA; }
 
     /* 상단 네비바 */
     .top-navbar {
@@ -282,9 +314,7 @@
     }
     .btn-word-more:active { background: var(--primary-soft); }
 
-    /* =====================================================================
-       [신규] 탭 2: 고전시가 사진 촬영 · 드래그 영역 선택 · 어휘/어미 분석 스타일
-       ===================================================================== */
+    /* 탭 2: 고전시가 사진 촬영 · 드래그 영역 선택 · 어휘/어미 분석 스타일 */
     .poem-capture-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 18px 16px; margin-bottom: 12px;
@@ -367,9 +397,7 @@
 
     .export-part-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px; margin-bottom: 12px; }
 
-    /* =====================================================================
-       하단 5탭 네비게이션 바 + 1번 수평 물결 파동 (은은하게)
-       ===================================================================== */
+    /* 하단 5탭 네비게이션 바 + 수평 물결 파동 (은은하게) */
     .bottom-tab-bar {
       position: fixed; bottom: 0; left: 0; right: 0; margin: 0 auto;
       width: 100%; height: calc(64px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
@@ -521,6 +549,12 @@
     .student-row-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
     .dict-upload-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
 
+    .policy-text-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px; font-size: 12px; line-height: 1.6;
+      color: var(--text-main); max-height: 55dvh; overflow-y: auto;
+    }
+
     #toast {
       visibility: hidden; background: #1E293B; color: white; padding: 11px 16px;
       border-radius: 10px; position: fixed; bottom: calc(76px + var(--safe-bottom)); left: 50%; transform: translateX(-50%);
@@ -532,7 +566,7 @@
 </head>
 <body>
 
-  <!-- [신규] 오프닝 영상(opening.mp4) 플레이어 오버레이 -->
+  <!-- 오프닝 영상(opening.mp4) 플레이어 오버레이 -->
   <div id="openingVideoOverlay" class="opening-overlay">
     <div class="opening-inner-wrap">
       <video id="openingVideoPlayer" src="./opening.mp4" playsinline webkit-playsinline preload="auto"></video>
@@ -570,8 +604,10 @@
           <span>이메일로 회원가입 · 로그인</span>
         </button>
 
-        <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">
-          Google 계정 또는 이메일 계정으로 모든 기기에서 동기화됩니다.
+        <div style="font-size:11.5px; color:var(--text-sub); margin-top:4px; line-height:1.5;">
+          Google 계정 또는 이메일 계정으로 모든 기기에서 동기화됩니다.<br>
+          <button type="button" class="btn-link-sm" onclick="openLegalModal('TERMS')">이용약관</button> ·
+          <button type="button" class="btn-link-sm" onclick="openLegalModal('PRIVACY')">개인정보처리방침</button>
         </div>
       </div>
     </section>
@@ -579,7 +615,7 @@
     <!-- 화면 2: 메인 화면 -->
     <section id="screen-list" class="screen">
       <header class="top-navbar">
-        <div onclick="switchMainTab('profile')" style="cursor:pointer;" title="내 정보 수정하기">
+        <div onclick="switchMainTab('profile', 4)" style="cursor:pointer;" title="내 정보 수정하기">
           <div style="font-size:17px; font-weight:800; letter-spacing:-0.3px;">메이드보카</div>
           <div id="userLabel" style="font-size:11px; color:var(--primary); font-weight:600; margin-top:1px;">내 단어장</div>
         </div>
@@ -613,17 +649,17 @@
         </div>
       </div>
 
-      <!-- [신규] 탭 2: 고전시가 (내 단어장 바로 다음 위치) -->
+      <!-- 탭 2: 고전시가 (내 단어장 바로 다음 위치) -->
       <div id="tab-poem" class="tab-pane" style="display:none; padding: 12px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">고전시가 구절 촬영 · 어휘 해독</div>
 
-        <!-- 사진 촬영 및 불러오기 안내 카드 -->
         <div class="poem-capture-card" id="poemIntroCard">
           <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:4px;">
             해석이 막히는 고전시가 지문을 찍어보세요
           </div>
           <div style="font-size:12px; color:var(--text-sub); line-height:1.5;">
-            교재나 모의고사의 고전시가 사진을 찍은 뒤 <strong>어려운 부분을 드래그해 표시</strong>하면, 현대어 해석과 함께 <strong>고어 어휘·어미 뜻</strong>을 분석해 내 단어장에 바로 담아줍니다.
+            교재나 모의고사의 고전시가 사진을 찍은 뒤 <strong>어려운 부분을 드래그해 표시</strong>하면, 현대어 해석과 함께 <strong>고어 어휘·어미 뜻</strong>을 분석해 내 단어장에 바로 담아줍니다.<br>
+            <span style="font-size:11px; opacity:0.85;">※ 촬영한 이미지는 구절 분석에만 일시 사용되며 서버에 영구 저장되지 않습니다.</span>
           </div>
 
           <input type="file" id="inpPoemCameraFallback" accept="image/*" capture="environment" style="display:none;" onchange="handlePoemImageFile(this)">
@@ -639,7 +675,6 @@
           </div>
         </div>
 
-        <!-- 촬영된 이미지 위에서 어려운 부분 드래그 선택 워크스페이스 -->
         <div id="poemWorkspace" style="display:none;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <div id="poemSelectionHint" style="font-size:12px; font-weight:700; color:var(--primary);">
@@ -660,13 +695,16 @@
           </button>
         </div>
 
-        <!-- AI 고전시가 해석 + 단어·어미별 상세 의미 + 내 단어장 담기 결과 영역 -->
         <div id="poemResultArea" style="display:none; margin-top:14px;">
           <div class="poem-Result-card">
             <span class="dict-badge">고전시가 원문 & 현대어 풀이</span>
             <div id="poemOcrText" style="font-size:14px; font-weight:800; color:var(--text-main); margin:6px 0; line-height:1.5;"></div>
             <div id="poemModernTrans" style="font-size:13px; font-weight:700; color:var(--primary-dark); background:var(--primary-soft); padding:10px 12px; border-radius:10px; line-height:1.55; margin-bottom:8px;"></div>
             <div id="poemContextNote" style="font-size:12px; color:var(--text-sub); line-height:1.5;"></div>
+            <div class="ai-meta-bar">
+              <span>AI 분석 결과는 해석상 오차가 있을 수 있습니다.</span>
+              <button type="button" class="btn-ai-report" onclick="openAiReportModal('POEM')">AI 오류 신고</button>
+            </div>
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin:14px 0 8px;">
@@ -741,7 +779,7 @@
         <div id="rankingContainer">불러오는 중...</div>
       </div>
 
-      <!-- 탭 5: 내 정보 (CSV 파일 관리와 계정 로그아웃 사이에 '오프닝 다시보기' 배치) -->
+      <!-- 탭 5: 내 정보 (CSV 파일 관리 · 오프닝 다시보기 · 약관/출처 · 로그아웃 · 회원 탈퇴) -->
       <div id="tab-profile" class="tab-pane" style="display:none; padding: 12px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">내 정보 관리</div>
 
@@ -781,7 +819,7 @@
           <div id="userCsvStatus" style="font-size:12px; font-weight:700; color:var(--primary); margin-top:8px; display:none;"></div>
         </div>
 
-        <!-- [신규] CSV 파일 관리와 계정 로그아웃 사이에 위치한 오프닝 다시보기 카드 -->
+        <!-- CSV 파일 관리와 계정 로그아웃 사이에 위치한 오프닝 다시보기 카드 -->
         <div class="profile-box-card" style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
           <div>
             <div style="font-size:13px; font-weight:700;">메이드보카 오프닝</div>
@@ -800,9 +838,30 @@
           </div>
           <button onclick="logoutStudent()" style="background:#F1F5F9; color:#475569; border:1px solid var(--border); padding:8px 14px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer;">로그아웃</button>
         </div>
+
+        <!-- 스토어 필수: 약관·개인정보처리방침·사전 출처 및 회원 탈퇴 -->
+        <div class="profile-box-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="font-size:13px; font-weight:700;">약관 · 개인정보 · 출처 안내</div>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn-link-sm" onclick="openLegalModal('TERMS')">이용약관</button>
+              <button type="button" class="btn-link-sm" onclick="openLegalModal('PRIVACY')">개인정보처리방침</button>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--text-sub); line-height:1.45; margin-bottom:12px;">
+            본 서비스의 사전 데이터는 국립국어원 『표준국어대사전』(공공누리 제1유형)을 활용하며, AI 생성 분석 결과는 문맥상 오차가 있을 수 있습니다.
+          </div>
+          <div style="border-top:1px solid var(--border); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:12.5px; font-weight:700; color:#B91C1C;">회원 탈퇴</div>
+              <div style="font-size:11px; color:var(--text-sub);">모든 단어장·학습 기록 및 계정을 즉시 영구 삭제합니다.</div>
+            </div>
+            <button type="button" onclick="confirmAndDeleteMyAccount()" style="background:#FFF5F5; color:#B91C1C; border:1px solid #FECACA; padding:7px 12px; border-radius:9px; font-size:11.5px; font-weight:700; white-space:nowrap; cursor:pointer;">회원 탈퇴</button>
+          </div>
+        </div>
       </div>
 
-      <!-- 하단 5탭 네비게이션 바 (내 단어장 다음 칸에 고전시가 배치 + 수평 물결 파동 레이어) -->
+      <!-- 하단 5탭 네비게이션 바 -->
       <nav class="bottom-tab-bar" id="bottomTabBar">
         <div class="tab-wave-layer">
           <div id="tabWaveGlow" class="tab-wave-glow"></div>
@@ -825,8 +884,8 @@
         </button>
       </nav>
     </section>
-
-    <!-- 화면 3: 단어 학습 (4단계 구조) -->
+<!-- [PART 1 끝 - 바로 아래 줄에 PART 2 코드를 이어서 붙여넣으세요] -->
+<!-- 화면 3: 단어 학습 (4단계 구조 + AI 오류 신고 적용) -->
     <section id="screen-builder" class="screen">
       <header class="top-navbar">
         <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 목록</button>
@@ -905,7 +964,7 @@
       </div>
     </section>
 
-    <!-- 화면 4: 관리자 모드 -->
+    <!-- 화면 4: 교사용 관리자 모드 (서버 보안 연동 - 프론트 API 키 노출 제거) -->
     <section id="screen-admin" class="screen">
       <header class="top-navbar">
         <button class="action-btn" style="width:auto; padding:6px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text-main);" onclick="goToList()">← 단어장</button>
@@ -914,19 +973,17 @@
       </header>
 
       <div class="list-body">
-        <!-- Gemini AI 키 동기화 관리 박스 (고전시가 사진 판독·유의어·문장 첨삭 정확도 보장용) -->
         <div class="dict-upload-box">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-            <div style="font-size:14px; font-weight:800; color:var(--text-main);">Gemini AI API 키 연동 설정</div>
-            <span id="geminiKeyStatusBadge" style="font-size:11px; font-weight:700; background:var(--primary-soft); color:var(--primary); padding:3px 8px; border-radius:99px;">확인 중...</span>
+            <div style="font-size:14px; font-weight:800; color:var(--text-main);">보안 AI 서버(Edge Function) 상태</div>
+            <span id="geminiProxyStatusBadge" style="font-size:11px; font-weight:700; background:var(--primary-soft); color:var(--primary); padding:3px 8px; border-radius:99px;">보안 모드 작동 중</span>
           </div>
           <p style="font-size:11px; color:var(--text-sub); margin:0 0 8px 0; line-height:1.45;">
-            Google AI Studio 표준 키(`AIza...`)를 등록하면 고전시가 사진 해석, 유의어·반의어, 문장 첨삭에 모든 학생 기기에서 즉시 적용됩니다.
+            Gemini API 키는 앱 내부에 저장되지 않고 수파베이스 보안 서버(<code>gemini-proxy</code>) 비밀 금고에서 안전하게 호출됩니다.
           </p>
-          <div style="display:flex; gap:6px;">
-            <input type="password" id="inpAdminGeminiKey" class="input-field" style="margin-bottom:0; flex:1; padding:9px 11px; font-size:13px;" placeholder="AIzaSy... 형식의 Gemini API 키 입력">
-            <button type="button" class="action-btn btn-primary" style="width:auto; padding:0 14px; font-size:12px; white-space:nowrap;" onclick="saveAdminGeminiApiKey()">키 저장</button>
-          </div>
+          <button type="button" id="btnTestProxy" class="action-btn btn-primary" style="padding:9px; font-size:12.5px;" onclick="testGeminiProxyConnection()">
+            AI 보안 서버 연결 테스트하기
+          </button>
         </div>
 
         <div class="dict-upload-box">
@@ -935,7 +992,7 @@
             <span id="dictCountBadge" style="font-size:11px; font-weight:700; background:var(--primary-soft); color:var(--primary); padding:3px 8px; border-radius:99px;">DB 확인 중...</span>
           </div>
           <p style="font-size:11px; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
-            국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. 뜻풀이 열 정밀 인식 및 유의어·반의어 기호 정제가 적용되어 있습니다.
+            국립국어원 <strong>.xls / .xlsx / .csv</strong> 파일을 선택하세요. 관리자 계정에서만 사전 DB 쓰기가 허용됩니다.
           </p>
           <input type="file" id="inpDictFiles" multiple accept=".xls,.xlsx,.csv" class="input-field" style="background:var(--bg-app); padding:8px; font-size:13px; margin-bottom:8px;">
           <button id="btnUploadDict" class="action-btn btn-primary" style="padding:10px; font-size:13px;" onclick="uploadStandardDictFiles()">
@@ -949,6 +1006,12 @@
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">총 등록 단어</div><div id="admWordCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
           <div class="admin-stat-card"><div style="font-size:11px; color:var(--text-sub); font-weight:600;">4단계 완성</div><div id="admGoldCnt" style="font-size:17px; font-weight:800; color:var(--primary); margin-top:4px;">0개</div></div>
         </div>
+
+        <div id="adminReportSection" style="margin-bottom:14px; display:none;">
+          <div style="font-size:14px; font-weight:800; margin-bottom:8px;">학생 AI 오류 신고 접수 내역</div>
+          <div id="adminReportList"></div>
+        </div>
+
         <div style="font-size:14px; font-weight:800; margin-bottom:10px;">학생별 단어장 학습 현황</div>
         <div id="adminStudentList">불러오는 중...</div>
       </div>
@@ -956,7 +1019,7 @@
 
   </div>
 
-  <!-- [신규 모달] 고전시가 실시간 카메라 권한 요청 & 촬영 모달 -->
+  <!-- 고전시가 실시간 카메라 촬영 모달 -->
   <div class="modal-overlay" id="poemCameraModal" style="align-items:center;">
     <div class="camera-modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center; color:#FFFFFF;">
@@ -979,7 +1042,7 @@
     </div>
   </div>
 
-  <!-- 이메일 즉시 회원가입 & 로그인 모달 -->
+  <!-- 이메일 회원가입 & 로그인 모달 (필수 연령·개인정보 동의 포함) -->
   <div class="modal-overlay" id="emailAuthModal" onclick="if(event.target===this) closeEmailAuthModal()">
     <div class="bottom-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -1013,8 +1076,24 @@
           </div>
         </div>
 
-        <button id="btnSubmitDirectSignup" class="action-btn btn-primary" style="margin-top:4px;" onclick="submitDirectEmailSignup()">
-          회원가입 완료하기
+        <div class="consent-box">
+          <div class="consent-row">
+            <label class="consent-label">
+              <input type="checkbox" id="chkSuAge14">
+              <span>[필수] 만 14세 이상입니다.</span>
+            </label>
+          </div>
+          <div class="consent-row">
+            <label class="consent-label">
+              <input type="checkbox" id="chkSuPrivacy">
+              <span>[필수] 이용약관 및 개인정보 수집·국외 이전 동의</span>
+            </label>
+            <button type="button" class="btn-link-sm" onclick="openLegalModal('PRIVACY')">전문 보기</button>
+          </div>
+        </div>
+
+        <button id="btnSubmitDirectSignup" class="action-btn btn-primary" onclick="submitDirectEmailSignup()">
+          동의하고 회원가입 완료하기
         </button>
       </div>
 
@@ -1138,12 +1217,12 @@
     </div>
   </div>
 
-  <!-- Google 로그인 최초 1회 프로필 설정 모달 -->
+  <!-- Google 로그인 최초 1회 프로필 및 약관 동의 설정 모달 -->
   <div class="modal-overlay" id="firstProfileModal">
     <div class="bottom-sheet">
-      <h3 style="margin:0 0 6px 0; font-size:18px;">프로필 설정</h3>
+      <h3 style="margin:0 0 6px 0; font-size:18px;">프로필 및 약관 동의</h3>
       <p style="font-size:12px; color:var(--text-sub); margin:0 0 14px 0;">
-        단어장과 명예의 전당에 표시될 이름과 학번을 확인해 주세요.<br>(나중에 '내 정보' 탭에서 언제든 수정할 수 있습니다)
+        단어장과 명예의 전당에 표시될 이름과 학번을 확인해 주세요.<br>(나중에 '내 정보' 탭에서 언제든 수정·탈퇴할 수 있습니다)
       </p>
 
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">이름 또는 닉네임 (필수)</label>
@@ -1152,21 +1231,70 @@
       <label style="font-size:12px; font-weight:700; color:var(--text-sub); display:block; margin-bottom:4px;">학번 / 학교 (선택)</label>
       <input type="text" id="regSchoolInfo" class="input-field" placeholder="예: 30101 또는 서천고 30101">
 
-      <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="completeOAuthOnboarding()">메이드보카 시작하기</button>
+      <div class="consent-box">
+        <div class="consent-row">
+          <label class="consent-label">
+            <input type="checkbox" id="chkOAuthAge14">
+            <span>[필수] 만 14세 이상입니다.</span>
+          </label>
+        </div>
+        <div class="consent-row">
+          <label class="consent-label">
+            <input type="checkbox" id="chkOAuthPrivacy">
+            <span>[필수] 이용약관 및 개인정보 수집·국외 이전 동의</span>
+          </label>
+          <button type="button" class="btn-link-sm" onclick="openLegalModal('PRIVACY')">전문 보기</button>
+        </div>
+      </div>
+
+      <button id="btnCompleteJoin" class="action-btn btn-primary" onclick="completeOAuthOnboarding()">동의하고 메이드보카 시작하기</button>
+    </div>
+  </div>
+
+  <!-- 이용약관 및 개인정보처리방침 열람 모달 -->
+  <div class="modal-overlay" id="legalModal" onclick="if(event.target===this) closeLegalModal()">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div id="legalModalTitle" style="font-size:16px; font-weight:800;">개인정보처리방침</div>
+        <button type="button" onclick="closeLegalModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+      <div id="legalModalBody" class="policy-text-box"></div>
+      <button type="button" class="action-btn btn-primary" style="margin-top:12px;" onclick="closeLegalModal()">확인</button>
+    </div>
+  </div>
+
+  <!-- 스토어 생성형 AI 정책 준수: AI 분석 오류·부적절 응답 신고 모달 -->
+  <div class="modal-overlay" id="aiReportModal" onclick="if(event.target===this) closeAiReportModal()">
+    <div class="bottom-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="font-size:16px; font-weight:800;">AI 분석 오류 · 부적절 내용 신고</div>
+        <button type="button" onclick="closeAiReportModal()" style="background:none; border:none; font-size:20px; color:var(--text-sub); cursor:pointer;">✕</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-sub); margin:0 0 10px 0; line-height:1.45;">
+        AI가 생성한 뜻풀이, 유의어·반의어, 고전시가 해석 또는 피드백에 오류가 있거나 부적절한 표현이 포함된 경우 사유를 남겨 주세요.
+      </p>
+      <input type="text" id="inpAiReportReason" class="input-field" placeholder="신고 사유 입력 (예: 문맥 뜻이 어색함, 부적절한 표현 등)" onkeydown="if(event.key==='Enter') submitAiReport()">
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="action-btn" style="background:var(--surface); border:1px solid var(--border); color:var(--text-main); width:38%;" onclick="closeAiReportModal()">취소</button>
+        <button type="button" id="btnSubmitAiReport" class="action-btn btn-primary" style="flex:1;" onclick="submitAiReport()">신고 접수하기</button>
+      </div>
     </div>
   </div>
 
   <div id="toast">알림</div>
-<!-- [PART 1 끝 - 바로 아래 줄에 PART 2 코드를 이어서 붙여넣으세요] -->
-<script>
+
+  <script>
     // =========================================================================
-    // 1. 설정 및 전역 상태 & 햅틱 진동 · 아이콘 시스템
+    // 1. 보안 설정 및 전역 상태 (프론트엔드 API 키 완전 제거 · 서버 프록시 연동)
     // =========================================================================
     const SUPABASE_URL = 'https://reerlnjgvhxikcoewpsh.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_twGcUbujfgWFtajD5uDigg_80mLxmvQ';
-    let GEMINI_API_KEY = localStorage.getItem('madevoca_gemini_key') || ['AQ.Ab8RN6K8ggEwlwG88', 'EIw4DGH_K06fH08PXaTkZvjWeVXuziwAw'].join('');
+    const GEMINI_PROXY_URL = `${SUPABASE_URL}/functions/v1/gemini-proxy`;
     const ADMIN_EMAIL = 'joyongayo@gmail.com'.trim().toLowerCase();
     const ICON_COLOR = '#3B82A6';
+
+    // 과거 브라우저에 남아 있을 수 있는 구형 로컬 API 키 즉시 파기
+    try { localStorage.removeItem('madevoca_gemini_key'); } catch (e) {}
 
     const DAILY_BASE_QUIZ_LIMIT = 10;
     const MAX_DAILY_ADS = 3;
@@ -1186,11 +1314,13 @@
     let soundEnabled = true;
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
+    let dailyQuizCache = { used: 0, adWatched: 0 };
 
     let myGroups = [];
     let wordGroupMap = {};
     let dotMenuTargetWordId = null;
     let selectedTempGroup = null;
+    let pendingAiReportType = 'STEP12';
 
     // 고전시가 촬영 및 드래그 영역 분석용 전역 상태
     let poemCameraStream = null;
@@ -1200,6 +1330,17 @@
     let poemIsDragging = false;
     let poemDragStart = { x: 0, y: 0 };
     let lastAnalyzedPoemData = null;
+
+    // XSS 방지 이스케이프 (작은따옴표 &#39; 포함 완벽 방어)
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     function triggerHaptic(pattern = 14) {
       try {
@@ -1245,9 +1386,7 @@
       return `<svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;"><polygon points="12 2.5 14.9 8.6 21.6 9.5 16.7 14.2 17.9 20.9 12 17.7 6.1 20.9 7.3 14.2 2.4 9.5 9.1 8.6" fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" /></svg>`;
     }
 
-    // =========================================================================
-    // [신규] 오프닝 영상(opening.mp4) 최초 1회 자동 재생 & 내 정보 다시보기
-    // =========================================================================
+    // 오프닝 영상(opening.mp4) 최초 1회 자동 재생 & 다시보기
     function checkAndPlayFirstOpening() {
       if (!myUser || !myUser.userId) return;
       const seenKey = `madevoca_opening_seen_${myUser.userId}`;
@@ -1270,14 +1409,13 @@
       video.onended = function() { finishOpeningVideo(); };
       video.onerror = function() {
         finishOpeningVideo();
-        if (isManualReplay) showToast('깃허브 저장소에 opening.mp4 파일이 있는지 확인해 주세요.');
+        if (isManualReplay) showToast('저장소에 opening.mp4 파일이 있는지 확인해 주세요.');
       };
 
       try {
         video.muted = !soundEnabled;
         await video.play();
       } catch (err) {
-        // 모바일 자동재생 정책으로 소리 있는 자동재생이 막힌 경우 음소거로 재생 시작 후 '소리 켜기' 버튼 표시
         try {
           video.muted = true;
           await video.play();
@@ -1291,10 +1429,7 @@
     function unmuteOpeningVideo() {
       const video = document.getElementById('openingVideoPlayer');
       const unmuteBtn = document.getElementById('btnUnmuteOpening');
-      if (video) {
-        video.muted = false;
-        video.play().catch(() => {});
-      }
+      if (video) { video.muted = false; video.play().catch(() => {}); }
       if (unmuteBtn) unmuteBtn.style.display = 'none';
     }
 
@@ -1302,13 +1437,9 @@
       const overlay = document.getElementById('openingVideoOverlay');
       const video = document.getElementById('openingVideoPlayer');
       if (!overlay || !overlay.classList.contains('open')) return;
-      if (video) {
-        try { video.pause(); } catch (e) {}
-      }
+      if (video) { try { video.pause(); } catch (e) {} }
       overlay.classList.add('fade-out');
-      setTimeout(() => {
-        overlay.classList.remove('open', 'fade-out');
-      }, 320);
+      setTimeout(() => { overlay.classList.remove('open', 'fade-out'); }, 320);
     }
 
     // 3단계 유의어·반의어 확인 횟수 관리
@@ -1340,23 +1471,11 @@
       }
     }
 
-    // 공용 Gemini API 키 로드 (관리자가 설정한 표준 AIza 키 자동 동기화)
-    async function loadSharedGeminiApiKey() {
-      try {
-        const { data } = await sb.from('std_dict').select('synonyms').eq('word', '__APP_CONFIG__:GEMINI_KEY').maybeSingle();
-        if (data && data.synonyms && data.synonyms.startsWith('AIza')) {
-          GEMINI_API_KEY = data.synonyms.trim();
-          localStorage.setItem('madevoca_gemini_key', GEMINI_API_KEY);
-        }
-      } catch (e) {}
-    }
-
-    // 그룹 동기화
-    function getGroupSyncKey() {
-      return `__USER_GROUPS__:${(myUser && myUser.userId) ? myUser.userId : 'guest'}`;
-    }
+    // [보안 분리 완료] 단어 그룹 전용 테이블(public.user_groups) 동기화
     async function loadUserGroupsAndMap() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      myGroups = [];
+      wordGroupMap = {};
       const localRaw = localStorage.getItem(`madevoca_grpdata_${uid}`);
       if (localRaw) {
         try {
@@ -1365,25 +1484,54 @@
           wordGroupMap = parsed.map || {};
         } catch (e) {}
       }
-      try {
-        const { data } = await sb.from('std_dict').select('synonyms, antonyms').eq('word', getGroupSyncKey()).maybeSingle();
-        if (data && data.synonyms && data.synonyms !== '없음' && data.antonyms === 'META') {
-          const remote = JSON.parse(data.synonyms);
-          if (Array.isArray(remote.groups)) myGroups = remote.groups;
-          if (remote.map) wordGroupMap = { ...wordGroupMap, ...remote.map };
-          localStorage.setItem(`madevoca_grpdata_${uid}`, JSON.stringify({ groups: myGroups, map: wordGroupMap }));
-        }
-      } catch (e) {}
+      if (uid !== 'guest') {
+        try {
+          const { data } = await sb.from('user_groups').select('groups_payload').eq('user_id', uid).maybeSingle();
+          if (data && data.groups_payload) {
+            const remote = JSON.parse(data.groups_payload);
+            if (Array.isArray(remote.groups)) myGroups = remote.groups;
+            if (remote.map) wordGroupMap = { ...wordGroupMap, ...remote.map };
+            localStorage.setItem(`madevoca_grpdata_${uid}`, JSON.stringify({ groups: myGroups, map: wordGroupMap }));
+          }
+        } catch (e) {}
+      }
       myWords.forEach(w => { w.groupName = wordGroupMap[w.id] || ''; });
     }
+
     async function saveUserGroupsAndMap() {
       const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
       const payload = JSON.stringify({ groups: myGroups, map: wordGroupMap });
       localStorage.setItem(`madevoca_grpdata_${uid}`, payload);
       myWords.forEach(w => { w.groupName = wordGroupMap[w.id] || ''; });
+      if (uid !== 'guest') {
+        try {
+          await sb.from('user_groups').upsert({
+            user_id: uid,
+            groups_payload: payload,
+            updated_at: getNowKST().full
+          });
+        } catch (e) {}
+      }
+    }
+
+    // [보안 분리 완료] 일일 퀴즈 사용량 DB 동기화 (localStorage 삭제 우회 방지)
+    async function syncDailyQuizUsageFromDb() {
+      if (!myUser || !myUser.userId) return;
+      const today = getNowKST().date;
       try {
-        await sb.from('std_dict').upsert({ word: getGroupSyncKey(), definition: '', synonyms: payload, antonyms: 'META', updated_at: getNowKST().full });
-      } catch (e) {}
+        const { data } = await sb.from('daily_usage')
+          .select('quiz_used, quiz_ad_watched')
+          .eq('user_id', myUser.userId)
+          .eq('usage_date', today)
+          .maybeSingle();
+        if (data) {
+          dailyQuizCache = { used: Number(data.quiz_used) || 0, adWatched: Number(data.quiz_ad_watched) || 0 };
+        } else {
+          dailyQuizCache = { used: 0, adWatched: 0 };
+        }
+      } catch (e) {
+        dailyQuizCache = { used: 0, adWatched: 0 };
+      }
     }
 
     function getNowKST() {
@@ -1394,19 +1542,6 @@
         date: kst.toISOString().slice(0, 10),
         yesterday: new Date(kst.getTime() - 86400000).toISOString().slice(0, 10)
       };
-    }
-
-    function getDailyQuizState() {
-      const today = getNowKST().date;
-      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      const raw = localStorage.getItem(`madevoca_qstate_${uid}_${today}`);
-      if (raw) { try { return JSON.parse(raw); } catch (e) {} }
-      return { used: 0, adWatched: 0 };
-    }
-    function saveDailyQuizState(state) {
-      const today = getNowKST().date;
-      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
-      localStorage.setItem(`madevoca_qstate_${uid}_${today}`, JSON.stringify(state));
     }
 
     function getLevelInfo(xp) {
@@ -1481,7 +1616,6 @@
       document.getElementById('iconReplayVideo').innerHTML = getLineIcon('play', 14);
 
       initPoemCanvasDragEvents();
-      await loadSharedGeminiApiKey();
 
       const { data: { session } } = await sb.auth.getSession();
       if (session && session.user) {
@@ -1506,14 +1640,13 @@
       window.scrollTo(0, 0);
     }
 
-    // [하단 5탭 전환 + 1번 수평 물결 파동(은은하게) 애니메이션]
     function triggerTabHorizontalWave(tabIdx) {
       const bar = document.getElementById('bottomTabBar');
       const glow = document.getElementById('tabWaveGlow');
       const line = document.getElementById('tabWaveLine');
       if (!bar || !glow || !line) return;
 
-      const centerPct = (tabIdx * 20) + 10; // 5개 탭 각각의 중심: 10%, 30%, 50%, 70%, 90%
+      const centerPct = (tabIdx * 20) + 10;
       bar.style.setProperty('--wave-x', centerPct + '%');
 
       glow.classList.remove('wave-run');
@@ -1523,7 +1656,7 @@
       line.classList.add('wave-run');
     }
 
-    function switchMainTab(tabName, tabIdx) {
+    async function switchMainTab(tabName, tabIdx) {
       const idxMap = { words: 0, poem: 1, quiz: 2, rank: 3, profile: 4 };
       const resolvedIdx = (typeof tabIdx === 'number') ? tabIdx : (idxMap[tabName] || 0);
       triggerTabHorizontalWave(resolvedIdx);
@@ -1541,6 +1674,7 @@
       document.getElementById('navBtnProfile').className = 'tab-btn' + (tabName === 'profile' ? ' active' : '');
 
       if (tabName === 'quiz') {
+        await syncDailyQuizUsageFromDb();
         renderMyList(); renderBadges(); generateQuiz();
       } else if (tabName === 'rank') {
         loadRanking();
@@ -1552,7 +1686,90 @@
     function goToList() { renderMyList(); showScreen('screen-list'); }
 
     // =========================================================================
-    // 2. 로그인 & 회원가입 & 프로필 관리
+    // 이용약관 · 개인정보처리방침 열람 & AI 오류 신고 모달
+    // =========================================================================
+    function openLegalModal(docType) {
+      const titleEl = document.getElementById('legalModalTitle');
+      const bodyEl = document.getElementById('legalModalBody');
+      if (docType === 'TERMS') {
+        titleEl.innerText = '메이드보카 서비스 이용약관';
+        bodyEl.innerHTML = `
+          <strong>제1조 (목적)</strong><br>본 약관은 메이드보카(MadeVoca)가 제공하는 어휘 학습 및 고전시가 해독 서비스의 이용 조건과 책임을 규정합니다.<br><br>
+          <strong>제2조 (이용 연령 및 계정 관리)</strong><br>본 서비스는 만 14세 이상 사용자를 대상으로 하며, 사용자는 언제든 [내 정보] → [회원 탈퇴]에서 계정과 모든 데이터를 즉시 삭제할 수 있습니다.<br><br>
+          <strong>제3조 (생성형 AI 결과물 면책 및 신고)</strong><br>문맥 의미, 유의어·반의어, 고전시가 풀이 및 문장 피드백에는 생성형 AI가 활용되며 간혹 문법·해석상 오차가 발생할 수 있습니다. 부적절하거나 부정확한 결과는 각 화면의 [AI 오류 신고] 버튼으로 신고할 수 있습니다.<br><br>
+          <strong>제4조 (저작권 및 사전 출처)</strong><br>1. 앱 내 국어사전 데이터는 국립국어원 『표준국어대사전』(공공누리 제1유형)을 출처로 합니다.<br>2. 고전시가 탭에서 촬영·선택한 이미지는 구절 분석에만 일시 처리되며 서버나 DB에 영구 보관·공유되지 않습니다.
+        `;
+      } else {
+        titleEl.innerText = '개인정보처리방침 (국외 이전 포함)';
+        bodyEl.innerHTML = `
+          <strong>1. 수집하는 개인정보 항목 및 목적</strong><br>
+          - 필수 항목: 이메일 주소, 이름(또는 닉네임), 로그인 인증 식별자 (계정 동기화 및 학습 기록 저장 목적)<br>
+          - 선택 항목: 학번/학교 정보 (명예의 전당 및 학습 현황 표시 목적)<br>
+          - 서비스 이용 기록: 등록 단어, 예문, 경험치(XP) 기록<br>
+          ※ 고전시가 촬영 이미지는 분석 직후 폐기되며 서버에 저장하지 않습니다.<br><br>
+          <strong>2. 개인정보의 국외 이전 안내</strong><br>
+          안정적인 클라우드 DB 동기화 및 AI 분석을 위해 아래와 같이 데이터를 처리합니다.<br>
+          - Supabase Inc. (미국/싱가포르 리전): 계정 인증 및 단어장 DB 암호화 보관<br>
+          - Google LLC (Gemini API): 입력한 문장 및 드래그한 구절 이미지의 실시간 어휘·문맥 분석 후 즉시 반환<br><br>
+          <strong>3. 보유 기간 및 즉시 파기(회원 탈퇴)</strong><br>
+          회원 탈퇴 시까지 보유하며, 앱 내 [내 정보] → [회원 탈퇴] 실행 즉시 계정 정보·단어장·그룹·활동 기록 전체가 복구 불가능하도록 영구 파기됩니다.<br><br>
+          <strong>4. 만 14세 미만 아동 보호</strong><br>
+          본 서비스는 만 14세 미만 아동의 개인정보를 수집하지 않으며, 가입 시 만 14세 이상 확인을 필수로 진행합니다.<br><br>
+          <strong>5. 개인정보 보호 문의처</strong><br>
+          이메일: joyongayo@gmail.com
+        `;
+      }
+      document.getElementById('legalModal').classList.add('open');
+    }
+    function closeLegalModal() { document.getElementById('legalModal').classList.remove('open'); }
+
+    function openAiReportModal(targetType) {
+      pendingAiReportType = targetType || 'STEP12';
+      document.getElementById('inpAiReportReason').value = '';
+      document.getElementById('aiReportModal').classList.add('open');
+    }
+    function closeAiReportModal() { document.getElementById('aiReportModal').classList.remove('open'); }
+
+    async function submitAiReport() {
+      if (!myUser) return;
+      const reason = document.getElementById('inpAiReportReason').value.trim();
+      if (!reason) { alert('신고 사유를 간단히 입력해 주세요.'); return; }
+
+      const btn = document.getElementById('btnSubmitAiReport');
+      btn.disabled = true; btn.innerText = '접수 중...';
+
+      let targetWord = '';
+      let aiContent = '';
+      if (pendingAiReportType === 'POEM' && lastAnalyzedPoemData) {
+        targetWord = lastAnalyzedPoemData.originalText || '고전시가';
+        aiContent = lastAnalyzedPoemData.modernTranslation || '';
+      } else if (curItem) {
+        targetWord = curItem.word || '';
+        if (pendingAiReportType === 'STEP3') aiContent = `${curItem.synonyms || ''} / ${curItem.antonyms || ''}`;
+        else if (pendingAiReportType === 'STEP4') aiContent = curItem.aiFeedback || '';
+        else aiContent = curItem.aiMeaning || curItem.meaning || '';
+      }
+
+      try {
+        const { error } = await sb.from('ai_reports').insert({
+          user_id: myUser.userId,
+          target_type: pendingAiReportType,
+          target_word: targetWord.slice(0, 100),
+          ai_content: aiContent.slice(0, 500),
+          reason: reason.slice(0, 300)
+        });
+        if (error) throw error;
+        closeAiReportModal();
+        showToast('신고가 접수되었습니다. 검토 후 개선하겠습니다.');
+      } catch (err) {
+        alert('신고 접수 중 오류가 발생했습니다: ' + err.message);
+      } finally {
+        btn.disabled = false; btn.innerText = '신고 접수하기';
+      }
+    }
+
+    // =========================================================================
+    // 2. 보안 로그인 & 회원가입 & 회원 탈퇴 (닉네임 관리자 사칭 완전 차단)
     // =========================================================================
     async function signInWithRealOAuth(provider) {
       const redirectUrl = window.location.origin + window.location.pathname;
@@ -1580,11 +1797,15 @@
       const email = document.getElementById('suEmail').value.trim().toLowerCase();
       const pw = document.getElementById('suPassword').value;
       const pwConfirm = document.getElementById('suPasswordConfirm').value;
+      const ageOk = document.getElementById('chkSuAge14').checked;
+      const privOk = document.getElementById('chkSuPrivacy').checked;
 
       if (!name) { alert('이름 또는 닉네임을 입력해 주세요.'); return; }
       if (!email || !email.includes('@')) { alert('올바른 이메일 주소를 입력해 주세요.'); return; }
       if (!pw || pw.length < 6) { alert('비밀번호는 6자리 이상으로 설정해 주세요.'); return; }
       if (pw !== pwConfirm) { alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.'); return; }
+      if (!ageOk) { alert('만 14세 이상 확인 항목에 체크해 주세요.'); return; }
+      if (!privOk) { alert('이용약관 및 개인정보 수집·국외 이전 동의에 체크해 주세요.'); return; }
 
       const btn = document.getElementById('btnSubmitDirectSignup');
       btn.disabled = true; btn.innerText = '가입 처리 중...';
@@ -1592,28 +1813,28 @@
       try {
         const { data, error } = await sb.auth.signUp({
           email, password: pw,
-          options: { data: { full_name: name, school_info: school } }
+          options: { data: { full_name: name, school_info: school, consent_at: getNowKST().full } }
         });
         if (error) throw error;
-        btn.disabled = false; btn.innerText = '회원가입 완료하기';
+        btn.disabled = false; btn.innerText = '동의하고 회원가입 완료하기';
 
         if (data && data.session && data.user) {
           closeEmailAuthModal();
           await finalizeEmailSignupRecord(email, name, school);
         } else {
-          alert('수파베이스의 [Authentication] → [Providers] → [Email]에서 "Confirm email" 스위치를 끄고 Save를 눌러주시면 인증 없이 즉시 가입됩니다.');
+          alert('인증 메일이 발송되었습니다. 이메일 확인 링크를 누른 뒤 로그인해 주세요.');
           switchEmailAuthTab('LOGIN');
           document.getElementById('liEmail').value = email;
         }
       } catch (err) {
-        btn.disabled = false; btn.innerText = '회원가입 완료하기';
+        btn.disabled = false; btn.innerText = '동의하고 회원가입 완료하기';
         alert('회원가입 중 오류가 발생했습니다: ' + err.message);
       }
     }
 
     async function finalizeEmailSignupRecord(email, name, school) {
       const kst = getNowKST();
-      const isAdmin = (email === ADMIN_EMAIL) || name.includes('용아국어');
+      const isAdmin = (email === ADMIN_EMAIL); // 오직 인증된 관리자 이메일만 허용
       await sb.from('students').upsert({
         user_id: email, user_name: name, provider: 'EMAIL', pin: 'EMAIL_AUTH',
         school_info: school, streak: 1, bonus_xp: 0, last_study_date: kst.date, created_at: kst.full, last_access_at: kst.full
@@ -1621,6 +1842,7 @@
       myUser = { userId: email, name, provider: 'EMAIL', schoolInfo: school, isAdmin, streak: 1, bonusXp: 0 };
       myWords = await fetchUserWords(email, isAdmin);
       await loadUserGroupsAndMap();
+      await syncDailyQuizUsageFromDb();
       setupUserView();
       checkAndPlayFirstOpening();
       showToast(`회원가입이 완료되었습니다. 환영합니다, ${name}님!`);
@@ -1646,7 +1868,8 @@
     }
 
     async function handleAuthenticatedUser(authUser) {
-      const email = (authUser.email || authUser.id).trim().toLowerCase();
+      if (!authUser || !authUser.email) return;
+      const email = authUser.email.trim().toLowerCase();
       const rawProvider = (authUser.app_metadata && authUser.app_metadata.provider) || 'email';
       const provider = rawProvider.toUpperCase();
       const metaName = authUser.user_metadata && (authUser.user_metadata.full_name || authUser.user_metadata.name);
@@ -1654,7 +1877,7 @@
       const defaultName = metaName || email.split('@')[0];
 
       const { data: existing } = await sb.from('students').select('*').eq('user_id', email).maybeSingle();
-      const isAdmin = (email === ADMIN_EMAIL) || (existing && existing.user_name && existing.user_name.includes('용아국어')) || (defaultName && defaultName.includes('용아국어'));
+      const isAdmin = (email === ADMIN_EMAIL); // 닉네임 우회 완전 제거
 
       if (existing) {
         const kst = getNowKST();
@@ -1665,6 +1888,7 @@
         };
         myWords = await fetchUserWords(email, isAdmin);
         await loadUserGroupsAndMap();
+        await syncDailyQuizUsageFromDb();
         setupUserView();
         checkAndPlayFirstOpening();
         autoHealExistingWordMeanings();
@@ -1674,6 +1898,8 @@
         pendingOAuthSession = { email, provider, defaultName, isAdmin };
         document.getElementById('regStudentName').value = defaultName;
         document.getElementById('regSchoolInfo').value = metaSchool;
+        document.getElementById('chkOAuthAge14').checked = false;
+        document.getElementById('chkOAuthPrivacy').checked = false;
         document.getElementById('firstProfileModal').classList.add('open');
       }
     }
@@ -1682,13 +1908,18 @@
       if (!pendingOAuthSession) return;
       const sname = document.getElementById('regStudentName').value.trim();
       const school = document.getElementById('regSchoolInfo').value.trim();
+      const ageOk = document.getElementById('chkOAuthAge14').checked;
+      const privOk = document.getElementById('chkOAuthPrivacy').checked;
+
       if (!sname) { alert('이름 또는 닉네임을 입력해 주세요.'); return; }
+      if (!ageOk) { alert('만 14세 이상 확인 항목에 체크해 주세요.'); return; }
+      if (!privOk) { alert('이용약관 및 개인정보 수집·국외 이전 동의에 체크해 주세요.'); return; }
 
       const btn = document.getElementById('btnCompleteJoin');
       btn.disabled = true; btn.innerText = '저장 중...';
       const kst = getNowKST();
       const { email, provider } = pendingOAuthSession;
-      const isAdmin = (email === ADMIN_EMAIL) || sname.includes('용아국어');
+      const isAdmin = (email === ADMIN_EMAIL);
 
       await sb.from('students').upsert({
         user_id: email, user_name: sname, provider, pin: 'OAUTH',
@@ -1697,8 +1928,9 @@
       myUser = { userId: email, name: sname, provider, schoolInfo: school, isAdmin, streak: 1, bonusXp: 0 };
       myWords = await fetchUserWords(email, isAdmin);
       await loadUserGroupsAndMap();
+      await syncDailyQuizUsageFromDb();
 
-      btn.disabled = false; btn.innerText = '메이드보카 시작하기';
+      btn.disabled = false; btn.innerText = '동의하고 메이드보카 시작하기';
       document.getElementById('firstProfileModal').classList.remove('open');
       setupUserView();
       checkAndPlayFirstOpening();
@@ -1729,7 +1961,7 @@
         await sb.from('words').update({ user_name: newName }).eq('user_id', myUser.userId);
 
         myUser.name = newName; myUser.schoolInfo = newSchool;
-        myUser.isAdmin = (myUser.userId === ADMIN_EMAIL) || newName.includes('용아국어');
+        myUser.isAdmin = (myUser.userId === ADMIN_EMAIL);
         document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-flex' : 'none';
         myWords.forEach(w => { if (w.userId === myUser.userId) w.userName = newName; });
 
@@ -1742,8 +1974,51 @@
       }
     }
 
-    // =========================================================================
-    // 단어 카드 점 3개(...) 메뉴 & 그룹 변경/생성/삭제 & 단어 편집 & CSV 관리
+    async function logoutStudent() {
+      if (!confirm('현재 계정에서 로그아웃하시겠습니까?')) return;
+      await sb.auth.signOut();
+      myUser = null; myWords = [];
+      showScreen('screen-login');
+    }
+
+    // [스토어 필수 요건] 회원 탈퇴 및 모든 학습 데이터 영구 파기
+    async function confirmAndDeleteMyAccount() {
+      if (!myUser) return;
+      if (myUser.isAdmin) {
+        alert('교사용 관리자 계정은 실수로 삭제되지 않도록 보호되어 있습니다.');
+        return;
+      }
+      const ok1 = confirm('정말 회원 탈퇴를 진행하시겠습니까?\n탈퇴 즉시 내가 등록한 모든 단어장, 그룹, 경험치 기록 및 로그인 계정이 영구 삭제되며 복구할 수 없습니다.');
+      if (!ok1) return;
+
+      const checkText = prompt('계정 영구 삭제에 동의하시면 아래 입력창에 "탈퇴" 두 글자를 입력해 주세요.');
+      if (checkText !== '탈퇴') {
+        if (checkText !== null) showToast('입력이 일치하지 않아 탈퇴가 취소되었습니다.');
+        return;
+      }
+
+      try {
+        const uid = myUser.userId;
+        const { error } = await sb.rpc('delete_my_account');
+        if (error) throw error;
+
+        try {
+          localStorage.removeItem(`madevoca_grpdata_${uid}`);
+          localStorage.removeItem(`madevoca_synquota_${uid}`);
+          localStorage.removeItem(`madevoca_opening_seen_${uid}`);
+        } catch (e) {}
+
+        await sb.auth.signOut();
+        myUser = null; myWords = []; myGroups = []; wordGroupMap = {};
+        showScreen('screen-login');
+        alert('회원 탈퇴 및 모든 개인정보·학습 데이터 파기가 완료되었습니다.');
+      } catch (err) {
+        alert('회원 탈퇴 처리 중 오류가 발생했습니다: ' + err.message);
+      }
+    }
+// [PART 2 끝 - 바로 아래 줄에 PART 3 코드를 이어서 붙여넣으세요]
+// =========================================================================
+    // 3. 단어 카드 점 3개(...) 메뉴 & 그룹 관리 & CSV 입출력 (XSS · 수식 주입 방어)
     // =========================================================================
     function openWordDotMenu(e, wordId) {
       if (e) e.stopPropagation();
@@ -1781,7 +2056,7 @@
       let html = myGroups.map(gName => {
         const isSel = (selectedTempGroup === gName);
         const isCurrent = (curGroup === gName && selectedTempGroup === null);
-        return `<button type="button" class="group-option-item ${isSel ? 'selected' : ''}" onclick="selectGroupItemInModal('${escapeHtml(gName)}')"><span>${escapeHtml(gName)}</span><span style="font-size:11px; opacity:0.85;">${isSel ? '선택됨 ✓' : (isCurrent ? '현재 그룹' : '')}</span></button>`;
+        return `<button type="button" class="group-option-item ${isSel ? 'selected' : ''}" data-group="${escapeHtml(gName)}" onclick="selectGroupItemInModal(this.dataset.group)"><span>${escapeHtml(gName)}</span><span style="font-size:11px; opacity:0.85;">${isSel ? '선택됨 ✓' : (isCurrent ? '현재 그룹' : '')}</span></button>`;
       }).join('');
       if (curGroup) {
         const isUnassignSel = (selectedTempGroup === '__NONE__');
@@ -1819,6 +2094,7 @@
         if (!prompted || !prompted.trim()) return;
         gName = prompted.trim();
       }
+      if (gName.length > 25) { alert('그룹 이름은 25자 이내로 입력해 주세요.'); return; }
       if (myGroups.includes(gName)) { alert('이미 존재하는 그룹 이름입니다.'); return; }
       myGroups.push(gName);
       inp.value = '';
@@ -1900,8 +2176,12 @@
       showToast('단어가 삭제되었습니다.');
     }
 
+    // CSV 수식 주입(CSV Injection: =, +, -, @) 무력화 처리 적용
     function escapeCsvCell(val) {
-      const str = String(val == null ? '' : val).replace(/\r?\n/g, ' ');
+      let str = String(val == null ? '' : val).replace(/\r?\n/g, ' ');
+      if (/^[=+\-@]/.test(str.trimStart())) {
+        str = "'" + str;
+      }
       return (str.includes(',') || str.includes('"')) ? ('"' + str.replace(/"/g, '""') + '"') : str;
     }
 
@@ -1977,6 +2257,11 @@
     async function handleUserCsvImport(inputEl) {
       const file = inputEl.files && inputEl.files[0];
       if (!file || !myUser) return;
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하만 등록할 수 있습니다.');
+        inputEl.value = '';
+        return;
+      }
 
       const statusEl = document.getElementById('userCsvStatus');
       const importBtn = document.getElementById('btnImportCsv');
@@ -2018,27 +2303,28 @@
         }
 
         const startRow = hasHeader ? 1 : 0;
+        const maxRow = Math.min(matrix.length, startRow + 2000);
         const kst = getNowKST();
         const dbRecords = [];
         const localItems = [];
         const baseTs = Date.now();
         let groupUpdated = false;
 
-        for (let i = startRow; i < matrix.length; i++) {
+        for (let i = startRow; i < maxRow; i++) {
           const row = matrix[i];
           if (!row || row.length === 0) continue;
-          const word = String(row[wIdx] || '').trim();
+          const word = String(row[wIdx] || '').trim().slice(0, 50);
           if (!word) continue;
 
-          const grpName = (gIdx >= 0 && row[gIdx] != null) ? String(row[gIdx]).trim() : '';
-          const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim() : '';
+          const grpName = (gIdx >= 0 && row[gIdx] != null) ? String(row[gIdx]).trim().slice(0, 25) : '';
+          const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim().slice(0, 300) : '';
           const rawMeaning = (mIdx >= 0 && row[mIdx] != null) ? String(row[mIdx]).trim() : '';
           const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim() : rawMeaning;
-          const finalMeaning = selectBestContextualMeaning(rawMeaning || aiMeaning, sourceSentence, '');
+          const finalMeaning = selectBestContextualMeaning(rawMeaning || aiMeaning, sourceSentence, '') || rawMeaning.slice(0, 200);
           const synonyms = cleanSynAntText((synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]) : '', word);
           const antonyms = cleanSynAntText((antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]) : '', word);
-          const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim() : '';
-          const aiFeedback = (aiFbIdx >= 0 && row[aiFbIdx] != null) ? String(row[aiFbIdx]).trim() : '';
+          const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim().slice(0, 300) : '';
+          const aiFeedback = (aiFbIdx >= 0 && row[aiFbIdx] != null) ? String(row[aiFbIdx]).trim().slice(0, 300) : '';
           const rawStar = (starIdx >= 0 && row[starIdx] != null) ? String(row[starIdx]).trim().toUpperCase() : '';
 
           let star = 'BRONZE';
@@ -2093,8 +2379,7 @@
     }
 
     async function fetchUserWords(email, isAdmin) {
-      let query = sb.from('words').select('*').order('created_ts', { ascending: false });
-      if (!isAdmin) query = query.eq('user_id', email);
+      let query = sb.from('words').select('*').eq('user_id', email).order('created_ts', { ascending: false });
       const { data, error } = await query;
       if (error) throw error;
       return (data || []).map(row => ({
@@ -2103,13 +2388,6 @@
         synonyms: row.synonyms || '', antonyms: row.antonyms || '', mySentence: row.my_sentence || '',
         aiFeedback: row.ai_feedback || '', star: row.star || 'BRONZE', groupName: '', updatedAt: row.updated_at || ''
       }));
-    }
-
-    async function logoutStudent() {
-      if (!confirm('현재 계정에서 로그아웃하시겠습니까?')) return;
-      await sb.auth.signOut();
-      myUser = null; myWords = [];
-      showScreen('screen-login');
     }
 
     function setupUserView() {
@@ -2149,9 +2427,9 @@
       const bar = document.getElementById('groupFilterBar');
       if (!myGroups || myGroups.length === 0) { bar.style.display = 'none'; return; }
       bar.style.display = 'flex';
-      let html = `<button class="group-chip ${groupFilter === 'ALL' ? 'active' : ''}" onclick="setGroupFilter('ALL')">전체 그룹</button>`;
+      let html = `<button type="button" class="group-chip ${groupFilter === 'ALL' ? 'active' : ''}" onclick="setGroupFilter('ALL')">전체 그룹</button>`;
       myGroups.forEach(g => {
-        html += `<button class="group-chip ${groupFilter === g ? 'active' : ''}" onclick="setGroupFilter('${escapeHtml(g)}')">${escapeHtml(g)}</button>`;
+        html += `<button type="button" class="group-chip ${groupFilter === g ? 'active' : ''}" data-group="${escapeHtml(g)}" onclick="setGroupFilter(this.dataset.group)">${escapeHtml(g)}</button>`;
       });
       bar.innerHTML = html;
     }
@@ -2161,9 +2439,9 @@
       myWords.forEach(w => { xp += (w.star === 'GOLD' ? 60 : (w.star === 'SILVER' ? 30 : 10)); });
       return xp;
     }
-// [PART 2 끝 - 바로 아래 줄에 PART 3 코드를 이어서 붙여넣으세요]
-// =========================================================================
-    // 3. 내장 사전 & 기호 정제 & 국어 문법 기본형 변환 & 4단계 엄격 검증 엔진
+
+    // =========================================================================
+    // 4. 국어 문법·문맥 엔진 & 보안 서버(gemini-proxy) AI 호출 & 4단계 단어 학습
     // =========================================================================
     const CORE_SYN_ANT_MAP = {
       '가다': { senses: ['한곳에서 다른 곳으로 장소를 이동하다.', '수레, 배, 자동차, 비행기 따위가 운행하거나 다니다.', '직업이나 학업, 복무 따위로 다른 곳으로 옮기다.', '시간이나 세월이 흘러 지나다.'], def: '한곳에서 다른 곳으로 장소를 이동하다.', syn: '이동하다, 나아가다, 향하다', ant: '오다, 머무르다, 멈추다' },
@@ -2444,33 +2722,28 @@
       return basePrefix + singleSense;
     }
 
-    // 텍스트 & 멀티모달(이미지) 공용 Gemini API 호출기
+    // [보안 핵심] 브라우저 노출 키 없이 수파베이스 gemini-proxy Edge Function만 호출
     async function callGeminiDirect(prompt, schema, maxTokens = 260, inlineImageBase64 = null) {
-      const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
-      const parts = [{ text: prompt }];
-      if (inlineImageBase64) {
-        parts.unshift({ inlineData: { mimeType: 'image/jpeg', data: inlineImageBase64 } });
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session || !session.access_token) {
+        throw new Error('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
       }
 
-      for (const modelName of models) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts }],
-              generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.15, maxOutputTokens: maxTokens }
-            })
-          });
-          if (res.ok) {
-            const json = await res.json();
-            const rawText = json.candidates[0].content.parts[0].text;
-            return JSON.parse(rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1));
-          }
-        } catch (e) {}
+      const res = await fetch(GEMINI_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_KEY
+        },
+        body: JSON.stringify({ prompt, schema, maxTokens, inlineImageBase64 })
+      });
+
+      const json = await res.json().catch(() => null);
+      if (res.ok && json && json.ok && json.data) {
+        return json.data;
       }
-      throw new Error('AI 응답 지연 또는 API 키 확인 필요');
+      throw new Error((json && json.error) ? json.error : `AI 보안 서버 응답 오류 (${res.status})`);
     }
 
     async function findContextualMeaningFromDbAndAi(rawWord, sourceSentence) {
@@ -2522,13 +2795,12 @@
       return { baseWord: matchedBaseWord || cleanWord, pureMeaning: cleanFinalMeaning, displayMeaning: basePrefix + cleanFinalMeaning };
     }
 
-    // [해결] 3단계 유의어·반의어: AI 폴백 시 엉뚱한 동음이의어나 무관한 역검색 단어가 섞이지 않도록 정밀 필터링!
     async function fetchSynonymsAndAntonyms(rawWord, contextMeaning, sourceSentence) {
       const cleanWord = rawWord.trim();
       const candidates = getKoreanGrammarBaseCandidates(cleanWord);
 
       const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
-      let dictHit = (dictRows && dictRows.length > 0) ? dictRows.find(r => r.antonyms !== 'META') : null;
+      let dictHit = (dictRows && dictRows.length > 0) ? dictRows[0] : null;
       let coreHit = null, matchedBaseWord = dictHit ? dictHit.word : cleanWord;
 
       for (const cand of candidates) {
@@ -2552,7 +2824,6 @@
         }
       } catch (e) {}
 
-      // 역검색 폴백은 흔한 고유어 동사(가다/오다/보다 등)에서는 절대 실행하지 않고, 2글자 이상 한자어/명사 어근이 뜻풀이와 품사가 일치할 때만 제한적으로 허용!
       const COMMON_VERB_ROOTS = /^(가|오|하|되|보|주|나|들|살|알|쓰|크|작|많|적|좋|싫|오르|내리|모르|걸|듣|묻|짓|낫)$/;
       if (!finalSynonyms) {
         const searchRoot = matchedBaseWord.replace(/(하다|되다|다)$/, '');
@@ -2571,7 +2842,6 @@
       return { synonyms: finalSynonyms || '유사 어휘 없음', antonyms: finalAntonyms || '없음' };
     }
 
-    // [해결] 4단계 나만의 문장 만들기 로컬 1차 엄격 검증기 (단어만 넣고 대충 쓴 문장 완벽 차단!)
     function validateSentenceStrictLocal(rawWord, meaningText, sourceSentence, mySentence) {
       const s = (mySentence || '').trim();
       if (s.length < 8) {
@@ -2585,14 +2855,12 @@
         return { ok: false, reason: '단어만 나열하지 말고 3어절 이상의 구체적인 상황 문장으로 만들어 보세요.' };
       }
 
-      // 출처 문장 그대로 베끼기 차단
       const normSrc = (sourceSentence || '').replace(/[^가-힣a-zA-Z0-9]/g, '');
       const normMy = s.replace(/[^가-힣a-zA-Z0-9]/g, '');
       if (normSrc && normSrc.length >= 5 && (normMy === normSrc || normMy.includes(normSrc) || normSrc.includes(normMy))) {
         return { ok: false, reason: '2단계의 출처 문장과 너무 비슷해요! 나만의 새로운 상황으로 문장을 만들어 보세요.' };
       }
 
-      // 목표 단어(또는 활용 어간) 포함 여부 확인
       const cands = getKoreanGrammarBaseCandidates(rawWord);
       const stems = new Set([rawWord.replace(/(하다|되다|다)$/, ''), ...cands.map(c => c.replace(/(하다|되다|다)$/, ''))].filter(st => st.length >= 1));
       let hasTarget = s.includes(rawWord);
@@ -2601,7 +2869,6 @@
         return { ok: false, reason: `작성한 문장 안에 목표 단어('${rawWord}')나 그 활용형이 들어가야 해요.` };
       }
 
-      // 목표 단어와 대명사/단순 서술어('좋다/싫다/이다/했다/있다')만 남긴 성의 없는 문장 차단 (예: "나는 배양이 참 좋다")
       let rest = s;
       stems.forEach(st => { if (st.length >= 2) rest = rest.replace(new RegExp(st + '[가-힣]*', 'g'), ''); });
       rest = rest.replace(new RegExp(rawWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[가-힣]*', 'g'), '');
@@ -2692,13 +2959,994 @@
         const gName = wordGroupMap[w.id] || '';
         const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
         return `
-          <div class="word-item-card" onclick="openBuilder('${w.id}')">
+          <div class="word-item-card" data-wid="${escapeHtml(w.id)}" onclick="openBuilder(this.dataset.wid)">
             <div style="flex:1; min-width:0; padding-right:8px;">
               <div class="word-title-row"><span>${escapeHtml(w.word)}</span>${groupBadgeHtml}</div>
               <div style="font-size:13px; color:var(--text-sub); margin-top:5px; line-height:1.45; word-break:keep-all;">${escapeHtml(getCleanSingleDisplayMeaning(w))}</div>
             </div>
             <div class="word-card-right">
-              <button type="button" class="btn-word-more" title="단어 메뉴" onclick="openWordDotMenu(event, '${w.id}')">${getLineIcon('dots', 18)}</button>
+              <button type="button" class="btn-word-more" title="단어 메뉴" data-wid="${escapeHtml(w.id)}" onclick="openWordDotMenu(event, this.dataset.wid)">${getLineIcon('dots', 18)}</button>
+              <div>${getStarSvg(w.star, 20)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function openBuilder(wordId) {
+      curItem = wordId ? myWords.find(w => w.id === wordId)**Part 2 맨 아랫줄 바로 밑**에 이어서 붙여넣으실 **[Part 3 / 4]** 코드입니다. 이 파트에는 XSS·엑셀 수식 주입(CSV Injection) 방어가 적용된 그룹·CSV 관리, 수파베이스 보안 서버(`gemini-proxy`) 연동 AI 호출기, AI 오류 신고 버튼이 포함된 1~4단계 학습 엔진이 들어 있습니다.
+
+```javascript
+    // =========================================================================
+    // 3. 단어 점 3개(...) 메뉴 & 그룹 관리 & CSV 입출력 (XSS · 수식 주입 방어 적용)
+    // =========================================================================
+    function openWordDotMenu(e, wordId) {
+      if (e) e.stopPropagation();
+      const target = myWords.find(w => w.id === wordId);
+      if (!target) return;
+      dotMenuTargetWordId = wordId;
+      document.getElementById('dotMenuWordTitle').innerText = target.word;
+      document.getElementById('dotMenuWordSub').innerText = getCleanSingleDisplayMeaning(target);
+      const gName = wordGroupMap[wordId] || '';
+      document.getElementById('dotMenuCurGroupLabel').innerText = gName ? `${gName} →` : '미지정 →';
+      document.getElementById('wordDotMenuModal').classList.add('open');
+    }
+    function closeWordDotMenu() { document.getElementById('wordDotMenuModal').classList.remove('open'); }
+
+    function openGroupChangeModal() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+      closeWordDotMenu();
+      selectedTempGroup = null;
+      document.getElementById('btnGroupEditDone').disabled = true;
+      document.getElementById('groupModalTargetWord').innerText = `'${target.word}'`;
+      document.getElementById('inpNewGroupName').value = '';
+      renderGroupOptionList();
+      document.getElementById('groupChangeModal').classList.add('open');
+    }
+    function closeGroupChangeModal() { document.getElementById('groupChangeModal').classList.remove('open'); }
+
+    function renderGroupOptionList() {
+      const listEl = document.getElementById('groupOptionList');
+      const curGroup = wordGroupMap[dotMenuTargetWordId] || '';
+      if (myGroups.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:22px 10px; color:var(--text-sub); font-size:13px; background:var(--surface); border:1px dashed var(--border); border-radius:12px;">아직 만든 그룹이 없습니다.<br>아래에서 새 그룹을 만들어 보세요.</div>`;
+        return;
+      }
+      let html = myGroups.map((gName, idx) => {
+        const isSel = (selectedTempGroup === gName);
+        const isCurrent = (curGroup === gName && selectedTempGroup === null);
+        return `<button type="button" class="group-option-item ${isSel ? 'selected' : ''}" onclick="selectGroupItemByIndex(${idx})"><span>${escapeHtml(gName)}</span><span style="font-size:11px; opacity:0.85;">${isSel ? '선택됨 ✓' : (isCurrent ? '현재 그룹' : '')}</span></button>`;
+      }).join('');
+      if (curGroup) {
+        const isUnassignSel = (selectedTempGroup === '__NONE__');
+        html += `<button type="button" class="group-option-item ${isUnassignSel ? 'selected' : ''}" onclick="selectGroupItemByIndex(-1)"><span>그룹 해제 (미지정)</span><span style="font-size:11px; opacity:0.85;">${isUnassignSel ? '선택됨 ✓' : ''}</span></button>`;
+      }
+      listEl.innerHTML = html;
+    }
+
+    function selectGroupItemByIndex(idx) {
+      if (idx === -1) {
+        selectedTempGroup = '__NONE__';
+      } else {
+        if (idx < 0 || idx >= myGroups.length) return;
+        selectedTempGroup = myGroups[idx];
+      }
+      document.getElementById('btnGroupEditDone').disabled = false;
+      renderGroupOptionList();
+    }
+
+    async function applyGroupSelectionDone() {
+      if (!dotMenuTargetWordId || selectedTempGroup === null) return;
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+      if (selectedTempGroup === '__NONE__') {
+        delete wordGroupMap[dotMenuTargetWordId]; target.groupName = '';
+      } else {
+        wordGroupMap[dotMenuTargetWordId] = selectedTempGroup; target.groupName = selectedTempGroup;
+      }
+      await saveUserGroupsAndMap();
+      closeGroupChangeModal();
+      renderMyList();
+      showToast(selectedTempGroup === '__NONE__' ? '그룹이 해제되었습니다.' : `'${selectedTempGroup}' 그룹으로 변경되었습니다.`);
+    }
+
+    async function createNewWordGroup() {
+      const inp = document.getElementById('inpNewGroupName');
+      let gName = inp.value.trim();
+      if (!gName) {
+        const prompted = prompt('새로 만들 그룹 이름을 입력해 주세요:');
+        if (!prompted || !prompted.trim()) return;
+        gName = prompted.trim();
+      }
+      if (gName.length > 24) { alert('그룹 이름은 24자 이내로 입력해 주세요.'); return; }
+      if (myGroups.includes(gName)) { alert('이미 존재하는 그룹 이름입니다.'); return; }
+      myGroups.push(gName);
+      inp.value = '';
+      selectedTempGroup = gName;
+      document.getElementById('btnGroupEditDone').disabled = false;
+      await saveUserGroupsAndMap();
+      renderGroupOptionList(); renderMyList();
+      showToast(`'${gName}' 그룹이 생성되었습니다.`);
+    }
+
+    async function deleteSelectedWordGroup() {
+      if (!selectedTempGroup || selectedTempGroup === '__NONE__') {
+        alert('위 목록에서 삭제할 그룹을 먼저 눌러 선택해 주세요.'); return;
+      }
+      if (!confirm('그룹을 삭제하면 다시 되돌릴 수 없습니다. 그래도 삭제하시겠습니까?')) return;
+
+      const delGroup = selectedTempGroup;
+      myGroups = myGroups.filter(g => g !== delGroup);
+      Object.keys(wordGroupMap).forEach(wId => { if (wordGroupMap[wId] === delGroup) delete wordGroupMap[wId]; });
+      if (groupFilter === delGroup) groupFilter = 'ALL';
+
+      selectedTempGroup = null;
+      document.getElementById('btnGroupEditDone').disabled = true;
+      await saveUserGroupsAndMap();
+      renderGroupOptionList(); renderMyList();
+      showToast(`'${delGroup}' 그룹이 삭제되었습니다.`);
+    }
+
+    function openWordEditModal() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+      closeWordDotMenu();
+      document.getElementById('editModalWord').value = target.word || '';
+      document.getElementById('editModalSource').value = target.sourceSentence || '';
+      document.getElementById('editModalMeaning').value = getCleanSingleDisplayMeaning(target);
+      document.getElementById('editModalMySent').value = target.mySentence || '';
+      document.getElementById('wordEditModal').classList.add('open');
+    }
+    function closeWordEditModal() { document.getElementById('wordEditModal').classList.remove('open'); }
+
+    async function saveWordEditChanges() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+      const newW = document.getElementById('editModalWord').value.trim();
+      const newSrc = document.getElementById('editModalSource').value.trim();
+      const newM = document.getElementById('editModalMeaning').value.trim();
+      const newMy = document.getElementById('editModalMySent').value.trim();
+
+      if (!newW || !newSrc) { alert('단어(1단계)와 출처 문장(2단계)은 필수 입력 항목입니다.'); return; }
+
+      const btn = document.getElementById('btnSaveWordEdit');
+      btn.disabled = true; btn.innerText = '저장 중...';
+      const kst = getNowKST();
+
+      // 4단계 문장이 새로 입력된 경우 엄격 검증 통과 시에만 GOLD 인정
+      let newStar = target.star;
+      if (!newMy && newStar === 'GOLD') {
+        newStar = (target.synonyms || target.antonyms) ? 'SILVER' : 'BRONZE';
+      } else if (newMy && target.star !== 'GOLD') {
+        const chk = validateSentenceStrictLocal(newW, newM || target.meaning, newSrc, newMy);
+        if (chk.ok) newStar = 'GOLD';
+      }
+
+      target.word = newW; target.sourceSentence = newSrc;
+      if (newM) { target.meaning = newM; target.aiMeaning = newM; }
+      target.mySentence = newMy; target.star = newStar; target.updatedAt = kst.full;
+
+      await sb.from('words').update({
+        word: newW, meaning: target.meaning, source_sentence: newSrc,
+        ai_meaning: target.aiMeaning, my_sentence: newMy, star: newStar, updated_at: kst.full
+      }).eq('id', target.id);
+
+      btn.disabled = false; btn.innerText = '편집 저장하기';
+      closeWordEditModal(); renderMyList();
+      showToast('단어가 수정되었습니다.');
+    }
+
+    async function deleteWordFromDotMenu() {
+      const target = myWords.find(w => w.id === dotMenuTargetWordId);
+      if (!target) return;
+      closeWordDotMenu();
+      if (!confirm(`'${target.word}' 단어를 삭제하시겠습니까?`)) return;
+      myWords = myWords.filter(w => w.id !== target.id);
+      if (wordGroupMap[target.id]) { delete wordGroupMap[target.id]; saveUserGroupsAndMap(); }
+      renderMyList();
+      await sb.from('words').delete().eq('id', target.id);
+      showToast('단어가 삭제되었습니다.');
+    }
+
+    // 엑셀 수식 주입(CSV Formula Injection) 방어 적용 셀 이스케이프
+    function escapeCsvCell(val) {
+      let str = String(val == null ? '' : val).replace(/\r?\n/g, ' ');
+      if (/^[\s]*[=+\-@\t\r]/.test(str)) {
+        str = "'" + str;
+      }
+      return (str.includes(',') || str.includes('"')) ? ('"' + str.replace(/"/g, '""') + '"') : str;
+    }
+
+    function openCsvExportModal() {
+      if (!myWords || myWords.length === 0) { alert('현재 등록된 단어가 없어 내보낼 데이터가 없습니다.'); return; }
+      document.getElementById('exportAllCountDesc').innerText = `내 단어장에 등록된 모든 단어(총 ${myWords.length}개)를 CSV 파일로 내려받습니다.`;
+
+      const sel = document.getElementById('selExportGroup');
+      const groupCounts = {};
+      let ungroupedCnt = 0;
+      myWords.forEach(w => {
+        const g = wordGroupMap[w.id] || '';
+        if (g) groupCounts[g] = (groupCounts[g] || 0) + 1;
+        else ungroupedCnt++;
+      });
+
+      const allGroupNames = Array.from(new Set([...myGroups, ...Object.keys(groupCounts)]));
+      let optionsHtml = '';
+      allGroupNames.forEach(g => { optionsHtml += `<option value="${escapeHtml(g)}">${escapeHtml(g)} (${groupCounts[g] || 0}개)</option>`; });
+      optionsHtml += `<option value="__UNGROUPED__">그룹 미지정 단어 (${ungroupedCnt}개)</option>`;
+      sel.innerHTML = optionsHtml;
+      document.getElementById('csvExportModal').classList.add('open');
+    }
+    function closeCsvExportModal() { document.getElementById('csvExportModal').classList.remove('open'); }
+
+    function exportWordsToCsvByOption(mode) {
+      let targetWords = [];
+      let fileSuffix = '전체';
+      if (mode === 'ALL') {
+        targetWords = myWords;
+      } else {
+        const selVal = document.getElementById('selExportGroup').value;
+        if (selVal === '__UNGROUPED__') { targetWords = myWords.filter(w => !(wordGroupMap[w.id])); fileSuffix = '미지정'; }
+        else { targetWords = myWords.filter(w => (wordGroupMap[w.id] || '') === selVal); fileSuffix = selVal; }
+      }
+      if (!targetWords || targetWords.length === 0) { alert('선택한 항목에 해당하는 단어가 없습니다.'); return; }
+
+      const headers = ['그룹', '단어', '출처문장', '문맥의미', '유의어', '반의어', '나의문장', 'AI피드백', '단계', '등록일시'];
+      const stageLabelMap = { 'BRONZE': '1·2단계', 'SILVER': '3단계', 'GOLD': '4단계' };
+      const rows = targetWords.map(w => [
+        wordGroupMap[w.id] || '', w.word || '', w.sourceSentence || '', getCleanSingleDisplayMeaning(w),
+        cleanSynAntText(w.synonyms, w.word), cleanSynAntText(w.antonyms, w.word),
+        w.mySentence || '', w.aiFeedback || '', stageLabelMap[w.star] || '1·2단계', w.updatedAt || ''
+      ]);
+
+      const csvContent = [headers.map(escapeCsvCell).join(','), ...rows.map(r => r.map(escapeCsvCell).join(','))].join('\r\n');
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeName = (myUser && myUser.name) ? myUser.name.replace(/[^가-힣a-zA-Z0-9_-]/g, '') : '단어장';
+      const safeGroup = fileSuffix.replace(/[^가-힣a-zA-Z0-9_-]/g, '');
+      a.href = url; a.download = `메이드보카_${safeName}_${safeGroup}_${getNowKST().date}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      closeCsvExportModal();
+      showToast(`'${fileSuffix}' 단어 ${targetWords.length}개를 CSV로 내보냈습니다.`);
+    }
+
+    function downloadCsvTemplate() {
+      const headers = ['그룹', '단어', '출처문장', '문맥의미', '나의문장'];
+      const sampleRows = [
+        ['수능필수', '배양', '독서는 사고력을 배양하는 가장 좋은 방법이다.', '실력이나 품성 따위를 기르고 발전시킴.', '꾸준한 연습으로 기초 체력을 배양했다.'],
+        ['고전시가', '어즈버', '어즈버 태평연월이 꿈이런가 하노라.', '아아, 문득 (감탄사).', '']
+      ];
+      const csvLines = [headers.map(escapeCsvCell).join(','), ...sampleRows.map(r => r.map(escapeCsvCell).join(','))];
+      const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = '메이드보카_단어등록_양식.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      showToast('CSV 기본 양식이 다운로드되었습니다.');
+    }
+
+    async function handleUserCsvImport(inputEl) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file || !myUser) return;
+      if (file.size > 5 * 1024 * 1024) {
+        alert('5MB 이하의 CSV/엑셀 파일만 등록할 수 있습니다.');
+        inputEl.value = '';
+        return;
+      }
+
+      const statusEl = document.getElementById('userCsvStatus');
+      const importBtn = document.getElementById('btnImportCsv');
+      statusEl.style.display = 'block'; statusEl.innerText = 'CSV 파일을 읽는 중...';
+      importBtn.disabled = true;
+
+      try {
+        const buffer = await file.arrayBuffer();
+        let wb = null;
+        if (file.name.toLowerCase().endsWith('.csv')) {
+          let text = new TextDecoder('utf-8').decode(buffer);
+          if (text.includes('\uFFFD')) text = new TextDecoder('euc-kr').decode(buffer);
+          wb = XLSX.read(text, { type: 'string' });
+        } else {
+          wb = XLSX.read(buffer, { type: 'array' });
+        }
+
+        const firstSheet = wb.Sheets[wb.SheetNames[0]];
+        const matrix = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+        if (!matrix || matrix.length === 0) throw new Error('파일 안에 데이터가 없습니다.');
+
+        const firstRow = matrix[0].map(c => String(c || '').trim());
+        const hasHeader = firstRow.some(h => ['그룹', '단어', '어휘', '표제어', '뜻', '의미', '문맥의미', '출처문장', 'word', 'meaning', 'group'].includes(h.toLowerCase()));
+
+        let gIdx = -1, wIdx = 0, mIdx = 1, srcIdx = 2, myIdx = 3, synIdx = -1, antIdx = -1, aiMeanIdx = -1, aiFbIdx = -1, starIdx = -1;
+        if (hasHeader) {
+          gIdx = firstRow.findIndex(h => h.includes('그룹') || h.toLowerCase() === 'group');
+          wIdx = firstRow.findIndex(h => h.includes('단어') || h.includes('어휘') || h.includes('표제어') || h.toLowerCase() === 'word');
+          srcIdx = firstRow.findIndex(h => h.includes('출처') || h.includes('예문') || h.toLowerCase() === 'sourcesentence');
+          mIdx = firstRow.findIndex(h => h === '뜻' || h.includes('뜻풀이') || h.includes('의미') || h.toLowerCase() === 'meaning');
+          aiMeanIdx = firstRow.findIndex(h => h.includes('문맥') || h.toLowerCase() === 'aimeaning');
+          synIdx = firstRow.findIndex(h => h.includes('유의어') || h.includes('비슷'));
+          antIdx = firstRow.findIndex(h => h.includes('반의어') || h.includes('반대'));
+          myIdx = firstRow.findIndex(h => h.includes('나의문장') || h.includes('내문장') || h.includes('작문'));
+          aiFbIdx = firstRow.findIndex(h => h.includes('피드백') || h.includes('첨삭'));
+          starIdx = firstRow.findIndex(h => h.includes('단계') || h.includes('등급') || h.toLowerCase() === 'star');
+          if (wIdx === -1) wIdx = (gIdx === 0 ? 1 : 0);
+          if (mIdx === -1 && aiMeanIdx !== -1) mIdx = aiMeanIdx;
+        }
+
+        const startRow = hasHeader ? 1 : 0;
+        const maxRows = Math.min(matrix.length, startRow + 500);
+        const kst = getNowKST();
+        const dbRecords = [];
+        const localItems = [];
+        const baseTs = Date.now();
+        let groupUpdated = false;
+
+        for (let i = startRow; i < maxRows; i++) {
+          const row = matrix[i];
+          if (!row || row.length === 0) continue;
+          const word = String(row[wIdx] || '').trim().slice(0, 40);
+          if (!word) continue;
+
+          const grpName = (gIdx >= 0 && row[gIdx] != null) ? String(row[gIdx]).trim().slice(0, 24) : '';
+          const sourceSentence = (srcIdx >= 0 && row[srcIdx] != null) ? String(row[srcIdx]).trim().slice(0, 300) : '';
+          const rawMeaning = (mIdx >= 0 && row[mIdx] != null) ? String(row[mIdx]).trim().slice(0, 200) : '';
+          const aiMeaning = (aiMeanIdx >= 0 && row[aiMeanIdx] != null) ? String(row[aiMeanIdx]).trim().slice(0, 200) : rawMeaning;
+          const finalMeaning = selectBestContextualMeaning(rawMeaning || aiMeaning, sourceSentence, '');
+          const synonyms = cleanSynAntText((synIdx >= 0 && row[synIdx] != null) ? String(row[synIdx]) : '', word);
+          const antonyms = cleanSynAntText((antIdx >= 0 && row[antIdx] != null) ? String(row[antIdx]) : '', word);
+          const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim().slice(0, 300) : '';
+          const aiFeedback = (aiFbIdx >= 0 && row[aiFbIdx] != null) ? String(row[aiFbIdx]).trim().slice(0, 300) : '';
+
+          // CSV 임포트 통한 무검증 GOLD 대량 조작 방지 (엄격 문장 검증 통과 시에만 GOLD)
+          let star = 'BRONZE';
+          if (mySentence && validateSentenceStrictLocal(word, finalMeaning, sourceSentence, mySentence).ok) {
+            star = 'GOLD';
+          } else if (synonyms) {
+            star = 'SILVER';
+          }
+
+          const newId = `W_${baseTs}_${i}_${Math.floor(Math.random() * 1000)}`;
+          if (grpName) {
+            if (!myGroups.includes(grpName)) myGroups.push(grpName);
+            wordGroupMap[newId] = grpName;
+            groupUpdated = true;
+          }
+
+          dbRecords.push({
+            id: newId, user_id: myUser.userId, user_name: myUser.name, word,
+            meaning: finalMeaning, source_sentence: sourceSentence, ai_meaning: finalMeaning,
+            synonyms, antonyms, my_sentence: mySentence, ai_feedback: aiFeedback, star, updated_at: kst.full
+          });
+          localItems.push({
+            id: newId, userId: myUser.userId, userName: myUser.name, word,
+            meaning: finalMeaning, sourceSentence, aiMeaning: finalMeaning,
+            synonyms, antonyms, mySentence, aiFeedback, star, groupName: grpName, updatedAt: kst.full
+          });
+        }
+
+        if (dbRecords.length === 0) throw new Error('등록할 수 있는 단어 행을 찾지 못했습니다.');
+
+        for (let i = 0; i < dbRecords.length; i += 200) {
+          const chunk = dbRecords.slice(i, i + 200);
+          statusEl.innerText = `단어 등록 중... (${Math.min(i + 200, dbRecords.length)} / ${dbRecords.length}개)`;
+          const { error } = await sb.from('words').insert(chunk);
+          if (error) throw error;
+        }
+
+        myWords = [...localItems, ...myWords];
+        if (groupUpdated) await saveUserGroupsAndMap();
+        renderMyList(); fireConfetti(true);
+        statusEl.innerText = `총 ${dbRecords.length}개의 단어가 성공적으로 등록되었습니다.`;
+        showToast(`CSV에서 단어 ${dbRecords.length}개를 등록했습니다.`);
+      } catch (err) {
+        statusEl.innerText = `오류: ${err.message}`;
+        alert('CSV 등록 중 오류가 발생했습니다: ' + err.message);
+      } finally {
+        inputEl.value = ''; importBtn.disabled = false;
+      }
+    }
+
+    function updateHeaderUserLabel() {
+      if (!myUser) return;
+      const schoolText = myUser.schoolInfo ? ` · ${myUser.schoolInfo}` : '';
+      document.getElementById('userLabel').innerText = `${myUser.name}${schoolText}`;
+    }
+
+    async function fetchUserWords(email, isAdmin) {
+      const { data, error } = await sb.from('words').select('*').eq('user_id', email).order('created_ts', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(row => ({
+        id: row.id, userId: row.user_id, userName: row.user_name, word: row.word,
+        meaning: row.meaning, sourceSentence: row.source_sentence || '', aiMeaning: row.ai_meaning || '',
+        synonyms: row.synonyms || '', antonyms: row.antonyms || '', mySentence: row.my_sentence || '',
+        aiFeedback: row.ai_feedback || '', star: row.star || 'BRONZE', groupName: '', updatedAt: row.updated_at || ''
+      }));
+    }
+
+    function setupUserView() {
+      updateHeaderUserLabel();
+      document.getElementById('btnAdminMode').style.display = myUser.isAdmin ? 'inline-flex' : 'none';
+      switchMainTab('words', 0);
+      renderMyList();
+      showScreen('screen-list');
+    }
+
+    function onSearchWordInput() {
+      searchQuery = document.getElementById('inpWordSearch').value.trim().toLowerCase();
+      document.getElementById('btnClearSearch').style.display = searchQuery ? 'flex' : 'none';
+      renderMyList();
+    }
+    function clearWordSearch() {
+      document.getElementById('inpWordSearch').value = '';
+      searchQuery = '';
+      document.getElementById('btnClearSearch').style.display = 'none';
+      renderMyList();
+    }
+
+    function toggleStarFilter(tier) {
+      starFilter = (starFilter === tier) ? 'ALL' : tier;
+      document.getElementById('filterB').className = 'reward-pill' + (starFilter === 'BRONZE' ? ' active-filter' : '');
+      document.getElementById('filterS').className = 'reward-pill' + (starFilter === 'SILVER' ? ' active-filter' : '');
+      document.getElementById('filterG').className = 'reward-pill' + (starFilter === 'GOLD' ? ' active-filter' : '');
+      renderMyList();
+    }
+
+    function setGroupFilterByIndex(idx) {
+      if (idx === -1) {
+        groupFilter = 'ALL';
+      } else if (idx >= 0 && idx < myGroups.length) {
+        const gName = myGroups[idx];
+        groupFilter = (groupFilter === gName) ? 'ALL' : gName;
+      }
+      renderMyList();
+    }
+
+    function renderGroupFilterBar() {
+      const bar = document.getElementById('groupFilterBar');
+      if (!myGroups || myGroups.length === 0) { bar.style.display = 'none'; return; }
+      bar.style.display = 'flex';
+      let html = `<button type="button" class="group-chip ${groupFilter === 'ALL' ? 'active' : ''}" onclick="setGroupFilterByIndex(-1)">전체 그룹</button>`;
+      myGroups.forEach((g, idx) => {
+        html += `<button type="button" class="group-chip ${groupFilter === g ? 'active' : ''}" onclick="setGroupFilterByIndex(${idx})">${escapeHtml(g)}</button>`;
+      });
+      bar.innerHTML = html;
+    }
+
+    function getMyTotalXp() {
+      let xp = Number(myUser && myUser.bonusXp ? myUser.bonusXp : 0);
+      myWords.forEach(w => { xp += (w.star === 'GOLD' ? 60 : (w.star === 'SILVER' ? 30 : 10)); });
+      return xp;
+    }
+
+    // =========================================================================
+    // 4. 내장 사전 & 문법 엔진 & 보안 AI 프록시(gemini-proxy) & 1~4단계 학습
+    // =========================================================================
+    const CORE_SYN_ANT_MAP = {
+      '가다': { senses: ['한곳에서 다른 곳으로 장소를 이동하다.', '수레, 배, 자동차, 비행기 따위가 운행하거나 다니다.', '직업이나 학업, 복무 따위로 다른 곳으로 옮기다.', '시간이나 세월이 흘러 지나다.'], def: '한곳에서 다른 곳으로 장소를 이동하다.', syn: '이동하다, 나아가다, 향하다', ant: '오다, 머무르다, 멈추다' },
+      '오다': { senses: ['다른 곳에서 이곳으로 장소를 이동하다.', '비나 눈 따위의 기상 현상이 내리다.', '어떤 계절이나 시기, 기회가 닥쳐오다.'], def: '다른 곳에서 이곳으로 장소를 이동하다.', syn: '도착하다, 찾아오다, 다다르다', ant: '가다, 떠나다' },
+      '오르다': { senses: ['사람이나 동물 따위가 아래에서 위나 높은 곳으로 이동하다.', '물가, 성적, 기온, 가치 따위의 수치나 등급이 높아지다.', '차, 배, 비행기 따위의 탈것에 몸을 싣다.'], def: '아래에서 위로 이동하거나 수치·등급 따위가 높아지다.', syn: '상승하다, 올라가다, 등정하다', ant: '내리다, 하락하다, 떨어지다' },
+      '내리다': { senses: ['눈, 비, 서리 따위가 하늘에서 떨어지다.', '높은 곳에서 낮은 곳으로 이동하거나 탈것에서 밖으로 나오다.', '물가, 기온, 성적 따위가 낮아지다.'], def: '위에서 아래로 이동하거나 수치·정도 따위가 낮아지다.', syn: '하강하다, 하락하다, 내놓다', ant: '오르다, 상승하다' },
+      '모르다': { senses: ['사실이나 내용을 알지 못하거나 이해하지 못하다.', '어떤 사람이나 사물을 겪어 보지 못하여 관계가 없다.'], def: '사실이나 내용을 알지 못하거나 이해하지 못하다.', syn: '알지 못하다, 미지하다, 생소하다', ant: '알다, 깨닫다, 이해하다' },
+      '알다': { senses: ['감각이나 사유를 통하여 사실이나 대상을 의식하고 깨닫다.', '어떤 일이나 상황을 마음으로 헤아려 이해하다.'], def: '사실이나 대상을 의식하고 깨달아 이해하다.', syn: '깨닫다, 이해하다, 파악하다', ant: '모르다, 잊다' },
+      '싫다': { senses: ['마음에 들지 아니하여 좋지 아니하다.', '하고 싶은 마음이 없다.'], def: '마음에 들지 아니하여 좋지 아니하다.', syn: '꺼리다, 마땅찮다, 밉다', ant: '좋다, 반갑다, 기쁘다' },
+      '좋다': { senses: ['대상의 성질이나 내용이 마음에 들 만한 가치가 있다.', '기분 상태가 정상적이거나 유쾌하다.'], def: '대상의 성질이나 내용이 마음에 들 만한 가치가 있다.', syn: '훌륭하다, 마땅하다, 반갑다', ant: '싫다, 나쁘다' },
+      '보다': { senses: ['눈으로 대상의 존재나 형태를 인식하다.', '책, 신문, 영화 따위를 읽거나 감상하다.', '대상을 어떤 관점으로 평가하거나 판단하다.'], def: '눈으로 대상을 인식하거나 책을 읽고 살펴보다.', syn: '바라보다, 관찰하다, 살피다', ant: '외면하다, 무시하다' },
+      '크다': { senses: ['길이, 넓이, 부피 따위가 보통 정도를 넘다.', '일이나 사건의 규모, 중요성이 대단하다.'], def: '길이, 넓이, 부피나 정도가 보통 수준을 넘다.', syn: '거대하다, 넓다, 막대하다', ant: '작다, 좁다, 적다' },
+      '작다': { def: '길이, 넓이, 부피 따위가 보통 정도에 미치지 못하다.', syn: '자그마하다, 왜소하다, 협소하다', ant: '크다, 거대하다' },
+      '많다': { def: '수효나 분량, 정도 따위가 일정한 기준을 넘다.', syn: '풍부하다, 허다하다, 넉넉하다', ant: '적다, 부족하다, 드물다' },
+      '적다': { senses: ['수효나 분량, 정도가 일정한 기준에 미치지 못하다.', '글자나 기호를 종이 위에 쓰다.'], def: '수효나 분량, 정도가 일정한 기준에 미치지 못하다.', syn: '모자라다, 부족하다, 희소하다', ant: '많다, 풍부하다' },
+      '아름답다': { def: '보거나 듣기에 흐뭇하고 훌륭하다.', syn: '곱다, 수려하다, 어여쁘다', ant: '추하다, 밉다' },
+      '어렵다': { def: '하기가 까다로워 힘에 겹거나 이해하기 쉽지 않다.', syn: '난해하다, 곤란하다, 버겁다', ant: '쉽다, 수월하다, 용이하다' },
+      '쉽다': { def: '하기에 까다롭거나 힘들지 아니하다.', syn: '수월하다, 용이하다, 간단하다', ant: '어렵다, 난해하다' },
+      '빠르다': { def: '어떤 동작이나 일에 걸리는 시간이 짧다.', syn: '신속하다, 재빠르다, 민첩하다', ant: '느리다, 더디다' },
+      '느리다': { def: '어떤 동작이나 일에 걸리는 시간이 길다.', syn: '더디다, 완만하다, 굼뜨다', ant: '빠르다, 신속하다' },
+      '다르다': { def: '비교가 되는 두 대상이 서로 같지 아니하다.', syn: '상이하다, 별다르다, 구별되다', ant: '같다, 동일하다' },
+      '같다': { def: '둘 이상의 대상이 서로 다르지 않고 하나이다.', syn: '동일하다, 일치하다, 비슷하다', ant: '다르다, 상이하다' },
+      '집': { senses: ['사람이나 동물이 추위, 더위, 비바람 따위를 막고 들어 살기 위하여 지은 건물.', '가정을 이루고 생활하는 집안이나 식구.'], def: '사람이나 동물이 추위, 더위, 비바람을 막고 들어 살기 위하여 지은 건물.', syn: '가옥, 주택, 거처', ant: '바깥, 외부, 타향' },
+      '배양': { def: '실력이나 품성 따위를 기르고 발전시킴.', syn: '함양, 양성', ant: '소멸, 파괴' },
+      '고찰': { def: '사물이나 현상을 깊이 생각하여 살핌.', syn: '탐구, 성찰', ant: '간과, 무시' },
+      '역설': { def: '겉으로는 모순되나 그 속에 중요한 진리가 함축된 표현.', syn: '패러독스, 모순어법', ant: '정설, 직설' },
+      '간과': { def: '큰 관심 없이 대강 보아 넘김.', syn: '묵과, 외면', ant: '주목, 중시' },
+      '귀결': { def: '어떤 결말이나 결과에 이르게 됨.', syn: '결론, 종결', ant: '발단, 시작' },
+      '사상': { def: '공통점만 취하고 차이점을 버림.', syn: '추상, 배제', ant: '구체화, 포괄' },
+      '함양': { def: '능력이나 품성 따위를 오래도록 길러 키움.', syn: '배양, 도야', ant: '소모, 상실' },
+      '통찰': { def: '예리한 관찰력으로 사물을 꿰뚫어 봄.', syn: '간파, 직관', ant: '맹목, 착각' },
+      '성찰': { def: '자기가 한 일을 깊이 반성하여 살핌.', syn: '반성, 자성', ant: '자만, 망각' },
+      '관조': { def: '고요한 마음으로 사물이나 현상을 관찰하거나 비추어 봄.', syn: '응시, 달관', ant: '개입, 몰입' },
+      '지양': { def: '더 높은 단계로 오르기 위하여 어떠한 것을 하지 아니함.', syn: '극복, 탈피', ant: '지향, 고수' },
+      '지향': { def: '어떤 목표로 뜻이 쏠리어 향함.', syn: '추구, 지망', ant: '지양, 회피' },
+      '수렴': { def: '여럿으로 나뉜 의견을 하나로 모아 정리함.', syn: '집약, 통합', ant: '발산, 확산' },
+      '괴리': { def: '서로 어그러져 동떨어짐.', syn: '이질, 단절', ant: '일치, 부합' },
+      '부합': { def: '사물이나 현상이 서로 꼭 들어맞음.', syn: '일치, 합치', ant: '괴리, 모순' }
+    };
+
+    const FALLBACK_VOCAB = [
+      { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴.' },
+      { word: '고찰', meaning: '사물이나 현상을 깊이 생각하여 살핌.' },
+      { word: '역설', meaning: '겉으로는 모순되나 그 속에 진리가 담긴 표현.' },
+      { word: '간과', meaning: '큰 관심 없이 대강 보아 넘김.' },
+      { word: '귀결', meaning: '어떤 결말이나 결과에 이르게 됨.' },
+      { word: '사상', meaning: '공통점만 취하고 차이점을 버림.' }
+    ];
+
+    function cleanSenseMarkers(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/\[기본형:[^\]]+\]/g, ' ')
+        .replace(/\[[^\]]*\]|「[^」]*」|『[^』]*』|【[^】]*】|\(\d+\)|[①-⑳Ⅰ-Ⅻ]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function isValidKoreanDefinition(str) {
+      if (!str) return false;
+      const cleaned = cleanSenseMarkers(str);
+      if (cleaned === '문맥 의미 분석 중...' || cleaned.includes('분석하고 있습니다') || cleaned.includes('불러오는 중')) return false;
+      const hangulChars = cleaned.match(/[가-힣]/g);
+      return Boolean(hangulChars && hangulChars.length >= 3);
+    }
+
+    function cleanSynAntText(rawStr, excludeWord = '', excludeBase = '') {
+      if (!rawStr) return '';
+      const s = String(rawStr).trim();
+      if (!s || s === '없음' || s === '유사 어휘 없음' || s === 'META') return '';
+
+      const stripped = s
+        .replace(/\[[^\]]*\]|「[^」]*」|『[^』]*』|【[^】]*】|\([^)]*\)/g, ',')
+        .replace(/(비슷한말|유의어|반대말|반의어|참고어|낮춤말|높임말|센말|여린말|준말|본말)/g, ',')
+        .replace(/[^가-힣\s,\/|;·]/g, ' ');
+
+      const rawTokens = stripped.split(/[,\/|;·]+/).map(t => t.trim()).filter(Boolean);
+      const uniqueWords = [];
+      rawTokens.forEach(tok => {
+        const cleanTok = tok.replace(/\s+/g, ' ').trim();
+        if (!cleanTok || cleanTok.length > 12) return;
+        if (cleanTok === '없음' || cleanTok === '유사 어휘 없음') return;
+        if (cleanTok === excludeWord || cleanTok === excludeBase) return;
+        if (!uniqueWords.includes(cleanTok)) uniqueWords.push(cleanTok);
+      });
+      return uniqueWords.slice(0, 4).join(', ');
+    }
+
+    function combineJamoToSyllable(choIdx, jungIdx, jongIdx) {
+      return String.fromCharCode(0xAC00 + (choIdx * 588) + (jungIdx * 28) + jongIdx);
+    }
+    function decomposeHangulSyllable(ch) {
+      if (!ch) return null;
+      const code = ch.charCodeAt(0);
+      if (code < 0xAC00 || code > 0xD7A3) return null;
+      const offset = code - 0xAC00;
+      return { cho: Math.floor(offset / 588), jung: Math.floor((offset % 588) / 28), jong: offset % 28 };
+    }
+
+    function getKoreanGrammarBaseCandidates(rawInput) {
+      const w = (rawInput || '').trim().replace(/[.?!~,"']/g, '');
+      if (!w) return [];
+
+      const candidates = [];
+      const pushUnique = (wordForm) => {
+        if (wordForm && wordForm.length >= 1 && !candidates.includes(wordForm)) candidates.push(wordForm);
+      };
+      const addVerbAndRoot = (stem) => {
+        if (!stem) return;
+        pushUnique(stem + '다');
+        if (/(하|되|시키|스럽|롭)$/.test(stem)) {
+          const nounRoot = stem.replace(/(하|되|시키|스럽|롭)$/, '');
+          if (nounRoot) pushUnique(nounRoot);
+        }
+      };
+
+      const isConjugatedDa = /(시|으시|었|았|겠|더|셨|으셨|했|됐|왔|갔|봤|줬|놨|썼|컸|몰랐|달랐|빨랐|불렀|골랐|흘렀|올랐|잘랐|길렀|눌렀|워졌|아졌|어졌|기뻤|슬펐|예뻤|바빴|아팠)다$/.test(w);
+      if (w.endsWith('다') && !isConjugatedDa) {
+        pushUnique(w);
+        const nounFromDa = w.replace(/(하다|되다|시키다)$/, '');
+        if (nounFromDa && nounFromDa !== w) pushUnique(nounFromDa);
+      }
+
+      const reuTarget = w.replace(/(요|서|도|지|고|니|면|네|구나|다|어|어요)$/, '');
+      if (reuTarget.length >= 2) {
+        const decPrev = decomposeHangulSyllable(reuTarget.slice(-2, -1));
+        const decLast = decomposeHangulSyllable(reuTarget.slice(-1));
+        if (decPrev && decPrev.jong === 8 && decLast && decLast.cho === 5 && (decLast.jung === 0 || decLast.jung === 4) && (decLast.jong === 0 || decLast.jong === 20)) {
+          addVerbAndRoot(reuTarget.slice(0, -2) + combineJamoToSyllable(decPrev.cho, decPrev.jung, 0) + '르');
+        }
+      }
+
+      const bMatch = w.match(/^(.+?)(워|웠|워요|웠다|워서|워도|운|울|우니|우면|우시다|우셨다|와|왔|와요|왔다|와서|와도|오니)$/);
+      if (bMatch && bMatch[1]) {
+        const stemPrefix = bMatch[1], endingPart = bMatch[2];
+        const dec = decomposeHangulSyllable(stemPrefix.slice(-1));
+        if (w.startsWith('도와') || w.startsWith('도왔') || w.startsWith('도우') || w === '도운') addVerbAndRoot('돕');
+        else if (w.startsWith('고와') || w.startsWith('고왔') || w === '고운') addVerbAndRoot('곱');
+        else if (dec && dec.jong === 0 && !endingPart.startsWith('와') && !endingPart.startsWith('왔')) {
+          addVerbAndRoot(stemPrefix.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 17));
+        }
+      }
+
+      const dIrregRules = [
+        { regex: /^깨달(아|았|으니|으면|으시|았어|았다|아라)/, stem: '깨닫' },
+        { regex: /^일컬(어|었|으니|으면|으시|었어|었다)/, stem: '일컫' },
+        { regex: /^(걸|들|물|실|길)(어|었|어요|었다|어서|어도|으니|으면|으시|으셨)/, map: { '걸': '걷', '들': '듣', '물': '묻', '실': '싣', '길': '긷' } }
+      ];
+      for (const rule of dIrregRules) {
+        const m = w.match(rule.regex);
+        if (m) addVerbAndRoot(rule.stem || rule.map[m[1]]);
+      }
+
+      const sIrregMatch = w.match(/^(지|나|이|부|그|저)(어|었|어요|었다|어서|아|았|아요|았다|아서|으니|으면|은|을|으시|으셨)$/);
+      if (sIrregMatch) {
+        const sMap = { '지': '짓', '나': '낫', '이': '잇', '부': '붓', '그': '긋', '저': '젓' };
+        if (sMap[sIrregMatch[1]]) addVerbAndRoot(sMap[sIrregMatch[1]]);
+      }
+
+      const haMatch = w.match(/^(.*?)(해|했|해서|해도|해야|해요|했다|했어|했어요|하여|하였|하였다|하시다|하셨다|할|한|하는)$/);
+      if (haMatch) addVerbAndRoot((haMatch[1] || '') + '하');
+      const doeMatch = w.match(/^(.*?)(돼|됐|돼서|돼도|돼요|됐다|됐어|되었|되었다|되시다|되셨다|될|된|되는)$/);
+      if (doeMatch) addVerbAndRoot((doeMatch[1] || '') + '되');
+
+      const preFinalPattern = /^(.+?)(으시었|으셨|으시겠|으시더|으시|시었|셨|시겠|시더|시|았었|었었|았겠|었겠|았더|었더|았|었|겠|더)(다|어|아|어요|아요|습니다|ㅂ니다|지|고|니|니까|면|며|네|구나|군|는|던|라|자)?$/;
+      const preMatch = w.match(preFinalPattern);
+      if (preMatch && preMatch[1]) {
+        const rawStem = preMatch[1], preEnding = preMatch[2];
+        if (preEnding.startsWith('시') || preEnding.startsWith('셨')) {
+          const dec = decomposeHangulSyllable(rawStem.slice(-1));
+          if (dec && dec.jong === 0) {
+            const withRieul = rawStem.slice(0, -1) + combineJamoToSyllable(dec.cho, dec.jung, 8);
+            addVerbAndRoot(withRieul); addVerbAndRoot(rawStem);
+          } else addVerbAndRoot(rawStem);
+        } else addVerbAndRoot(rawStem);
+      }
+
+      const generalEndingPattern = /^(.+?)(습니다|ㅂ니다|소서|어라|아라|어요|아요|여요|구나|구먼|는데|은데|지만|건만|아도|어도|더라도|아서|어서|여서|니까|으니까|므로|으므로|거든|려면|으려면|려고|으려고|고자|도록|듯이|어|아|여|지|고|며|면서|면|으면|니|으니|네|군|자|세|다|기|음|는|은|던|을)$/;
+      const endMatch = w.match(generalEndingPattern);
+      if (endMatch && endMatch[1]) {
+        let stem = endMatch[1].replace(/(으시|시|었|았|겠|더)$/, '');
+        if (stem) addVerbAndRoot(stem);
+      }
+
+      if (!w.endsWith('다') || isConjugatedDa) {
+        const strippedCore = w.replace(/(습니다|ㅂ니다|어요|아요|여요|었어|았어|했어|었다|았다|했다|었으니|았으니|었으며|았으며|었고|았고|었지|았지|겠어|겠다|네요|구나|구먼|요|서|도|지|고|니|면|네)$/, '');
+        if (strippedCore.length >= 1 && !strippedCore.endsWith('다')) {
+          const prefix = strippedCore.slice(0, -1);
+          const dec = decomposeHangulSyllable(strippedCore.slice(-1));
+          if (dec && (dec.jong === 0 || dec.jong === 20 || dec.jong === 4 || dec.jong === 8)) {
+            if (dec.jung === 9) { if (dec.cho === 2 && prefix === '') addVerbAndRoot('놓'); addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 8, 0)); }
+            if (dec.jung === 14) addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 13, 0));
+            if (dec.jung === 6) addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 20, 0));
+            if (dec.jung === 10) addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 11, 0));
+            if ((dec.jung === 0 || dec.jung === 4) && (dec.jong === 0 || dec.jong === 20)) {
+              if (strippedCore === '퍼' || strippedCore === '펐') addVerbAndRoot('푸');
+              addVerbAndRoot(prefix + combineJamoToSyllable(dec.cho, 18, 0));
+            }
+          }
+        }
+      }
+
+      pushUnique(w);
+      if (!w.endsWith('다')) pushUnique(w + '다');
+      const josaStripped = w.replace(/(에서부터|으로부터|에게서|한테서|이라고|라고|이나마|나마|이라도|라도|야말로|이야말로|에서|에게|한테|으로|로|이나|나|이든|든|커녕|마다|조차|마저|까지|부터|밖에|처럼|같이|만큼|보다|이다|이야|야|이고|이니|이면|은|는|이|가|을|를|의|에|와|과|도|만)$/, '');
+      if (josaStripped && josaStripped.length >= 1) {
+        pushUnique(josaStripped); pushUnique(josaStripped + '다'); pushUnique(josaStripped + '하다');
+      }
+      return candidates;
+    }
+
+    const STOPWORD_ROOTS = new Set(['나', '너', '저', '그', '이', '것', '수', '등', '때', '중', '내', '네', '제', '우리', '그것', '이것', '저것', '여기', '거기', '저기']);
+
+    function selectBestContextualMeaning(rawDefinitionText, sourceSentence, fallbackMeaning) {
+      const sourceRaw = isValidKoreanDefinition(rawDefinitionText) ? rawDefinitionText : fallbackMeaning;
+      if (!isValidKoreanDefinition(sourceRaw)) return '';
+
+      const rawPieces = String(sourceRaw)
+        .replace(/\[기본형:[^\]]+\]/g, '')
+        .split(/\s*\|\|\s*|\s*\[[IVXⅠ-Ⅻ\d]+\]\s*|\s*「\d+」\s*|\s*[①-⑳]\s*|\s*(?:^|\s)[1-9]\.\s*|\r?\n|(?<=다|음|함|킴|됨)\.\s+/)
+        .map(s => cleanSenseMarkers(s))
+        .filter(s => isValidKoreanDefinition(s));
+
+      if (rawPieces.length === 0) {
+        const cleanedSingle = cleanSenseMarkers(sourceRaw);
+        return cleanedSingle.endsWith('.') ? cleanedSingle : (cleanedSingle + '.');
+      }
+
+      const sent = String(sourceSentence || '');
+      const hasPlaceDest = /(집|학교|회사|병원|산|바다|공원|방|교실|식당|가게|시장|역|공항|나라|서울|시골|고향|곳|밖)(에|으로|로|까지)/.test(sent);
+      const hasVehicle = /(자동차|수레|비행기|버스|기차|지하철|택시|배를|배가|자전거|열차|운전)/.test(sent);
+      const hasTimeCue = /(시간|세월|날이|해가|봄이|여름|가을|겨울|달이)/.test(sent);
+
+      const keywords = sent.replace(/[^가-힣\s]/g, ' ').split(/\s+/)
+        .map(t => t.replace(/(에서|에게|으로|로|은|는|이|가|을|를|에|도|만|하다|되다|다)$/, ''))
+        .filter(t => t.length >= 2 && !STOPWORD_ROOTS.has(t));
+
+      let bestSense = rawPieces[0], bestScore = -999;
+      rawPieces.forEach((sense, idx) => {
+        let score = (idx === 0) ? 2.0 : Math.max(0, 0.8 - idx * 0.15);
+        if (hasPlaceDest && /(장소를 이동|다른 곳으로|이곳으로 이동|움직여 가)/.test(sense) && !/(수레|자동차|비행기|직업|직책)/.test(sense)) score += 6;
+        if (!hasVehicle && /(수레|자동차|비행기 따위가 운행)/.test(sense)) score -= 5;
+        else if (hasVehicle && /(수레|자동차|비행기|탈것)/.test(sense)) score += 6;
+        if (hasTimeCue && /(시간|세월|지나다|흐르다)/.test(sense)) score += 5;
+
+        keywords.forEach(kw => {
+          if (new RegExp('(^|[^가-힣])' + kw).test(sense)) score += 3.5;
+        });
+        if (score > bestScore) { bestScore = score; bestSense = sense; }
+      });
+
+      bestSense = cleanSenseMarkers(bestSense);
+      if (bestSense && !/[.?!]$/.test(bestSense)) bestSense += '.';
+      return bestSense;
+    }
+
+    function getCleanSingleDisplayMeaning(wObj) {
+      if (!wObj) return '';
+      const rawAi = wObj.aiMeaning || '';
+      const rawMean = wObj.meaning || '';
+      const prefixMatch = rawAi.match(/^(\[(?:기본형|고전시가)[^\]]+\]\s*)/);
+      const basePrefix = (prefixMatch && !prefixMatch[1].includes('드다]')) ? prefixMatch[1] : '';
+
+      let candidate = isValidKoreanDefinition(rawAi) ? rawAi : (isValidKoreanDefinition(rawMean) ? rawMean : '');
+      if (!candidate) {
+        const cands = getKoreanGrammarBaseCandidates(wObj.word || '');
+        for (const c of cands) {
+          if (CORE_SYN_ANT_MAP[c]) {
+            const picked = selectBestContextualMeaning((CORE_SYN_ANT_MAP[c].senses || [CORE_SYN_ANT_MAP[c].def]).join(' || '), wObj.sourceSentence || '', CORE_SYN_ANT_MAP[c].def);
+            const prefix = (c !== wObj.word) ? `[기본형: ${c}] ` : '';
+            return prefix + picked;
+          }
+        }
+        return '문맥 의미를 불러오는 중...';
+      }
+      const bodyWithoutBase = candidate.replace(/^\[(?:기본형|고전시가)[^\]]+\]\s*/, '');
+      const singleSense = selectBestContextualMeaning(bodyWithoutBase, wObj.sourceSentence || '', bodyWithoutBase);
+      return basePrefix + singleSense;
+    }
+
+    // [보안 핵심] 수파베이스 Edge Function(gemini-proxy) 경유 AI 호출기 (API 키 브라우저 비노출)
+    async function callGeminiDirect(prompt, schema, maxTokens = 260, inlineImageBase64 = null) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session || !session.access_token) {
+        throw new Error('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
+      }
+
+      const res = await fetch(GEMINI_PROXY_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+          'apikey': SUPABASE_KEY
+        },
+        body: JSON.stringify({ prompt, schema, maxTokens, inlineImageBase64 })
+      });
+
+      const json = await res.json().catch(() => null);
+      if (res.ok && json && json.ok && json.data) {
+        return json.data;
+      }
+      throw new Error((json && json.error) ? json.error : `AI 보안 서버 응답 지연 (${res.status})`);
+    }
+
+    async function findContextualMeaningFromDbAndAi(rawWord, sourceSentence) {
+      const cleanWord = rawWord.trim();
+      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
+      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
+
+      let dictHit = null, matchedBaseWord = cleanWord;
+      if (dictRows && dictRows.length > 0) {
+        for (const cand of candidates) {
+          const found = dictRows.find(r => r.word === cand && isValidKoreanDefinition(r.definition));
+          if (found) { dictHit = found; matchedBaseWord = cand; break; }
+        }
+      }
+
+      let coreHit = null;
+      for (const cand of candidates) {
+        if (CORE_SYN_ANT_MAP[cand]) { coreHit = CORE_SYN_ANT_MAP[cand]; if (!dictHit) matchedBaseWord = cand; break; }
+      }
+
+      const coreSensesJoined = coreHit ? (coreHit.senses ? coreHit.senses.join(' || ') : coreHit.def) : '';
+      const rawDictDef = (dictHit && isValidKoreanDefinition(dictHit.definition))
+        ? (coreSensesJoined ? (coreSensesJoined + ' || ' + dictHit.definition) : dictHit.definition)
+        : coreSensesJoined;
+
+      let finalContextMeaning = selectBestContextualMeaning(rawDictDef, sourceSentence, coreHit ? coreHit.def : '');
+
+      try {
+        const prompt =
+          `단어:"${cleanWord}" / 출처문장:"${sourceSentence}"\n` +
+          `${rawDictDef ? `(사전 후보 뜻: "${cleanSenseMarkers(rawDictDef)}")\n` : ''}` +
+          `1. baseForm: 위 단어의 정확한 표준국어대사전 기본형 표제어.\n` +
+          `2. contextMeaning: 오직 위 출처문장의 맥락에 해당하는 뜻 딱 1가지만 기호 없이 자연스러운 한 문장으로 작성.`;
+        const schema = { type: 'OBJECT', properties: { baseForm: { type: 'STRING' }, contextMeaning: { type: 'STRING' } }, required: ['baseForm', 'contextMeaning'] };
+        const aiRes = await callGeminiDirect(prompt, schema, 180);
+        if (aiRes) {
+          if (aiRes.baseForm && !aiRes.baseForm.trim().endsWith('드다')) matchedBaseWord = aiRes.baseForm.trim();
+          if (isValidKoreanDefinition(aiRes.contextMeaning)) {
+            finalContextMeaning = selectBestContextualMeaning(aiRes.contextMeaning, sourceSentence, finalContextMeaning);
+          }
+        }
+      } catch (e) {}
+
+      if (!isValidKoreanDefinition(finalContextMeaning)) {
+        finalContextMeaning = (coreHit && coreHit.def) ? coreHit.def : `'${matchedBaseWord}'의 문맥적 의미입니다.`;
+      }
+      const basePrefix = (matchedBaseWord && matchedBaseWord !== cleanWord) ? `[기본형: ${matchedBaseWord}] ` : '';
+      const cleanFinalMeaning = selectBestContextualMeaning(finalContextMeaning, sourceSentence, finalContextMeaning);
+      return { baseWord: matchedBaseWord || cleanWord, pureMeaning: cleanFinalMeaning, displayMeaning: basePrefix + cleanFinalMeaning };
+    }
+
+    async function fetchSynonymsAndAntonyms(rawWord, contextMeaning, sourceSentence) {
+      const cleanWord = rawWord.trim();
+      const candidates = getKoreanGrammarBaseCandidates(cleanWord);
+
+      const { data: dictRows } = await sb.from('std_dict').select('*').in('word', candidates);
+      let dictHit = (dictRows && dictRows.length > 0) ? dictRows[0] : null;
+      let coreHit = null, matchedBaseWord = dictHit ? dictHit.word : cleanWord;
+
+      for (const cand of candidates) {
+        if (CORE_SYN_ANT_MAP[cand]) { coreHit = CORE_SYN_ANT_MAP[cand]; matchedBaseWord = cand; break; }
+      }
+
+      let finalSynonyms = cleanSynAntText(coreHit && coreHit.syn, cleanWord, matchedBaseWord) || cleanSynAntText(dictHit && dictHit.synonyms, cleanWord, matchedBaseWord);
+      let finalAntonyms = cleanSynAntText(coreHit && coreHit.ant, cleanWord, matchedBaseWord) || cleanSynAntText(dictHit && dictHit.antonyms, cleanWord, matchedBaseWord);
+
+      try {
+        const prompt =
+          `단어:"${cleanWord}"(기본형:"${matchedBaseWord}", 문맥뜻:"${contextMeaning}") / 출처문장:"${sourceSentence}"\n` +
+          `동음이의어를 절대 혼동하지 말고, 오직 위 문맥뜻에 정확히 부합하는 유의어 2~3개와 반의어 1~2개(없으면 '없음')를 순수 한글 단어로만 JSON 반환하세요.`;
+        const schema = { type: 'OBJECT', properties: { synonyms: { type: 'STRING' }, antonyms: { type: 'STRING' } }, required: ['synonyms', 'antonyms'] };
+        const aiRes = await callGeminiDirect(prompt, schema, 150);
+        if (aiRes) {
+          const aiSyn = cleanSynAntText(aiRes.synonyms, cleanWord, matchedBaseWord);
+          const aiAnt = cleanSynAntText(aiRes.antonyms, cleanWord, matchedBaseWord);
+          if (aiSyn) finalSynonyms = aiSyn;
+          if (aiAnt) finalAntonyms = aiAnt;
+        }
+      } catch (e) {}
+
+      const COMMON_VERB_ROOTS = /^(가|오|하|되|보|주|나|들|살|알|쓰|크|작|많|적|좋|싫|오르|내리|모르|걸|듣|묻|짓|낫)$/;
+      if (!finalSynonyms) {
+        const searchRoot = matchedBaseWord.replace(/(하다|되다|다)$/, '');
+        if (searchRoot.length >= 2 && !COMMON_VERB_ROOTS.test(searchRoot)) {
+          const isVerbTarget = matchedBaseWord.endsWith('다');
+          const { data: relRows } = await sb.from('std_dict').select('word, definition').ilike('definition', `%${searchRoot}하%`).neq('word', matchedBaseWord).limit(6);
+          if (relRows && relRows.length > 0) {
+            const matchedPosWords = relRows
+              .map(r => r.word)
+              .filter(w => w && w !== cleanWord && (isVerbTarget ? w.endsWith('다') : !w.endsWith('다')));
+            finalSynonyms = cleanSynAntText(matchedPosWords.join(', '), cleanWord, matchedBaseWord);
+          }
+        }
+      }
+
+      return { synonyms: finalSynonyms || '유사 어휘 없음', antonyms: finalAntonyms || '없음' };
+    }
+
+    function validateSentenceStrictLocal(rawWord, meaningText, sourceSentence, mySentence) {
+      const s = (mySentence || '').trim();
+      if (s.length < 8) {
+        return { ok: false, reason: '문장이 너무 짧아요. 주어와 서술어를 갖춘 완전한 문장(8자 이상)으로 작성해 보세요.' };
+      }
+      if (/[ㄱ-ㅎㅏ-ㅣ]{2,}/.test(s) || /(.)\1{3,}/.test(s)) {
+        return { ok: false, reason: '의미 없는 자모음이나 반복 글자가 포함되어 있어요. 자연스러운 문장으로 고쳐 보세요.' };
+      }
+      const wordsArr = s.split(/\s+/).filter(Boolean);
+      if (wordsArr.length < 3) {
+        return { ok: false, reason: '단어만 나열하지 말고 3어절 이상의 구체적인 상황 문장으로 만들어 보세요.' };
+      }
+
+      const normSrc = (sourceSentence || '').replace(/[^가-힣a-zA-Z0-9]/g, '');
+      const normMy = s.replace(/[^가-힣a-zA-Z0-9]/g, '');
+      if (normSrc && normSrc.length >= 5 && (normMy === normSrc || normMy.includes(normSrc) || normSrc.includes(normMy))) {
+        return { ok: false, reason: '2단계의 출처 문장과 너무 비슷해요! 나만의 새로운 상황으로 문장을 만들어 보세요.' };
+      }
+
+      const cands = getKoreanGrammarBaseCandidates(rawWord);
+      const stems = new Set([rawWord.replace(/(하다|되다|다)$/, ''), ...cands.map(c => c.replace(/(하다|되다|다)$/, ''))].filter(st => st.length >= 1));
+      let hasTarget = s.includes(rawWord);
+      stems.forEach(st => { if (s.includes(st)) hasTarget = true; });
+      if (!hasTarget) {
+        return { ok: false, reason: `작성한 문장 안에 목표 단어('${rawWord}')나 그 활용형이 들어가야 해요.` };
+      }
+
+      let rest = s;
+      stems.forEach(st => { if (st.length >= 2) rest = rest.replace(new RegExp(st + '[가-힣]*', 'g'), ''); });
+      rest = rest.replace(new RegExp(rawWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[가-힣]*', 'g'), '');
+      const meaningfulTokens = rest.replace(/[^가-힣\s]/g, ' ').split(/\s+/)
+        .filter(tok => tok.length >= 2 && !/^(나는|내가|너는|우리는|정말|매우|너무|아주|그냥|진짜|항상|오늘|어제|좋다|싫다|이다|했다|있다|없다|같다|된다|한다|좋아요|싫어요|입니다|했어요)$/.test(tok));
+
+      if (meaningfulTokens.length < 1) {
+        return { ok: false, reason: `'${rawWord}'의 뜻(${cleanSenseMarkers(meaningText).slice(0, 22)}...)이 드러나도록 구체적인 맥락 단어를 함께 넣어 작성해 보세요.` };
+      }
+
+      if (!/(다|요|까|네|지|군|구나|라|자|음|함)[.?!~]?$/.test(s)) {
+        return { ok: false, reason: '문장의 끝을 자연스러운 서술어(~다, ~요 등)로 마무리해 주세요.' };
+      }
+      return { ok: true, reason: '' };
+    }
+
+    async function autoHealExistingWordMeanings() {
+      if (!myWords || myWords.length === 0) return;
+      let anyChanged = false;
+      for (const w of myWords) {
+        const rawText = w.aiMeaning || w.meaning || '';
+        const hasMarkers = /\[(?!기본형:|고전시가)[^\]]*\]|「[^」]*」|\|\|/.test(rawText);
+        const dirtySyn = /[\[\]「」\(\):0-9]/.test(w.synonyms || '');
+        const dirtyAnt = /[\[\]「」\(\):0-9]/.test(w.antonyms || '');
+        if (!isValidKoreanDefinition(rawText) || hasMarkers || dirtySyn || dirtyAnt) {
+          const updatePayload = {};
+          if (!isValidKoreanDefinition(rawText) || hasMarkers) {
+            const healed = await findContextualMeaningFromDbAndAi(w.word, w.sourceSentence || w.word);
+            w.meaning = healed.pureMeaning; w.aiMeaning = healed.displayMeaning;
+            updatePayload.meaning = w.meaning; updatePayload.ai_meaning = w.aiMeaning;
+          }
+          if (dirtySyn) { w.synonyms = cleanSynAntText(w.synonyms, w.word) || '유사 어휘 없음'; updatePayload.synonyms = w.synonyms; }
+          if (dirtyAnt) { w.antonyms = cleanSynAntText(w.antonyms, w.word) || '없음'; updatePayload.antonyms = w.antonyms; }
+          anyChanged = true;
+          await sb.from('words').update(updatePayload).eq('id', w.id);
+        }
+      }
+      if (anyChanged) renderMyList();
+    }
+
+    function renderMyList() {
+      let b = 0, s = 0, g = 0, todayGold = 0;
+      const todayPrefix = getNowKST().date;
+      myWords.forEach(w => {
+        if (w.star === 'BRONZE') b++;
+        else if (w.star === 'SILVER') s++;
+        else if (w.star === 'GOLD') { g++; if (w.updatedAt && w.updatedAt.indexOf(todayPrefix) === 0) todayGold++; }
+      });
+
+      document.getElementById('cntB').innerText = b;
+      document.getElementById('cntS').innerText = s;
+      document.getElementById('cntG').innerText = g;
+
+      const totalXp = getMyTotalXp();
+      const lvInfo = getLevelInfo(totalXp);
+      const progressPct = Math.min(100, Math.round(((totalXp - lvInfo.min) / (lvInfo.max - lvInfo.min)) * 100));
+
+      document.getElementById('lvlBadge').innerHTML = `${getLineIcon('spark', 13)} Lv.${lvInfo.lv} ${lvInfo.title}`;
+      document.getElementById('streakBadge').innerHTML = `${getLineIcon('flame', 13)} ${(myUser && myUser.streak) || 1}일 연속`;
+      document.getElementById('xpTotalText').innerText = `${totalXp} XP`;
+      document.getElementById('xpNextText').innerText = `다음 레벨까지 ${Math.max(0, lvInfo.max - totalXp)} XP`;
+      document.getElementById('xpBarFill').style.width = `${progressPct}%`;
+
+      const questPct = Math.min(100, Math.round((todayGold / 3) * 100));
+      document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
+      document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료' : `${todayGold} / 3`;
+
+      renderGroupFilterBar();
+
+      const filtered = myWords.filter(w => {
+        if (starFilter !== 'ALL' && w.star !== starFilter) return false;
+        const wGroup = wordGroupMap[w.id] || '';
+        if (groupFilter !== 'ALL' && wGroup !== groupFilter) return false;
+        if (!searchQuery) return true;
+        const cleanMean = getCleanSingleDisplayMeaning(w).toLowerCase();
+        return (w.word || '').toLowerCase().includes(searchQuery) || cleanMean.includes(searchQuery) || wGroup.toLowerCase().includes(searchQuery);
+      });
+
+      const c = document.getElementById('wordListContainer');
+      if (filtered.length === 0) {
+        c.innerHTML = (searchQuery || groupFilter !== 'ALL')
+          ? `<div style="text-align:center; padding:40px 0; color:var(--text-sub); font-size:13px;">해당 조건에 맞는 단어가 없습니다.</div>`
+          : `<div style="text-align:center; padding:45px 0; color:var(--text-sub); font-size:13px;">등록된 단어가 없습니다.<br>우측 상단 <strong>＋</strong> 버튼이나 <strong>고전시가</strong> 탭에서 단어를 추가해 보세요.</div>`;
+        return;
+      }
+
+      c.innerHTML = filtered.map(w => {
+        const gName = wordGroupMap[w.id] || '';
+        const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
+        const safeId = escapeHtml(w.id);
+        return `
+          <div class="word-item-card" data-id="${safeId}" onclick="openBuilder(this.dataset.id)">
+            <div style="flex:1; min-width:0; padding-right:8px;">
+              <div class="word-title-row"><span>${escapeHtml(w.word)}</span>${groupBadgeHtml}</div>
+              <div style="font-size:13px; color:var(--text-sub); margin-top:5px; line-height:1.45; word-break:keep-all;">${escapeHtml(getCleanSingleDisplayMeaning(w))}</div>
+            </div>
+            <div class="word-card-right">
+              <button type="button" class="btn-word-more" title="단어 메뉴" data-id="${safeId}" onclick="openWordDotMenu(event, this.dataset.id)">${getLineIcon('dots', 18)}</button>
               <div>${getStarSvg(w.star, 20)}</div>
             </div>
           </div>
@@ -2768,7 +4016,14 @@
           document.getElementById('inpMy').value = curItem.mySentence || '';
           if (curItem.aiFeedback) {
             document.getElementById('sum4').style.display = 'block';
-            document.getElementById('sum4').innerHTML = `<div style="font-size:12px; color:#B91C1C; background:#FFF5F5; border:1px solid #FECACA; padding:9px 10px; border-radius:8px; margin-top:8px;"><strong>수정 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}</div>`;
+            document.getElementById('sum4').innerHTML = `
+              <div style="font-size:12px; color:#B91C1C; background:#FFF5F5; border:1px solid #FECACA; padding:9px 10px; border-radius:8px; margin-top:8px;">
+                <strong>수정 힌트:</strong> ${escapeHtml(curItem.aiFeedback)}
+                <div class="ai-meta-bar">
+                  <span>피드백에 오류가 있다면 알려주세요.</span>
+                  <button type="button" class="btn-ai-report" onclick="openAiReportModal('STEP4')">AI 오류 신고</button>
+                </div>
+              </div>`;
           } else {
             document.getElementById('sum4').style.display = 'none';
           }
@@ -2782,6 +4037,10 @@
             <div style="font-size:13px; font-weight:700;">내 문장: "${escapeHtml(curItem.mySentence)}"</div>
             <div style="font-size:12px; color:var(--primary-dark); background:var(--primary-soft); padding:9px 10px; border-radius:8px; margin-top:6px;">
               <strong>AI 피드백:</strong> ${escapeHtml(curItem.aiFeedback)}
+              <div class="ai-meta-bar">
+                <span>AI 피드백은 문맥상 오차가 있을 수 있습니다.</span>
+                <button type="button" class="btn-ai-report" onclick="openAiReportModal('STEP4')">AI 오류 신고</button>
+              </div>
             </div>
           `;
         }
@@ -2795,6 +4054,10 @@
         <div style="font-size:12px; background:var(--bg-app); border:1px solid var(--border); padding:10px 12px; border-radius:10px; line-height:1.6;">
           <span class="dict-badge">문맥에 따른 단어의 의미 (DB + AI)</span><br>
           <strong style="color:var(--text-main);">${escapeHtml(getCleanSingleDisplayMeaning(curItem))}</strong>
+          <div class="ai-meta-bar">
+            <span>표준국어대사전 및 AI 분석 결과 (오차 가능)</span>
+            <button type="button" class="btn-ai-report" onclick="openAiReportModal('STEP12')">AI 오류 신고</button>
+          </div>
         </div>
       `;
     }
@@ -2806,6 +4069,10 @@
         <div style="font-size:12px; background:var(--bg-app); border:1px solid var(--border); padding:10px 12px; border-radius:10px; line-height:1.6;">
           <strong>유의어:</strong> <span style="color:var(--primary); font-weight:700;">${escapeHtml(synText)}</span> &nbsp;|&nbsp;
           <strong>반의어:</strong> <span style="color:var(--text-main); font-weight:700;">${escapeHtml(antText)}</span>
+          <div class="ai-meta-bar">
+            <span>문맥과 다른 어휘가 표시되면 신고해 주세요.</span>
+            <button type="button" class="btn-ai-report" onclick="openAiReportModal('STEP3')">AI 오류 신고</button>
+          </div>
         </div>
       `;
     }
@@ -2874,6 +4141,7 @@
       }).eq('id', curItem.id);
     }
 
+    // 정식 광고 정책 준수: 광고 실제 시청 완료 시에만 보상 지급 (테스트 강제 우회 제거)
     function triggerSynAntRewardedAd() {
       if (typeof window.adBreak === 'function') {
         window.adBreak({
@@ -2883,12 +4151,13 @@
           adDismissed: function() { showToast('광고를 끝까지 시청해야 횟수가 충전됩니다.'); },
           adBreakDone: function(placementInfo) {
             if (placementInfo && placementInfo.breakStatus !== 'viewed' && placementInfo.breakStatus !== 'dismissed') {
-              alert('현재 구글 애드센스 심사 준비중 상태이므로 테스트 충전을 진행합니다.');
-              completeSynAntAdReward();
+              showToast('현재 불러올 수 있는 광고가 없습니다. 잠시 후 다시 시도해 주세요.');
             }
           }
         });
-      } else completeSynAntAdReward();
+      } else {
+        alert('브라우저의 광고 차단 기능을 해제한 뒤 다시 시도해 주세요.');
+      }
     }
 
     function completeSynAntAdReward() {
@@ -2898,7 +4167,6 @@
       showToast(`광고 시청 완료! 유의어·반의어 확인 횟수가 +${SYN_ANT_REWARD_PER_AD}번 충전되었습니다.`);
     }
 
-    // [해결] 4단계 나만의 문장 만들기: 로컬 1차 엄격 검증 통과 후 AI 의미·호응 엄격 심사!
     async function doStep4MySentence() {
       const my = document.getElementById('inpMy').value.trim();
       if (!my) { alert('직접 만든 문장을 입력해 주세요.'); return; }
@@ -2968,50 +4236,45 @@
       goToList();
       await sb.from('words').delete().eq('id', targetId);
     }
-// [PART 3-1 끝 - 바로 아래 줄에 마지막 PART 3-2 코드를 이어서 붙여넣으세요]
+// [PART 3 끝 - 바로 아래 줄에 마지막 PART 4 코드를 이어서 붙여넣으세요]
 // =========================================================================
-    // 4. [신규] 고전시가 카메라 촬영 · 드래그 구간 표시 · AI 어휘/어미 해독 엔진
+    // 5. 고전시가 카메라 촬영 · 드래그 구간 표시 · AI 어휘/어미 해독 엔진
     // =========================================================================
-
-    // 수능·내신 필수 고전시가 어휘 및 어미 내장 사전 (오프라인·폴백 보조용)
     const CLASSICAL_POEM_LEXICON = [
-      { key: '괴다', token: '괴다 (괴시리라)', posType: '고어 동사', modernMeaning: '특별히 귀여워하고 사랑하다.' },
-      { key: '어즈버', token: '어즈버', posType: '감탄사', modernMeaning: '아아, 문득 (시상을 전환할 때 쓰는 감탄사).' },
-      { key: '하노라', token: '-노라 / 하노라', posType: '종결 어미', modernMeaning: '~하구나, ~하도다 (화자의 정서나 의지를 영탄적으로 드러냄).' },
-      { key: '거늘', token: '-거늘', posType: '연결 어미', modernMeaning: '~하니, ~하매, ~하는데 (앞절이 뒷절의 원인·조건이나 배경이 됨).' },
-      { key: '도다', token: '-도다', posType: '종결 어미', modernMeaning: '~하구나! (감탄이나 영탄의 뜻을 나타내는 종결 어미).' },
-      { key: '리오', token: '-리오 / -랴', posType: '의문형 어미', modernMeaning: '~하겠는가? (주로 서리법으로 쓰여 반대의 의미를 강조함).' },
-      { key: '관대', token: '-관대 / -건대', posType: '연결 어미', modernMeaning: '~하기에, ~하므로 (앞 내용이 뒤 결과의 까닭임을 나타냄).' },
-      { key: '샤', token: '-샤- / -시-', posType: '주체 높임 선어말어미', modernMeaning: '문장의 주체를 높이는 고전 문법 선어말 어미.' },
-      { key: '고야', token: '-고야 / -구야', posType: '종결 어미', modernMeaning: '~하는구나! (새롭게 깨달은 사실에 대한 감탄을 나타냄).' },
-      { key: '손고', token: '-손고 / -소니', posType: '종결 어미', modernMeaning: '~한 것인가? (의문이나 감탄의 뜻을 나타냄).' },
-      { key: '헤다', token: '헤다 (헤아리다)', posType: '고어 동사', modernMeaning: '생각하다, 헤아리다.' },
-      { key: '녀다', token: '녀다 / 니다', posType: '고어 동사', modernMeaning: '가다, 다니다, 살아가다.' },
-      { key: '여희다', token: '여희다', posType: '고어 동사', modernMeaning: '이별하다, 멀리 떠나보내다.' },
-      { key: '싀어디다', token: '싀어디다', posType: '고어 동사', modernMeaning: '사라지다, 죽다.' },
-      { key: '매화', token: '매화(梅花)', posType: '시어(명사)', modernMeaning: '추위를 이기고 피는 꽃으로 지조와 절개를 상징함.' },
-      { key: '백구', token: '백구(白鷗)', posType: '시어(명사)', modernMeaning: '흰 갈매기로 자연 친화와 물아일체의 대상.' },
-      { key: '홍진', token: '홍진(紅塵)', posType: '시어(명사)', modernMeaning: '붉은 먼지라는 뜻으로 번거롭고 속된 인간 세상(속세)을 이름.' },
-      { key: '강호', token: '강호(江湖)', posType: '시어(명사)', modernMeaning: '강과 호수라는 뜻으로 자연의 품을 대유적으로 이르는 말.' },
-      { key: '두견', token: '두견(杜鵑) / 접동새', posType: '시어(명사)', modernMeaning: '한(恨)과 애상적 정서를 불러일으키는 시적 객관적 상관물.' },
-      { key: '아희', token: '아희(兒孩)', posType: '고어 명사', modernMeaning: '아이(어린 사람이나 시중드는 아이를 부르는 말).' },
-      { key: '즈믄', token: '즈믄', posType: '고어 수사', modernMeaning: '천(1,000).' },
-      { key: '하도', token: '하다 (하도 할샤)', posType: '고어 형용사', modernMeaning: '많다, 크다.' }
+      { key: '괴다', token: '괴다 (괴시리라)', posType: '고어 동사', meaning: '특별히 귀여워하고 사랑하다.' },
+      { key: '어즈버', token: '어즈버', posType: '감탄사', meaning: '아아, 문득 (시상을 전환할 때 쓰는 감탄사).' },
+      { key: '하노라', token: '-노라 / 하노라', posType: '종결 어미', meaning: '~하구나, ~하도다 (화자의 정서나 의지를 영탄적으로 드러냄).' },
+      { key: '거늘', token: '-거늘', posType: '연결 어미', meaning: '~하니, ~하매, ~하는데 (앞절이 뒷절의 원인·조건이나 배경이 됨).' },
+      { key: '도다', token: '-도다', posType: '종결 어미', meaning: '~하구나! (감탄이나 영탄의 뜻을 나타내는 종결 어미).' },
+      { key: '리오', token: '-리오 / -랴', posType: '의문형 어미', meaning: '~하겠는가? (주로 서리법으로 쓰여 반대의 의미를 강조함).' },
+      { key: '관대', token: '-관대 / -건대', posType: '연결 어미', meaning: '~하기에, ~하므로 (앞 내용이 뒤 결과의 까닭임을 나타냄).' },
+      { key: '샤', token: '-샤- / -시-', posType: '주체 높임 선어말어미', meaning: '문장의 주체를 높이는 고전 문법 선어말 어미.' },
+      { key: '고야', token: '-고야 / -구야', posType: '종결 어미', meaning: '~하는구나! (새롭게 깨달은 사실에 대한 감탄을 나타냄).' },
+      { key: '손고', token: '-손고 / -소니', posType: '종결 어미', meaning: '~한 것인가? (의문이나 감탄의 뜻을 나타냄).' },
+      { key: '헤다', token: '헤다 (헤아리다)', posType: '고어 동사', meaning: '생각하다, 헤아리다.' },
+      { key: '녀다', token: '녀다 / 니다', posType: '고어 동사', meaning: '가다, 다니다, 살아가다.' },
+      { key: '여희다', token: '여희다', posType: '고어 동사', meaning: '이별하다, 멀리 떠나보내다.' },
+      { key: '싀어디다', token: '싀어디다', posType: '고어 동사', meaning: '사라지다, 죽다.' },
+      { key: '매화', token: '매화(梅花)', posType: '시어(명사)', meaning: '추위를 이기고 피는 꽃으로 지조와 절개를 상징함.' },
+      { key: '백구', token: '백구(白鷗)', posType: '시어(명사)', meaning: '흰 갈매기로 자연 친화와 물아일체의 대상.' },
+      { key: '홍진', token: '홍진(紅塵)', posType: '시어(명사)', meaning: '붉은 먼지라는 뜻으로 번거롭고 속된 인간 세상(속세)을 이름.' },
+      { key: '강호', token: '강호(江湖)', posType: '시어(명사)', meaning: '강과 호수라는 뜻으로 자연의 품을 대유적으로 이르는 말.' },
+      { key: '두견', token: '두견(杜鵑) / 접동새', posType: '시어(명사)', meaning: '한(恨)과 애상적 정서를 불러일으키는 시적 객관적 상관물.' },
+      { key: '아희', token: '아희(兒孩)', posType: '고어 명사', meaning: '아이(어린 사람이나 시중드는 아이를 부르는 말).' },
+      { key: '즈믄', token: '즈믄', posType: '고어 수사', meaning: '천(1,000).' },
+      { key: '하도', token: '하다 (하도 할샤)', posType: '고어 형용사', meaning: '많다, 크다.' }
     ];
 
-    // 1) 카메라 권한 요청 및 촬영 모달 열기
     async function openPoemCameraModal() {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        // 인앱 브라우저 등 WebRTC 미지원 환경에서는 스마트폰 기본 카메라 즉시 실행
         document.getElementById('inpPoemCameraFallback').click();
         return;
       }
-
       try {
         await startPoemCameraStream();
         document.getElementById('poemCameraModal').classList.add('open');
       } catch (err) {
-        alert('카메라 권한이 거부되었거나 사용할 수 없어 기본 카메라/사진 선택 창을 엽니다.\n(브라우저 주소창 왼쪽 자물쇠 아이콘에서 카메라 권한을 허용하실 수 있습니다.)');
+        alert('카메라 권한이 거부되었거나 사용할 수 없어 기본 카메라/사진 선택 창을 엽니다.\n(브라우저 주소창 왼쪽 아이콘에서 카메라 권한을 허용하실 수 있습니다.)');
         document.getElementById('inpPoemCameraFallback').click();
       }
     }
@@ -3019,11 +4282,7 @@
     async function startPoemCameraStream() {
       stopPoemCameraStream();
       const constraints = {
-        video: {
-          facingMode: { ideal: poemCameraFacing },
-          width: { ideal: 1600 },
-          height: { ideal: 1200 }
-        },
+        video: { facingMode: { ideal: poemCameraFacing }, width: { ideal: 1600 }, height: { ideal: 1200 } },
         audio: false
       };
       poemCameraStream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -3053,48 +4312,44 @@
       document.getElementById('poemCameraModal').classList.remove('open');
     }
 
-    // 실시간 카메라 스트림에서 사진 캡처
     function capturePoemPhotoFromStream() {
       const videoEl = document.getElementById('poemCameraVideo');
       if (!videoEl || !videoEl.videoWidth) {
         showToast('카메라 화면을 준비 중입니다. 잠시 후 다시 눌러주세요.');
         return;
       }
-
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = videoEl.videoWidth;
       tempCanvas.height = videoEl.videoHeight;
       const ctx = tempCanvas.getContext('2d');
       ctx.drawImage(videoEl, 0, 0, tempCanvas.width, tempCanvas.height);
 
-      const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.92);
+      const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.9);
       closePoemCameraModal();
 
       const img = new Image();
-      img.onload = function() {
-        loadPoemImageOntoStage(img);
-      };
+      img.onload = function() { loadPoemImageOntoStage(img); };
       img.src = dataUrl;
     }
 
-    // 앨범 또는 기본 카메라 파일 선택 처리
     function handlePoemImageFile(inputEl) {
       const file = inputEl.files && inputEl.files[0];
       if (!file) return;
-
+      if (file.size > 10 * 1024 * 1024) {
+        alert('10MB 이하의 이미지 파일만 불러올 수 있습니다.');
+        inputEl.value = '';
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function(ev) {
         const img = new Image();
-        img.onload = function() {
-          loadPoemImageOntoStage(img);
-        };
+        img.onload = function() { loadPoemImageOntoStage(img); };
         img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
       inputEl.value = '';
     }
 
-    // 촬영된 이미지를 드래그 캔버스 위에 올리기
     function loadPoemImageOntoStage(img) {
       const maxDim = 1100;
       let targetW = img.naturalWidth || img.width;
@@ -3121,7 +4376,6 @@
       showToast('어려운 고전시가 부분을 손가락으로 드래그해 표시해 보세요!');
     }
 
-    // 2) 캔버스 터치·마우스 드래그 영역 표시 이벤트
     function initPoemCanvasDragEvents() {
       const canvas = document.getElementById('poemStageCanvas');
       if (!canvas) return;
@@ -3163,7 +4417,7 @@
         drawPoemStageCanvas();
       });
 
-      const endDrag = function(e) {
+      const endDrag = function() {
         if (!poemIsDragging) return;
         poemIsDragging = false;
         if (poemSelectRect && poemSelectRect.w > 18 && poemSelectRect.h > 14) {
@@ -3191,11 +4445,8 @@
       if (!canvas || !poemLoadedImg) return;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 원본 이미지 그리기
       ctx.drawImage(poemLoadedImg, 0, 0, canvas.width, canvas.height);
 
-      // 드래그한 구절이 있으면 바깥쪽은 어둡게, 선택 영역 안쪽은 선명하게 강조 표시
       if (poemSelectRect && poemSelectRect.w > 4 && poemSelectRect.h > 4) {
         ctx.fillStyle = 'rgba(15, 23, 42, 0.44)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -3207,29 +4458,23 @@
         ctx.drawImage(poemLoadedImg, 0, 0, canvas.width, canvas.height);
         ctx.restore();
 
-        // 스틸 블루(#3B82A6) 선택 테두리 및 모서리 포인트
         ctx.strokeStyle = '#3B82A6';
         ctx.lineWidth = Math.max(3, Math.round(canvas.width / 220));
         ctx.strokeRect(poemSelectRect.x, poemSelectRect.y, poemSelectRect.w, poemSelectRect.h);
 
         const r = Math.max(5, Math.round(canvas.width / 120));
         ctx.fillStyle = '#FFFFFF';
-        const corners = [
+        [
           [poemSelectRect.x, poemSelectRect.y],
           [poemSelectRect.x + poemSelectRect.w, poemSelectRect.y],
           [poemSelectRect.x, poemSelectRect.y + poemSelectRect.h],
           [poemSelectRect.x + poemSelectRect.w, poemSelectRect.y + poemSelectRect.h]
-        ];
-        corners.forEach(([cx, cy]) => {
-          ctx.beginPath();
-          ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
+        ].forEach(([cx, cy]) => {
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         });
       }
     }
 
-    // 드래그한 영역만 잘라내어 고화질 Base64 JPEG 추출
     function getCroppedPoemBase64() {
       const canvas = document.getElementById('poemStageCanvas');
       const pad = 14;
@@ -3239,23 +4484,22 @@
       const sh = Math.min(canvas.height - sy, Math.ceil(poemSelectRect.h + pad * 2));
 
       const cropCanvas = document.createElement('canvas');
-      cropCanvas.width = sw;
-      cropCanvas.height = sh;
-      const cCtx = cropCanvas.getContext('2d');
+      const maxCropW = 900;
+      const ratio = sw > maxCropW ? (maxCropW / sw) : 1;
+      cropCanvas.width = Math.round(sw * ratio);
+      cropCanvas.height = Math.round(sh * ratio);
 
-      // 원본 비율 좌표로 정확히 크롭
+      const cCtx = cropCanvas.getContext('2d');
       const scaleX = (poemLoadedImg.naturalWidth || poemLoadedImg.width) / canvas.width;
       const scaleY = (poemLoadedImg.naturalHeight || poemLoadedImg.height) / canvas.height;
       cCtx.drawImage(
         poemLoadedImg,
         sx * scaleX, sy * scaleY, sw * scaleX, sh * scaleY,
-        0, 0, sw, sh
+        0, 0, cropCanvas.width, cropCanvas.height
       );
-
-      return cropCanvas.toDataURL('image/jpeg', 0.92).split(',')[1];
+      return cropCanvas.toDataURL('image/jpeg', 0.86).split(',')[1];
     }
 
-    // 3) 드래그한 구절 AI 해석 + 단어·어미별 상세 뜻 추출
     async function analyzeSelectedPoemRegion() {
       if (!poemLoadedImg) {
         alert('먼저 고전시가 사진을 촬영하거나 앨범에서 선택해 주세요.');
@@ -3302,16 +4546,15 @@
         };
 
         const aiData = await callGeminiDirect(prompt, schema, 900, croppedBase64);
-        if (!aiData || !aiData.originalText) throw new Error('이미지 텍스트 인식 실패');
+        if (!aiData || !aiData.originalText) throw new Error('이미지 텍스트 인식 지연');
 
         lastAnalyzedPoemData = aiData;
         renderPoemAnalysisResult(aiData);
         playRewardSound('SILVER');
         showToast('고전시가 구절 해석과 어휘·어미 분석이 완료되었습니다!');
       } catch (err) {
-        // 만약 API 키가 미등록 상태이거나 네트워크 지연일 때 구절 직접 입력 보조 분석 제공
         const manualLine = prompt(
-          '이미지 AI 연결이 지연되었거나 관리자 모드에서 표준 Gemini 키(AIza...) 설정이 필요합니다.\n\n드래그한 고전시가 구절을 직접 입력해 주시면 즉시 내장 고전 어휘·어미 사전으로 분석해 드립니다:'
+          '일시적인 네트워크 지연으로 이미지 AI 호출이 지연되었습니다.\n드래그한 고전시가 구절을 직접 입력해 주시면 내장 고전 어휘·어미 사전으로 즉시 분석해 드립니다:'
         );
         if (manualLine && manualLine.trim()) {
           const fallbackData = buildFallbackPoemAnalysis(manualLine.trim());
@@ -3334,21 +4577,19 @@
       });
 
       if (matchedItems.length === 0) {
-        const rawTokens = lineText.split(/\s+/).filter(t => t.length >= 2).slice(0, 4);
-        rawTokens.forEach(t => {
-          matchedItems.push({ token: t, posType: '고전 어휘·구절', modernMeaning: '', meaning: `'${t}'의 문맥적 의미를 단어장에 담아 학습해 보세요.` });
+        lineText.split(/\s+/).filter(t => t.length >= 2).slice(0, 4).forEach(t => {
+          matchedItems.push({ token: t, posType: '고전 어휘·구절', meaning: `'${t}'의 문맥적 의미를 단어장에 담아 학습해 보세요.` });
         });
       }
 
       return {
         originalText: lineText,
-        modernTranslation: `"${lineText}" (교사용 관리자 모드에서 Gemini API 키를 등록하면 이미지 자동 인식 및 정밀 현대어 번역이 작동합니다.)`,
+        modernTranslation: `"${lineText}" (잠시 후 다시 분석 버튼을 누르시면 정밀 AI 현대어 풀이가 제공됩니다.)`,
         contextNote: '구절에서 감지된 핵심 고전 어휘와 어미 목록입니다. 기억할 항목을 내 단어장에 추가해 보세요.',
         items: matchedItems
       };
     }
 
-    // 4) 분석된 고전시가 해석 및 단어별 의미 렌더링 + 나만의 단어장 추가
     function renderPoemAnalysisResult(data) {
       document.getElementById('poemResultArea').style.display = 'block';
       document.getElementById('poemOcrText').innerText = `"${data.originalText}"`;
@@ -3387,7 +4628,7 @@
     async function addSinglePoemWordToVocab(idx, silent = false) {
       if (!myUser || !lastAnalyzedPoemData || !lastAnalyzedPoemData.items[idx]) return false;
       const item = lastAnalyzedPoemData.items[idx];
-      const srcLine = lastAnalyzedPoemData.originalText || '';
+      const srcLine = (lastAnalyzedPoemData.originalText || '').slice(0, 300);
 
       if (myWords.some(w => w.word === item.token && w.sourceSentence === srcLine)) {
         if (!silent) showToast('이미 내 단어장에 추가된 어휘입니다.');
@@ -3399,26 +4640,15 @@
       const formattedMeaning = item.meaning.endsWith('.') ? item.meaning : (item.meaning + '.');
       const displayAiMeaning = `[고전시가 · ${item.posType || '어휘'}] ${formattedMeaning}`;
 
-      // '고전시가' 그룹 자동 생성 및 배정
       if (!myGroups.includes('고전시가')) myGroups.push('고전시가');
       wordGroupMap[newId] = '고전시가';
       await saveUserGroupsAndMap();
 
       const newWordObj = {
-        id: newId,
-        userId: myUser.userId,
-        userName: myUser.name,
-        word: item.token,
-        meaning: formattedMeaning,
-        sourceSentence: srcLine,
-        aiMeaning: displayAiMeaning,
-        synonyms: '',
-        antonyms: '',
-        mySentence: '',
-        aiFeedback: '',
-        star: 'BRONZE',
-        groupName: '고전시가',
-        updatedAt: kst.full
+        id: newId, userId: myUser.userId, userName: myUser.name, word: item.token,
+        meaning: formattedMeaning, sourceSentence: srcLine, aiMeaning: displayAiMeaning,
+        synonyms: '', antonyms: '', mySentence: '', aiFeedback: '',
+        star: 'BRONZE', groupName: '고전시가', updatedAt: kst.full
       };
 
       myWords.unshift(newWordObj);
@@ -3430,15 +4660,9 @@
       }
 
       await sb.from('words').insert({
-        id: newId,
-        user_id: myUser.userId,
-        user_name: myUser.name,
-        word: item.token,
-        meaning: formattedMeaning,
-        source_sentence: srcLine,
-        ai_meaning: displayAiMeaning,
-        star: 'BRONZE',
-        updated_at: kst.full
+        id: newId, user_id: myUser.userId, user_name: myUser.name, word: item.token,
+        meaning: formattedMeaning, source_sentence: srcLine, ai_meaning: displayAiMeaning,
+        star: 'BRONZE', updated_at: kst.full
       });
 
       if (!silent) {
@@ -3465,12 +4689,9 @@
         showToast('모든 항목이 이미 내 단어장에 담겨 있습니다.');
       }
     }
-// [PART 3-2 끝 - 바로 아래 줄에 마지막 PART 3-3 코드를 이어서 붙여넣으세요]
-// 내장 고전시가 어휘 사전 필드 보정
-    CLASSICAL_POEM_LEXICON.forEach(e => { if (!e.meaning && e.modernMeaning) e.meaning = e.modernMeaning; });
 
     // =========================================================================
-    // 5. 활동·기록 (스피드 퀴즈 & 도감)
+    // 6. 활동·기록 (서버 검증형 스피드 퀴즈 & 성취 뱃지 도감)
     // =========================================================================
     function renderBadges() {
       const goldCnt = myWords.filter(w => w.star === 'GOLD').length;
@@ -3496,8 +4717,8 @@
     }
 
     function updateQuizStatusHeader() {
-      const qState = getDailyQuizState();
-      const maxAllowed = DAILY_BASE_QUIZ_LIMIT + (qState.adWatched * QUIZ_REWARD_PER_AD);
+      const qState = dailyQuizCache;
+      const maxAllowed = DAILY_BASE_QUIZ_LIMIT + (Math.min(qState.adWatched, MAX_DAILY_ADS) * QUIZ_REWARD_PER_AD);
       const remaining = Math.max(0, maxAllowed - qState.used);
       document.getElementById('quizRemainLabel').innerText = `오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
       document.getElementById('quizAdRemainLabel').innerText = `광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
@@ -3512,7 +4733,7 @@
 
       if (remaining <= 0) {
         playArea.style.display = 'none'; limitArea.style.display = 'block';
-        const adsLeft = MAX_DAILY_ADS - qState.adWatched;
+        const adsLeft = Math.max(0, MAX_DAILY_ADS - qState.adWatched);
         if (adsLeft > 0) {
           document.getElementById('limitIcon').innerHTML = getLineIcon('lock', 28);
           document.getElementById('limitTitle').innerText = qState.adWatched === 0 ? '오늘의 기본 10문제를 모두 풀었습니다.' : '충전한 퀴즈를 모두 풀었습니다.';
@@ -3543,27 +4764,42 @@
       document.getElementById('quizQuestion').innerText = `Q. "${answerItem.word}"`;
       document.getElementById('quizSub').innerText = '이 단어의 가장 알맞은 뜻은 무엇일까요?';
       document.getElementById('quizOptions').innerHTML = choices.map((c, idx) => `
-        <button class="quiz-option-btn" onclick="checkQuizAnswer(this, ${c.word === answerItem.word})">
+        <button type="button" class="quiz-option-btn" onclick="checkQuizAnswer(this, ${c.word === answerItem.word})">
           ${idx + 1}. ${escapeHtml(c.meaning)}
         </button>
       `).join('');
     }
 
+    // [보안 핵심] 퀴즈 횟수 차감 및 경험치(+15 XP) 지급을 서버 RPC(record_quiz_attempt)에서만 수행
     async function checkQuizAnswer(btnEl, isCorrect) {
       document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
-      const qState = getDailyQuizState();
-      qState.used += 1;
-      saveDailyQuizState(qState);
+
+      try {
+        const { data: rpcRes, error } = await sb.rpc('record_quiz_attempt', { p_is_correct: Boolean(isCorrect) });
+        if (error) throw error;
+
+        if (rpcRes) {
+          dailyQuizCache.used = Number(rpcRes.used) || (dailyQuizCache.used + 1);
+          dailyQuizCache.adWatched = Number(rpcRes.adWatched) || dailyQuizCache.adWatched;
+          if (myUser && rpcRes.bonusXp != null) {
+            myUser.bonusXp = Number(rpcRes.bonusXp);
+          }
+        }
+      } catch (err) {
+        showToast('오늘의 퀴즈 한도에 도달했거나 통신이 지연되었습니다.');
+        await syncDailyQuizUsageFromDb();
+        generateQuiz();
+        return;
+      }
+
       const { remaining } = updateQuizStatusHeader();
 
       if (isCorrect) {
         btnEl.classList.add('correct');
         playRewardSound('QUIZ'); fireConfetti(false);
         quizSolveCount++; localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
-        myUser.bonusXp = (Number(myUser.bonusXp) || 0) + 15;
         renderMyList(); renderBadges();
         showToast('정답입니다! 보너스 +15 XP 획득');
-        await sb.from('students').update({ bonus_xp: myUser.bonusXp }).eq('user_id', myUser.userId);
       } else {
         btnEl.classList.add('wrong');
         triggerHaptic([40, 30, 40]);
@@ -3576,8 +4812,10 @@
     }
 
     function triggerRealGoogleRewardedAd() {
-      const qState = getDailyQuizState();
-      if (qState.adWatched >= MAX_DAILY_ADS) { alert('오늘 시청 가능한 광고 횟수(최대 3회)를 모두 사용하셨습니다.'); return; }
+      if (dailyQuizCache.adWatched >= MAX_DAILY_ADS) {
+        alert('오늘 시청 가능한 광고 횟수(최대 3회)를 모두 사용하셨습니다.');
+        return;
+      }
       if (typeof window.adBreak === 'function') {
         window.adBreak({
           type: 'reward', name: 'madevoca_quiz_refill',
@@ -3586,119 +4824,104 @@
           adDismissed: function() { showToast('광고를 끝까지 시청해야 퀴즈가 충전됩니다.'); },
           adBreakDone: function(placementInfo) {
             if (placementInfo && placementInfo.breakStatus !== 'viewed' && placementInfo.breakStatus !== 'dismissed') {
-              alert('현재 구글 애드센스 심사 준비중 상태이므로 테스트 충전을 진행합니다.');
-              completeAdReward();
+              showToast('현재 불러올 수 있는 광고가 없습니다. 잠시 후 다시 시도해 주세요.');
             }
           }
         });
-      } else alert('구글 광고 스크립트가 브라우저에서 차단되었습니다.');
+      } else {
+        alert('구글 광고 스크립트가 브라우저에서 차단되었습니다. 광고 차단 기능을 해제해 주세요.');
+      }
     }
 
-    function completeAdReward() {
-      const qState = getDailyQuizState();
-      if (qState.adWatched >= MAX_DAILY_ADS) return;
-      qState.adWatched += 1;
-      saveDailyQuizState(qState);
-      playRewardSound('SILVER'); fireConfetti(false);
-      showToast(`광고 시청 완료! +${QUIZ_REWARD_PER_AD}문제 충전 (${qState.adWatched}/${MAX_DAILY_ADS}회)`);
-      generateQuiz();
+    async function completeAdReward() {
+      try {
+        const { data: rpcRes, error } = await sb.rpc('refill_quiz_ad');
+        if (error) throw error;
+        if (rpcRes) {
+          dailyQuizCache.used = Number(rpcRes.used) || dailyQuizCache.used;
+          dailyQuizCache.adWatched = Number(rpcRes.adWatched) || (dailyQuizCache.adWatched + 1);
+        }
+        playRewardSound('SILVER'); fireConfetti(false);
+        showToast(`광고 시청 완료! +${QUIZ_REWARD_PER_AD}문제 충전 (${dailyQuizCache.adWatched}/${MAX_DAILY_ADS}회)`);
+        generateQuiz();
+      } catch (err) {
+        alert('광고 충전 처리 중 오류가 발생했습니다: ' + err.message);
+      }
     }
 
     // =========================================================================
-    // 6. 실시간 명예의 전당 & 교사용 관리자 모드 (Gemini 키 설정 포함)
+    // 7. 이메일 비노출 보안 랭킹(RPC) & 교사용 관리자 모드
     // =========================================================================
     async function loadRanking() {
       const box = document.getElementById('rankingContainer');
       box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub); font-size:13px;">실시간 순위를 불러오는 중...</div>';
 
-      const [{ data: sData }, { data: wData }] = await Promise.all([
-        sb.from('students').select('*'),
-        sb.from('words').select('user_id, user_name, star')
-      ]);
+      try {
+        const { data: list, error } = await sb.rpc('get_public_leaderboard');
+        if (error) throw error;
 
-      const userMap = {};
-      (sData || []).forEach(s => {
-        if (!s.user_id || s.user_id === ADMIN_EMAIL) return;
-        userMap[s.user_id] = { userId: s.user_id, userName: s.user_name || '익명', schoolInfo: s.school_info || '', streak: s.streak || 1, gold: 0, xp: Number(s.bonus_xp) || 0 };
-      });
+        if (!list || list.length === 0) {
+          box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub);">아직 랭킹 데이터가 없습니다.</div>';
+          return;
+        }
 
-      (wData || []).forEach(w => {
-        const uid = w.user_id;
-        if (!uid || uid === ADMIN_EMAIL) return;
-        if (!userMap[uid]) userMap[uid] = { userId: uid, userName: w.user_name || '익명', schoolInfo: '', streak: 1, gold: 0, xp: 0 };
-        if (w.star === 'GOLD') { userMap[uid].gold++; userMap[uid].xp += 60; }
-        else if (w.star === 'SILVER') userMap[uid].xp += 30;
-        else userMap[uid].xp += 10;
-      });
-
-      const list = Object.values(userMap).sort((a, b) => b.xp - a.xp || b.gold - a.gold).slice(0, 50);
-      if (list.length === 0) {
-        box.innerHTML = '<div style="text-align:center; padding:30px 0; color:var(--text-sub);">아직 랭킹 데이터가 없습니다.</div>';
-        return;
-      }
-
-      box.innerHTML = list.map((item, idx) => {
-        const isMe = myUser && item.userId === myUser.userId;
-        const lv = getLevelInfo(item.xp);
-        const schoolTag = item.schoolInfo ? ` · ${escapeHtml(item.schoolInfo)}` : '';
-        return `
-          <div class="rank-card ${isMe ? 'me' : ''}">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="rank-num">${idx + 1}</div>
-              <div>
-                <div style="font-size:14px; font-weight:700;">
-                  ${escapeHtml(item.userName)}<span style="font-size:11px; color:var(--text-sub); font-weight:500;">${schoolTag}</span>
-                  ${isMe ? '<span style="color:var(--primary); font-size:11px; font-weight:700;"> (나)</span>' : ''}
-                </div>
-                <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-top:2px; display:flex; align-items:center; gap:4px;">
-                  <span>Lv.${lv.lv} · ${item.streak}일 연속 ·</span> ${getStarSvg('GOLD', 13)} <span>${item.gold}</span>
+        box.innerHTML = list.map((item, idx) => {
+          const isMe = Boolean(item.is_me);
+          const xp = Number(item.xp) || 0;
+          const gold = Number(item.gold) || 0;
+          const streak = Number(item.streak) || 1;
+          const lv = getLevelInfo(xp);
+          const schoolTag = item.school_info ? ` · ${escapeHtml(item.school_info)}` : '';
+          return `
+            <div class="rank-card ${isMe ? 'me' : ''}">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div class="rank-num">${idx + 1}</div>
+                <div>
+                  <div style="font-size:14px; font-weight:700;">
+                    ${escapeHtml(item.user_name || '익명')}<span style="font-size:11px; color:var(--text-sub); font-weight:500;">${schoolTag}</span>
+                    ${isMe ? '<span style="color:var(--primary); font-size:11px; font-weight:700;"> (나)</span>' : ''}
+                  </div>
+                  <div style="font-size:11px; color:var(--text-sub); font-weight:600; margin-top:2px; display:flex; align-items:center; gap:4px;">
+                    <span>Lv.${lv.lv} · ${streak}일 연속 ·</span> ${getStarSvg('GOLD', 13)} <span>${gold}</span>
+                  </div>
                 </div>
               </div>
+              <div style="font-size:14px; font-weight:800; color:var(--primary);">${xp} XP</div>
             </div>
-            <div style="font-size:14px; font-weight:800; color:var(--primary);">${item.xp} XP</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function refreshGeminiKeyBadge() {
-      const badge = document.getElementById('geminiKeyStatusBadge');
-      if (!badge) return;
-      if (GEMINI_API_KEY && GEMINI_API_KEY.startsWith('AIza')) {
-        badge.innerText = '표준 키 연동됨 ✓';
-      } else {
-        badge.innerText = '표준 AIza 키 권장';
-      }
-    }
-
-    async function saveAdminGeminiApiKey() {
-      const inp = document.getElementById('inpAdminGeminiKey');
-      const newKey = (inp.value || '').trim();
-      if (!newKey) {
-        alert('저장할 Gemini API 키를 입력해 주세요.');
-        return;
-      }
-      GEMINI_API_KEY = newKey;
-      localStorage.setItem('madevoca_gemini_key', newKey);
-      inp.value = '';
-      refreshGeminiKeyBadge();
-
-      try {
-        await sb.from('std_dict').upsert({
-          word: '__APP_CONFIG__:GEMINI_KEY',
-          definition: 'SYSTEM_CONFIG',
-          synonyms: newKey,
-          antonyms: 'META',
-          updated_at: getNowKST().full
-        });
-        showToast('Gemini API 키가 저장되어 모든 학생 기기에 동기화되었습니다.');
+          `;
+        }).join('');
       } catch (err) {
-        showToast('브라우저에 API 키가 저장되었습니다.');
+        box.innerHTML = `<div style="text-align:center; padding:30px 0; color:#B91C1C; font-size:12px;">순위를 불러오지 못했습니다 (${escapeHtml(err.message)})</div>`;
+      }
+    }
+
+    async function testGeminiProxyConnection() {
+      const btn = document.getElementById('btnTestProxy');
+      const badge = document.getElementById('geminiProxyStatusBadge');
+      btn.disabled = true;
+      btn.innerText = '보안 서버 응답 확인 중...';
+      try {
+        const res = await callGeminiDirect(
+          '한국어로 status 필드에 "정상 작동"이라고만 답하세요.',
+          { type: 'OBJECT', properties: { status: { type: 'STRING' } }, required: ['status'] },
+          80
+        );
+        badge.innerText = '연결 정상 ✓';
+        showToast(`AI 보안 서버 응답 성공: ${res.status || '정상'}`);
+      } catch (err) {
+        badge.innerText = '점검 필요';
+        alert('AI 보안 서버 연결 확인 필요:\n' + err.message + '\n\n(수파베이스 Edge Functions -> gemini-proxy -> Details에서 JWT 검증 스위치가 OFF인지, Secrets에 GEMINI_API_KEY가 저장되었는지 확인해 주세요.)');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'AI 보안 서버 연결 테스트하기';
       }
     }
 
     function openAdminScreen() {
-      refreshGeminiKeyBadge();
+      if (!myUser || !myUser.isAdmin) {
+        showToast('교사용 관리자 권한이 없습니다.');
+        return;
+      }
       loadAdminData();
       refreshStdDictCount();
       showScreen('screen-admin');
@@ -3730,6 +4953,7 @@
     }
 
     async function uploadStandardDictFiles() {
+      if (!myUser || !myUser.isAdmin) return;
       const fileInput = document.getElementById('inpDictFiles');
       const files = fileInput.files;
       if (!files || files.length === 0) { alert('업로드할 표준국어대사전 엑셀(.xls, .xlsx, .csv) 파일을 먼저 선택해 주세요.'); return; }
@@ -3779,7 +5003,7 @@
             if (!rawWord || !isValidKoreanDefinition(rawDef)) return;
 
             let cleanWord = rawWord.replace(/[-^0-9\s\(\)\[\]]/g, '').trim();
-            if (!cleanWord || cleanWord.length > 15) return;
+            if (!cleanWord || cleanWord.length > 15 || cleanWord.startsWith('__')) return;
 
             let cleanDef = rawDef.slice(0, 150);
             let cleanSyn = sKey ? cleanSynAntText(r[sKey], cleanWord) : '';
@@ -3826,11 +5050,29 @@
     }
 
     async function loadAdminData() {
+      if (!myUser || !myUser.isAdmin) return;
       document.getElementById('adminStudentList').innerHTML = '<p style="text-align:center; color:var(--text-sub);">학생 기록을 불러오는 중...</p>';
-      const [{ data: sRows }, { data: rows }] = await Promise.all([
+      const [{ data: sRows }, { data: rows }, { data: repRows }] = await Promise.all([
         sb.from('students').select('*'),
-        sb.from('words').select('*').order('created_ts', { ascending: false })
+        sb.from('words').select('*').order('created_ts', { ascending: false }),
+        sb.from('ai_reports').select('*').order('created_at', { ascending: false }).limit(30)
       ]);
+
+      // AI 오류 신고 접수 내역 표시
+      const repSection = document.getElementById('adminReportSection');
+      const repListEl = document.getElementById('adminReportList');
+      if (repRows && repRows.length > 0) {
+        repSection.style.display = 'block';
+        repListEl.innerHTML = repRows.map(rp => `
+          <div style="background:#FFF5F5; border:1px solid #FECACA; border-radius:12px; padding:10px 12px; margin-bottom:8px; font-size:12px;">
+            <div style="font-weight:800; color:#B91C1C;">[${escapeHtml(rp.target_type)}] ${escapeHtml(rp.target_word || '-')} · 신고자: ${escapeHtml(rp.user_id)}</div>
+            <div style="color:var(--text-main); margin-top:3px;"><strong>사유:</strong> ${escapeHtml(rp.reason)}</div>
+            <div style="color:var(--text-sub); font-size:11px; margin-top:2px;"><strong>AI 원문:</strong> ${escapeHtml(rp.ai_content || '-')}</div>
+          </div>
+        `).join('');
+      } else {
+        repSection.style.display = 'none';
+      }
 
       const schoolMap = {};
       (sRows || []).forEach(s => { schoolMap[s.user_id] = { name: s.user_name, school: s.school_info || '' }; });
@@ -3899,11 +5141,6 @@
           </details>
         </div>
       `).join('');
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
   </script>
 </body>
