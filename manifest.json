@@ -1,22 +1,37 @@
 {
+  "id": "./index.html",
   "name": "메이드보카 (MadeVoca)",
   "short_name": "메이드보카",
+  "description": "문맥 속 진짜 의미부터 파파고식 고전시가 AI 부분 해독까지, 수능·내신 국어 문해력 4단계 단어장",
+  "lang": "ko",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#FAF9F6",
   "theme_color": "#FAF9F6",
+  "categories": [
+    "education",
+    "books"
+  ],
   "icons": [
     {
-      "src": "./logo.jpg",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./logo.jpg",
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
