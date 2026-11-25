@@ -318,6 +318,11 @@
       color: var(--primary); background: var(--primary-soft);
       padding: 2px 7px; border-radius: 6px; margin-left: 6px;
     }
+    .word-csv-tag {
+      display: inline-block; font-size: 10px; font-weight: 700; line-height: 1.2;
+      color: #64748B; background: #F1EFEA; border: 1px solid var(--border);
+      padding: 2px 6px; border-radius: 6px; margin-left: 5px;
+    }
     .word-card-right {
       display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
       gap: 6px; flex-shrink: 0; margin-left: 8px; min-width: 32px;
@@ -871,7 +876,7 @@
           <div style="font-size:12px; font-weight:800; color:var(--primary);" id="dailyQuestText">0 / 3</div>
         </div>
 
-        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">스피드 뜻 맞히기 퀴즈 (+15 XP)</div>
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">스피드 뜻 맞히기 퀴즈 (+10 XP)</div>
 
         <div class="quiz-limit-bar">
           <span id="quizRemainLabel">오늘 남은 문제: 10개</span>
@@ -935,7 +940,7 @@
             <button onclick="downloadCsvTemplate()" style="background:none; border:none; color:var(--primary); font-size:11px; font-weight:700; cursor:pointer; padding:0; text-decoration:underline;">기본 양식 내려받기</button>
           </div>
           <div style="font-size:11px; color:var(--text-sub); line-height:1.45;">
-            CSV 파일로 단어를 일괄 등록하거나, 전체 또는 그룹별로 나누어 내보낼 수 있습니다.
+            CSV 일괄 등록 단어는 암기·퀴즈용(0 XP)으로 등록되며, 직접 3·4단계 학습을 수행할 때 경험치(XP)가 지급됩니다.
           </div>
 
           <input type="file" id="inpUserCsvImport" accept=".csv,.xls,.xlsx" style="display:none;" onchange="handleUserCsvImport(this)">
@@ -1035,7 +1040,7 @@
         <div id="card12" class="step-card current">
           <div style="font-size:13px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
             <span style="display:flex; align-items:center; gap:6px;"><span id="bStar1"></span> 필수 입력 (1·2단계)</span>
-            <span style="font-size:11px; color:var(--primary); font-weight:700;">+10 XP</span>
+            <span id="step12XpBadge" style="font-size:11px; color:var(--primary); font-weight:700;">+10 XP</span>
           </div>
 
           <div id="form12">
@@ -1054,7 +1059,7 @@
         <div id="card3" class="step-card locked">
           <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
             <span style="display:flex; align-items:center; gap:6px;"><span id="bStar2"></span> 3단계. 유의어·반의어 확인하기</span>
-            <span style="font-size:11px; color:var(--primary); font-weight:700;">+20 XP</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:700;">+10 XP</span>
           </div>
 
           <div id="form3">
@@ -1083,7 +1088,7 @@
         <div id="card4" class="step-card locked">
           <div style="font-size:13px; font-weight:800; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
             <span style="display:flex; align-items:center; gap:6px;"><span id="bStar3"></span> 4단계. 나만의 문장 만들기</span>
-            <span style="font-size:11px; color:var(--primary); font-weight:700;">+30 XP</span>
+            <span style="font-size:11px; color:var(--primary); font-weight:700;">+20 XP</span>
           </div>
 
           <div id="form4">
@@ -1630,6 +1635,29 @@
     const DAILY_BASE_QUIZ_LIMIT = 10;
     const MAX_DAILY_ADS = 3;
     const QUIZ_REWARD_PER_AD = 5;
+
+    // [게이밍 1단계 개편] 경험치(XP) 기준 상수 (1·2단계 10 / 3단계 10 / 4단계 20 / 퀴즈 10 / CSV 기본 0)
+    const XP_STEP12_DIRECT = 10;
+    const XP_STEP3_DIRECT  = 10;
+    const XP_STEP4_DIRECT  = 20;
+    const XP_QUIZ_CORRECT  = 10;
+
+    function isCsvImportedWord(wObj) {
+      if (!wObj) return false;
+      return Boolean(wObj.isCsv) || String(wObj.id || '').startsWith('WCSV_');
+    }
+
+    function getWordEarnedXp(wObj) {
+      if (!wObj) return 0;
+      if (typeof wObj.earnedXp === 'number' && !Number.isNaN(wObj.earnedXp)) {
+        return Math.max(0, wObj.earnedXp);
+      }
+      const csvFlag = isCsvImportedWord(wObj);
+      const base12 = csvFlag ? 0 : XP_STEP12_DIRECT;
+      if (wObj.star === 'GOLD') return base12 + XP_STEP3_DIRECT + XP_STEP4_DIRECT;
+      if (wObj.star === 'SILVER') return base12 + XP_STEP3_DIRECT;
+      return base12;
+    }
 
     const FREE_SYN_ANT_LIMIT = 5;
     const SYN_ANT_REWARD_PER_AD = 5;
@@ -2770,18 +2798,17 @@
       btn.disabled = true; btn.innerText = '저장 중...';
       const kst = getNowKST();
 
-      // 4단계 문장이 새로 입력된 경우 엄격 검증 통과 시에만 GOLD 인정
+      // [랭킹 공정성] 편집 창에서 문장만 적어 GOLD로 우회 승급하는 것을 차단 (문장 삭제 시에만 등급 하향)
       let newStar = target.star;
       if (!newMy && newStar === 'GOLD') {
         newStar = (target.synonyms || target.antonyms) ? 'SILVER' : 'BRONZE';
-      } else if (newMy && target.star !== 'GOLD') {
-        const chk = validateSentenceStrictLocal(newW, newM || target.meaning, newSrc, newMy);
-        if (chk.ok) newStar = 'GOLD';
       }
 
       target.word = newW; target.sourceSentence = newSrc;
       if (newM) { target.meaning = newM; target.aiMeaning = newM; }
-      target.mySentence = newMy; target.star = newStar; target.updatedAt = kst.full;
+      target.mySentence = newMy; target.star = newStar;
+      target.earnedXp = getWordEarnedXp({ ...target, star: newStar, earnedXp: undefined });
+      target.updatedAt = kst.full;
 
       await sb.from('words').update({
         word: newW, meaning: target.meaning, source_sentence: newSrc,
@@ -2981,15 +3008,9 @@
           const mySentence = (myIdx >= 0 && row[myIdx] != null) ? String(row[myIdx]).trim().slice(0, 300) : '';
           const aiFeedback = (aiFbIdx >= 0 && row[aiFbIdx] != null) ? String(row[aiFbIdx]).trim().slice(0, 300) : '';
 
-          // CSV 임포트 통한 무검증 GOLD 대량 조작 방지 (엄격 문장 검증 통과 시에만 GOLD)
-          let star = 'BRONZE';
-          if (mySentence && validateSentenceStrictLocal(word, finalMeaning, sourceSentence, mySentence).ok) {
-            star = 'GOLD';
-          } else if (synonyms) {
-            star = 'SILVER';
-          }
-
-          const newId = `W_${baseTs}_${i}_${Math.floor(Math.random() * 1000)}`;
+          // [랭킹 공정성] CSV 일괄 등록 단어는 암기·퀴즈 출제용(0 XP)으로 등록하며, 직접 3·4단계를 수행할 때만 XP 부여
+          const star = 'BRONZE';
+          const newId = `WCSV_${baseTs}_${i}_${Math.floor(Math.random() * 1000)}`;
           if (grpName) {
             if (!myGroups.includes(grpName)) myGroups.push(grpName);
             wordGroupMap[newId] = grpName;
@@ -2998,13 +3019,13 @@
 
           dbRecords.push({
             id: newId, user_id: myUser.userId, user_name: myUser.name, word,
-            meaning: finalMeaning, source_sentence: sourceSentence, ai_meaning: finalMeaning,
+            meaning: finalMeaning, source_sentence: sourceSentence || `${word}의 뜻을 기억해 봅시다.`, ai_meaning: finalMeaning,
             synonyms, antonyms, my_sentence: mySentence, ai_feedback: aiFeedback, star, updated_at: kst.full
           });
           localItems.push({
             id: newId, userId: myUser.userId, userName: myUser.name, word,
-            meaning: finalMeaning, sourceSentence, aiMeaning: finalMeaning,
-            synonyms, antonyms, mySentence, aiFeedback, star, groupName: grpName, updatedAt: kst.full
+            meaning: finalMeaning, sourceSentence: sourceSentence || `${word}의 뜻을 기억해 봅시다.`, aiMeaning: finalMeaning,
+            synonyms, antonyms, mySentence, aiFeedback, star, isCsv: true, earnedXp: 0, groupName: grpName, updatedAt: kst.full
           });
         }
 
@@ -3019,9 +3040,9 @@
 
         myWords = [...localItems, ...myWords];
         if (groupUpdated) await saveUserGroupsAndMap();
-        renderMyList(); fireConfetti(true);
-        statusEl.innerText = `총 ${dbRecords.length}개의 단어가 성공적으로 등록되었습니다.`;
-        showToast(`CSV에서 단어 ${dbRecords.length}개를 등록했습니다.`);
+        renderMyList(); fireConfetti(false);
+        statusEl.innerText = `총 ${dbRecords.length}개의 단어가 암기·퀴즈용(0 XP)으로 등록되었습니다. 직접 3·4단계를 학습하면 XP가 적립됩니다.`;
+        showToast(`CSV 단어 ${dbRecords.length}개 등록 완료 (암기·퀴즈용 · 0 XP)`);
       } catch (err) {
         statusEl.innerText = `오류: ${err.message}`;
         alert('CSV 등록 중 오류가 발생했습니다: ' + err.message);
@@ -3042,12 +3063,19 @@
         1000,
         5000
       );
-      return (data || []).map(row => ({
-        id: row.id, userId: row.user_id, userName: row.user_name, word: row.word,
-        meaning: row.meaning, sourceSentence: row.source_sentence || '', aiMeaning: row.ai_meaning || '',
-        synonyms: row.synonyms || '', antonyms: row.antonyms || '', mySentence: row.my_sentence || '',
-        aiFeedback: row.ai_feedback || '', star: row.star || 'BRONZE', groupName: '', updatedAt: row.updated_at || ''
-      }));
+      return (data || []).map(row => {
+        const isCsv = Boolean(row.is_csv) || String(row.id || '').startsWith('WCSV_');
+        const item = {
+          id: row.id, userId: row.user_id, userName: row.user_name, word: row.word,
+          meaning: row.meaning, sourceSentence: row.source_sentence || '', aiMeaning: row.ai_meaning || '',
+          synonyms: row.synonyms || '', antonyms: row.antonyms || '', mySentence: row.my_sentence || '',
+          aiFeedback: row.ai_feedback || '', star: row.star || 'BRONZE', isCsv,
+          earnedXp: (row.earned_xp != null) ? Number(row.earned_xp) : undefined,
+          groupName: '', updatedAt: row.updated_at || ''
+        };
+        if (item.earnedXp === undefined) item.earnedXp = getWordEarnedXp(item);
+        return item;
+      });
     }
 
     function setupUserView() {
@@ -3101,7 +3129,7 @@
 
     function getMyTotalXp() {
       let xp = Number(myUser && myUser.bonusXp ? myUser.bonusXp : 0);
-      myWords.forEach(w => { xp += (w.star === 'GOLD' ? 60 : (w.star === 'SILVER' ? 30 : 10)); });
+      myWords.forEach(w => { xp += getWordEarnedXp(w); });
       return xp;
     }
 
@@ -3825,11 +3853,12 @@
       c.innerHTML = filtered.map(w => {
         const gName = wordGroupMap[w.id] || '';
         const groupBadgeHtml = gName ? `<span class="word-group-tag">${escapeHtml(gName)}</span>` : '';
+        const csvBadgeHtml = isCsvImportedWord(w) ? `<span class="word-csv-tag">CSV · ${getWordEarnedXp(w)} XP</span>` : '';
         const safeId = escapeHtml(w.id);
         return `
           <div class="word-item-card" data-id="${safeId}" onclick="openBuilder(this.dataset.id)">
             <div style="flex:1; min-width:0; padding-right:8px;">
-              <div class="word-title-row"><span>${escapeHtml(w.word)}</span>${groupBadgeHtml}</div>
+              <div class="word-title-row"><span>${escapeHtml(w.word)}</span>${groupBadgeHtml}${csvBadgeHtml}</div>
               <div style="font-size:13px; color:var(--text-sub); margin-top:5px; line-height:1.45; word-break:keep-all;">${escapeHtml(getCleanSingleDisplayMeaning(w))}</div>
             </div>
             <div class="word-card-right">
@@ -3881,10 +3910,12 @@
       const del = document.getElementById('btnDel');
       updateStep3QuotaUI();
 
+      const step12BadgeEl = document.getElementById('step12XpBadge');
       if (!curItem) {
+        if (step12BadgeEl) step12BadgeEl.innerText = `+${XP_STEP12_DIRECT} XP`;
         box.innerHTML = getStarSvg('NONE', 42);
         title.innerText = '새 단어 추가';
-        desc.innerText = '1단계(단어)와 2단계(문장)를 저장하면 문맥 의미를 찾아줍니다';
+        desc.innerText = '1단계(단어)와 2단계(문장)를 저장하면 문맥 의미를 찾아줍니다 (+10 XP)';
         del.style.visibility = 'hidden';
         document.getElementById('card12').className = 'step-card current';
         document.getElementById('form12').style.display = 'block';
@@ -3908,9 +3939,15 @@
       document.getElementById('sum12').style.display = 'block';
       renderStep12Summary();
 
+      const isCsvCur = isCsvImportedWord(curItem);
+      const curXp = getWordEarnedXp(curItem);
+      if (step12BadgeEl) step12BadgeEl.innerText = isCsvCur ? 'CSV 등록 (0 XP)' : `+${XP_STEP12_DIRECT} XP`;
+
       if (curItem.star === 'BRONZE') {
-        title.innerText = '1·2단계 완료 (+10 XP)';
-        desc.innerText = '3단계 유의어·반의어를 확인해 다음 별을 채워보세요';
+        title.innerText = isCsvCur ? `CSV 등록 단어 (현재 ${curXp} XP)` : `1·2단계 완료 (누적 +${curXp} XP)`;
+        desc.innerText = isCsvCur
+          ? '직접 3단계 유의어·반의어를 확인하면 +10 XP가 적립됩니다'
+          : '3단계 유의어·반의어를 확인해 +10 XP와 은별을 채워보세요';
         document.getElementById('card3').className = 'step-card current';
         document.getElementById('form3').style.display = 'block';
         document.getElementById('sum3').style.display = 'none';
@@ -3923,8 +3960,8 @@
         renderStep3Summary();
 
         if (curItem.star === 'SILVER') {
-          title.innerText = '3단계 완료 (+30 XP)';
-          desc.innerText = '4단계 나만의 문장을 만들어 학습을 완성하세요';
+          title.innerText = `3단계 완료 (누적 +${curXp} XP)`;
+          desc.innerText = '4단계 나만의 문장을 완성해 +20 XP와 금별을 획득하세요';
           document.getElementById('card4').className = 'step-card current';
           document.getElementById('form4').style.display = 'block';
           document.getElementById('inpMy').value = curItem.mySentence || '';
@@ -3942,7 +3979,7 @@
             document.getElementById('sum4').style.display = 'none';
           }
         } else if (curItem.star === 'GOLD') {
-          title.innerText = '마스터 완성 (+60 XP)';
+          title.innerText = `마스터 완성 (누적 +${curXp} XP)`;
           desc.innerText = '4단계 문장 작성까지 모두 마친 단어입니다';
           document.getElementById('card4').className = 'step-card';
           document.getElementById('form4').style.display = 'none';
@@ -4012,7 +4049,8 @@
       const newItem = {
         id: newId, userId: myUser.userId, userName: myUser.name, word: w,
         meaning: '', sourceSentence: src, aiMeaning: '', synonyms: '', antonyms: '',
-        mySentence: '', aiFeedback: '', star: 'BRONZE', groupName: assignedGroup, updatedAt: kst.full
+        mySentence: '', aiFeedback: '', star: 'BRONZE', isCsv: false, earnedXp: XP_STEP12_DIRECT,
+        groupName: assignedGroup, updatedAt: kst.full
       };
 
       if (assignedGroup) { wordGroupMap[newId] = assignedGroup; saveUserGroupsAndMap(); }
@@ -4071,12 +4109,14 @@
 
       const kst = getNowKST();
       curItem.synonyms = res.synonyms; curItem.antonyms = res.antonyms;
-      curItem.star = 'SILVER'; curItem.updatedAt = kst.full;
+      curItem.star = 'SILVER';
+      curItem.earnedXp = (isCsvImportedWord(curItem) ? 0 : XP_STEP12_DIRECT) + XP_STEP3_DIRECT;
+      curItem.updatedAt = kst.full;
 
       btn.disabled = false; btn.innerText = 'AI · 사전으로 유의어·반의어 확인하기';
       playRewardSound('SILVER'); fireConfetti(false); syncBuilder();
       document.getElementById('inpMy').focus();
-      showToast('3단계 유의어·반의어 확인 완료 (+20 XP)');
+      showToast(`3단계 유의어·반의어 확인 완료 (+${XP_STEP3_DIRECT} XP)`);
 
       await sb.from('words').update({
         synonyms: curItem.synonyms, antonyms: curItem.antonyms, star: 'SILVER', updated_at: kst.full
@@ -4185,14 +4225,18 @@
       }
 
       const newStar = evalResult.isPassed ? 'GOLD' : 'SILVER';
-      curItem.mySentence = my; curItem.aiFeedback = evalResult.feedback; curItem.star = newStar; curItem.updatedAt = kst.full;
+      curItem.mySentence = my; curItem.aiFeedback = evalResult.feedback; curItem.star = newStar;
+      if (evalResult.isPassed) {
+        curItem.earnedXp = (isCsvImportedWord(curItem) ? 0 : XP_STEP12_DIRECT) + XP_STEP3_DIRECT + XP_STEP4_DIRECT;
+      }
+      curItem.updatedAt = kst.full;
 
       btn.disabled = false; btn.innerText = 'AI 피드백 받고 완성하기';
       syncBuilder();
 
       if (evalResult.isPassed) {
         playRewardSound('GOLD'); fireConfetti(true);
-        showToast('4단계 마스터 완성 (+30 XP)! 축하합니다.');
+        showToast(`4단계 마스터 완성 (+${XP_STEP4_DIRECT} XP)! 축하합니다.`);
       } else {
         triggerHaptic([40, 30, 40]);
         showToast('수정 힌트를 참고해 문맥에 맞게 다듬어 보세요.');
@@ -5286,7 +5330,7 @@
         id: newId, userId: myUser.userId, userName: myUser.name, word: item.token,
         meaning: formattedMeaning, sourceSentence: srcLine, aiMeaning: displayAiMeaning,
         synonyms: '', antonyms: '', mySentence: '', aiFeedback: '',
-        star: 'BRONZE', groupName: '고전시가', updatedAt: kst.full
+        star: 'BRONZE', isCsv: false, earnedXp: XP_STEP12_DIRECT, groupName: '고전시가', updatedAt: kst.full
       };
 
       myWords.unshift(newWordObj);
@@ -5408,7 +5452,7 @@
       `).join('');
     }
 
-    // [보안 핵심] 퀴즈 횟수 차감 및 경험치(+15 XP) 지급을 서버 RPC(record_quiz_attempt)에서만 수행
+    // [보안 핵심] 퀴즈 횟수 차감 및 경험치(+10 XP) 지급을 서버 RPC(record_quiz_attempt)에서만 수행
     async function checkQuizAnswer(btnEl, isCorrect) {
       document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
 
@@ -5437,7 +5481,7 @@
         playRewardSound('QUIZ'); fireConfetti(false);
         quizSolveCount++; localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
         renderMyList(); renderBadges();
-        showToast('정답입니다! 보너스 +15 XP 획득');
+        showToast(`정답입니다! 보너스 +${XP_QUIZ_CORRECT} XP 획득`);
       } else {
         btnEl.classList.add('wrong');
         triggerHaptic([40, 30, 40]);
