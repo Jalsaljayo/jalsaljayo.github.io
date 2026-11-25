@@ -252,12 +252,63 @@
     .xp-bar-bg { width: 100%; height: 6px; background: #EDEBE4; border-radius: 999px; overflow: hidden; margin: 8px 0 2px; }
     .xp-bar-fill { height: 100%; background: var(--primary); border-radius: 999px; width: 0%; transition: width 0.4s ease; }
 
-    .daily-quest-box {
-      margin: 0 0 18px 0; padding: 11px 14px; border-radius: 14px;
+    .freeze-notice-banner {
+      margin: 0 0 8px 0; padding: 11px 13px; border-radius: 13px;
+      background: #E0F2FE; border: 1px solid #7DD3FC; color: #0369A1;
+      font-size: 12px; font-weight: 700; line-height: 1.45;
+      display: none; align-items: center; gap: 8px;
+    }
+    .freeze-card {
+      margin: 0 0 8px 0; padding: 14px 15px; border-radius: 16px;
       background: var(--surface); border: 1px solid var(--border);
+    }
+    .freeze-top-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .freeze-slot-wrap {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #F0F9FF; border: 1px solid #BAE6FD; color: #0369A1;
+      padding: 4px 9px; border-radius: 99px; font-size: 11.5px; font-weight: 800;
+    }
+    .freeze-btn-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px;
+    }
+    .btn-freeze-action {
+      width: 100%; padding: 10px 8px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-app);
+      color: var(--text-main); font-size: 11.5px; font-weight: 700;
+      cursor: pointer; text-align: center; line-height: 1.3;
+    }
+    .btn-freeze-action.ready {
+      background: #E0F2FE; border-color: #38BDF8; color: #0369A1; font-weight: 800;
+    }
+    .btn-freeze-action:disabled {
+      opacity: 0.52; cursor: not-allowed;
+    }
+    .btn-freeze-action:active:not(:disabled) {
+      background: var(--primary-soft); border-color: var(--primary);
+    }
+
+    .daily-quest-box {
+      margin: 0 0 18px 0; padding: 13px 15px; border-radius: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 9px;
+    }
+    .daily-quest-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .daily-quest-bonus-pill {
+      font-size: 11px; font-weight: 800; color: var(--primary-dark);
+      background: var(--primary-soft); border: 1px solid #C5DDEC;
+      padding: 3px 8px; border-radius: 99px; white-space: nowrap;
+    }
+    .daily-quest-bonus-pill.claimed {
+      background: #ECFDF5; border-color: #A7F3D0; color: #065F46;
+    }
+    .daily-quest-progress-row {
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
-    .quest-bar-bg { flex: 1; height: 6px; background: #EDEBE4; border-radius: 99px; overflow: hidden; }
+    .quest-bar-bg { flex: 1; height: 7px; background: #EDEBE4; border-radius: 99px; overflow: hidden; }
     .quest-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; }
 
     /* 별 필터 버튼 */
@@ -547,11 +598,89 @@
     .tab-btn.active { color: var(--primary); font-weight: 800; opacity: 1; }
     .tab-icon { height: 21px; display: flex; align-items: center; justify-content: center; }
 
-    /* 퀴즈 및 도감 */
+    /* 퀴즈 다변화 · 콤보 · 오답 노트 및 도감 */
+    .quiz-header-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .quiz-combo-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px;
+      background: #F1EFEA; color: var(--text-sub); border: 1px solid var(--border);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .quiz-combo-pill.active {
+      background: #FEF3C7; color: #B45309; border-color: #FCD34D;
+    }
+    .quiz-combo-pill.hot {
+      background: #FFEDD5; color: #C2410C; border-color: #FDBA74;
+      animation: comboPop 0.32s ease-out;
+    }
+    @keyframes comboPop {
+      0% { transform: scale(0.88); }
+      55% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .quiz-mode-tabs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      background: #EDEBE4; padding: 4px; border-radius: 12px; margin-bottom: 9px;
+    }
+    .quiz-mode-tab {
+      padding: 8.5px 8px; border-radius: 9px; border: none; background: transparent;
+      font-size: 12px; font-weight: 700; color: var(--text-sub); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .quiz-mode-tab.active {
+      background: var(--surface); color: var(--primary); font-weight: 800;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .quiz-mode-tab.review-active {
+      background: #FFF5F5; color: #B91C1C; font-weight: 800;
+      box-shadow: 0 1px 4px rgba(185,28,28,0.08);
+    }
     .quiz-limit-bar {
       display: flex; justify-content: space-between; align-items: center;
       background: var(--primary-soft); border: 1px solid #C5DDEC; border-radius: 12px;
       padding: 9px 13px; margin-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--primary-dark);
+    }
+    .quiz-limit-bar.review-mode {
+      background: #FFF5F5; border-color: #FECACA; color: #B91C1C;
+    }
+    .quiz-type-badge {
+      display: inline-block; font-size: 11px; font-weight: 800;
+      padding: 3px 9px; border-radius: 99px; margin-bottom: 8px;
+      background: var(--primary-soft); color: var(--primary-dark); border: 1px solid #C5DDEC;
+    }
+    .quiz-type-badge.cloze { background: #EEF2FF; color: #3730A3; border-color: #C7D2FE; }
+    .quiz-type-badge.syn { background: #ECFDF5; color: #065F46; border-color: #A7F3D0; }
+    .quiz-type-badge.ant { background: #FFF7ED; color: #9A3412; border-color: #FED7AA; }
+    .quiz-cloze-sentence {
+      background: var(--bg-app); border: 1px dashed var(--primary);
+      border-radius: 12px; padding: 12px 13px; margin: 4px 0 10px;
+      font-size: 14.5px; font-weight: 700; color: var(--text-main); line-height: 1.6;
+      word-break: keep-all; text-align: left;
+    }
+    .quiz-blank-box {
+      display: inline-block; background: #EBF3F7; color: var(--primary-dark);
+      border: 1.5px solid var(--primary); border-radius: 6px;
+      padding: 1px 10px; margin: 0 2px; font-weight: 800; letter-spacing: 1px;
+    }
+    .quiz-feedback-box {
+      display: none; text-align: left; margin: 6px 0 10px;
+      padding: 10px 12px; border-radius: 11px; font-size: 12px; line-height: 1.5;
+      background: var(--bg-app); border: 1px solid var(--border); color: var(--text-main);
+    }
+    .wrong-note-card-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 15px; margin-bottom: 18px;
+    }
+    .wrong-note-item {
+      background: var(--bg-app); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 12px; margin-top: 8px;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+    }
+    .wrong-cnt-tag {
+      display: inline-block; font-size: 10px; font-weight: 800;
+      color: #B91C1C; background: #FEE2E2; padding: 2px 6px; border-radius: 6px; margin-left: 5px;
     }
     .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
     .badge-card {
@@ -561,12 +690,13 @@
     .badge-card.unlocked { opacity: 1; border-color: var(--primary); background: var(--surface); }
     .quiz-box {
       background: var(--surface); border: 1.5px solid var(--primary);
-      border-radius: 16px; padding: 18px; margin-bottom: 18px; text-align: center;
+      border-radius: 16px; padding: 18px; margin-bottom: 14px; text-align: center;
     }
+    .quiz-box.review-box { border-color: #F87171; }
     .quiz-option-btn {
       width: 100%; text-align: left; background: var(--bg-app); border: 1px solid var(--border);
       border-radius: 12px; padding: 13px 14px; margin-bottom: 8px;
-      font-size: 14px; font-weight: 600; color: var(--text-main); cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--text-main); cursor: pointer; line-height: 1.45;
     }
     .quiz-option-btn.correct { background: #EBF3F7; border-color: var(--primary); color: var(--primary-dark); font-weight: 700; }
     .quiz-option-btn.wrong { background: #FEF2F2; border-color: #EF4444; color: #991B1B; }
@@ -856,6 +986,8 @@
       <div id="tab-quiz" class="tab-pane" style="display:none; padding: 12px 16px 24px;">
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">나의 학습 기록</div>
 
+        <div id="streakFreezeNoticeBanner" class="freeze-notice-banner"></div>
+
         <div class="gamify-card">
           <div class="gamify-top">
             <div class="level-badge" id="lvlBadge">Lv.1 어휘 새싹</div>
@@ -868,39 +1000,110 @@
           <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
         </div>
 
-        <div class="daily-quest-box">
-          <div style="font-size:12px; font-weight:700; white-space:nowrap; display:flex; align-items:center; gap:6px;">
-            <span id="questIconBox"></span> 오늘의 목표
+        <!-- [게이밍 2단계] 스트릭 프리즈(연속 학습 방어권) 아이템 카드 -->
+        <div class="freeze-card">
+          <div class="freeze-top-row">
+            <div style="font-size:13px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:6px;">
+              <span id="freezeTitleIcon"></span>
+              <span>스트릭 프리즈 (방어권)</span>
+            </div>
+            <div class="freeze-slot-wrap">
+              <span id="freezeSlotIcons" style="display:inline-flex; align-items:center; gap:3px;"></span>
+              <span id="freezeCountLabel">1 / 2 장착</span>
+            </div>
           </div>
-          <div class="quest-bar-bg"><div class="quest-bar-fill" id="dailyQuestFill"></div></div>
-          <div style="font-size:12px; font-weight:800; color:var(--primary);" id="dailyQuestText">0 / 3</div>
+          <div style="font-size:11.5px; color:var(--text-sub); line-height:1.45;">
+            시험 기간이나 주말에 하루 빠져도 장착된 방어권이 소모되며 <strong>연속 학습 기록을 자동 보호</strong>합니다.
+          </div>
+          <div class="freeze-btn-grid">
+            <button type="button" id="btnBuyFreezeXp" class="btn-freeze-action" onclick="buyStreakFreezeWithXp()">
+              50 XP로 방어권 충전
+            </button>
+            <button type="button" id="btnClaimFreezeQuiz" class="btn-freeze-action" onclick="claimQuizStreakFreeze()">
+              퀴즈 보상 (0/5 정답)
+            </button>
+          </div>
         </div>
 
-        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">스피드 뜻 맞히기 퀴즈 (+10 XP)</div>
+        <!-- [게이밍 2단계] 스트릭 연속 가산 보너스가 적용된 오늘의 목표 카드 -->
+        <div class="daily-quest-box">
+          <div class="daily-quest-head">
+            <div style="font-size:12.5px; font-weight:800; display:flex; align-items:center; gap:6px;">
+              <span id="questIconBox"></span>
+              <span>오늘의 목표 (4단계 단어 3개)</span>
+            </div>
+            <span id="dailyQuestRewardPill" class="daily-quest-bonus-pill">+20 XP 보너스</span>
+          </div>
+          <div class="daily-quest-progress-row">
+            <div class="quest-bar-bg"><div class="quest-bar-fill" id="dailyQuestFill"></div></div>
+            <div style="font-size:12px; font-weight:800; color:var(--primary); white-space:nowrap;" id="dailyQuestText">0 / 3</div>
+          </div>
+          <div id="dailyQuestSubDesc" style="font-size:11px; color:var(--text-sub); line-height:1.4;">
+            3일·7일·14일 연속 학습 시 일일 목표 보너스 XP가 더 커지며, 7일마다 무료 방어권이 추가 지급됩니다!
+          </div>
+          <button type="button" id="btnClaimDailyQuest" class="action-btn btn-primary" style="display:none; padding:10px; font-size:13px;" onclick="claimDailyQuestBonus(false)">
+            오늘의 목표 달성 보너스 받기
+          </button>
+        </div>
 
-        <div class="quiz-limit-bar">
+        <!-- [게이밍 3단계] 다변화 퀴즈 · 연속 콤보 보너스 · 오답 복습 모드 -->
+        <div class="quiz-header-row">
+          <div style="font-size:14px; font-weight:800;">다변화 스피드 퀴즈 (+10 XP)</div>
+          <div id="quizComboBadge" class="quiz-combo-pill">연속 정답 시 콤보 +XP</div>
+        </div>
+
+        <div class="quiz-mode-tabs">
+          <button type="button" id="tabQuizNormal" class="quiz-mode-tab active" onclick="switchQuizPlayMode('NORMAL')">
+            <span>⚡ 실전 퀴즈 (+XP)</span>
+          </button>
+          <button type="button" id="tabQuizReview" class="quiz-mode-tab" onclick="switchQuizPlayMode('REVIEW')">
+            <span id="tabQuizReviewLabel">📝 오답 복습 (0)</span>
+          </button>
+        </div>
+
+        <div class="quiz-limit-bar" id="quizLimitBar">
           <span id="quizRemainLabel">오늘 남은 문제: 10개</span>
           <span id="quizAdRemainLabel">광고 충전: 0 / 3회</span>
         </div>
 
         <div class="quiz-box" id="quizContainer">
           <div id="quizPlayArea">
-            <div id="quizQuestion" style="font-size:20px; font-weight:800; color:var(--primary); margin-bottom:6px;">단어 퀴즈</div>
-            <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:14px;">알맞은 뜻을 골라 보너스 경험치를 획득하세요.</div>
+            <div><span id="quizTypeBadge" class="quiz-type-badge">문맥 뜻 퀴즈</span></div>
+            <div id="quizQuestion" style="font-size:19px; font-weight:800; color:var(--primary); margin-bottom:5px; word-break:keep-all;">단어 퀴즈</div>
+            <div id="quizClozeSentence" class="quiz-cloze-sentence" style="display:none;"></div>
+            <div id="quizSub" style="font-size:12px; color:var(--text-sub); margin-bottom:13px; line-height:1.45;">알맞은 답을 골라 경험치와 콤보 보너스를 획득하세요.</div>
             <div id="quizOptions"></div>
-            <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:8px;" onclick="generateQuiz()">다음 문제 풀기</button>
+            <div id="quizFeedbackBox" class="quiz-feedback-box"></div>
+            <button id="btnNextQuiz" class="action-btn btn-primary" style="display:none; margin-top:6px;" onclick="generateQuiz()">다음 문제 풀기</button>
           </div>
 
           <div id="quizLimitArea" style="display:none; padding: 12px 4px;">
             <div style="margin-bottom:8px;" id="limitIcon"></div>
             <div style="font-size:15px; font-weight:800; margin-bottom:6px;" id="limitTitle">오늘의 기본 10문제를 모두 풀었습니다.</div>
-            <p style="font-size:12px; color:var(--text-sub); margin:0 0 16px 0; line-height:1.5;" id="limitDesc">
-              광고를 1회 시청하면 퀴즈가 추가 충전됩니다.<br>(광고 충전은 하루 최대 3번까지 가능합니다)
+            <p style="font-size:12px; color:var(--text-sub); margin:0 0 14px 0; line-height:1.5;" id="limitDesc">
+              광고를 1회 시청하면 퀴즈가 추가 충전됩니다.<br>(틀린 단어 복습은 위 [오답 복습] 탭에서 횟수 제한 없이 가능합니다!)
             </p>
             <button id="btnWatchAdUnlock" class="btn-watch-ad" onclick="triggerRealGoogleRewardedAd()">
               광고 보고 퀴즈 더 풀기 (3/3 남음)
             </button>
           </div>
+        </div>
+
+        <!-- [게이밍 3단계] 틀린 단어만 모아 완벽히 외울 때까지 푸는 오답 노트 -->
+        <div class="wrong-note-card-wrap" id="wrongNoteSection">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <div style="font-size:13.5px; font-weight:800; display:flex; align-items:center; gap:6px;">
+              <span>나의 오답 노트</span>
+              <span id="wrongNoteCountPill" style="font-size:11px; font-weight:800; background:#FEE2E2; color:#B91C1C; padding:2px 8px; border-radius:99px;">0개</span>
+            </div>
+            <button type="button" id="btnStartWrongReview" onclick="switchQuizPlayMode('REVIEW')" style="background:#FFF5F5; color:#B91C1C; border:1px solid #FECACA; padding:5px 10px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer; display:none;">
+              틀린 단어 복습 풀기 →
+            </button>
+          </div>
+          <div style="font-size:11px; color:var(--text-sub); margin-top:4px; line-height:1.45;">
+            퀴즈에서 틀린 어휘가 자동 기록되며, <strong>[오답 복습]</strong>에서 맞히면 일일 횟수 차감 없이 해결 완료 처리됩니다.
+          </div>
+          <div id="wrongNoteListContainer" style="margin-top:6px;"></div>
         </div>
 
         <div style="font-size:14px; font-weight:800; margin-bottom:8px;">성취 뱃지 도감</div>
@@ -1642,6 +1845,29 @@
     const XP_STEP4_DIRECT  = 20;
     const XP_QUIZ_CORRECT  = 10;
 
+    // [게이밍 2단계 개편] 스트릭 보너스 & 스트릭 프리즈(방어권) 상수
+    const DAILY_QUEST_TARGET = 3;
+    const MAX_STREAK_FREEZES = 2;
+    const STREAK_FREEZE_XP_COST = 50;
+    const QUIZ_CORRECT_FOR_FREEZE = 5;
+
+    // [게이밍 3단계 개편] 연속 정답 콤보 보너스 계산기 (기본 +10 XP / 3콤보 +2 / 5콤보 +5 / 10콤보 +10)
+    function getQuizComboBonusXp(comboCount) {
+      const c = Number(comboCount) || 0;
+      if (c >= 10) return 10;
+      if (c >= 5)  return 5;
+      if (c >= 3)  return 2;
+      return 0;
+    }
+
+    function getDailyQuestBonusXp(streakDays) {
+      const s = Number(streakDays) || 1;
+      if (s >= 14) return 40; // 기본 20 + 14일 연속 가산 20
+      if (s >= 7)  return 30; // 기본 20 + 7일 연속 가산 10
+      if (s >= 3)  return 25; // 기본 20 + 3일 연속 가산 5
+      return 20;              // 기본 일일 목표 달성 보너스 20
+    }
+
     function isCsvImportedWord(wObj) {
       if (!wObj) return false;
       return Boolean(wObj.isCsv) || String(wObj.id || '').startsWith('WCSV_');
@@ -1715,8 +1941,13 @@
     let soundEnabled = true;
     let pendingOAuthSession = null;
     let quizSolveCount = Number(localStorage.getItem('madevoca_quiz_cnt') || 0);
-    let dailyQuizCache = { used: 0, adWatched: 0 };
+    let dailyQuizCache = { used: 0, adWatched: 0, correctToday: 0, combo: 0, maxCombo: 0, questClaimed: false, quizFreezeClaimed: false };
+    let myWrongNotes = [];
+    let quizPlayMode = 'NORMAL'; // 'NORMAL' | 'REVIEW'
+    let currentQuizData = null;
+    let lastQuizSignature = '';
     let dailySynCache = { used: 0, adWatched: 0, serverSynced: false };
+    let streakFreezeProtectedToday = 0;
     let lastPwResetReqAt = 0;
     const MAX_DAILY_SYN_ADS = 5;
 
@@ -1808,6 +2039,7 @@
         case 'soundOff': return `<svg ${s}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>`;
         case 'target': return `<svg ${s}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>`;
         case 'flame': return `<svg ${s}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>`;
+        case 'shield': return `<svg ${s}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v8"/><path d="m8.5 10 7 4"/><path d="m15.5 10-7 4"/></svg>`;
         case 'lock': return `<svg ${s}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
         case 'check': return `<svg ${s}><path d="M20 6 9 17l-5-5"/></svg>`;
         case 'spark': return `<svg ${s}><path d="M12 3v18"/><path d="M3 12h18"/><path d="m18.36 5.64-12.72 12.72"/><path d="m5.64 5.64 12.72 12.72"/></svg>`;
@@ -1824,6 +2056,12 @@
     function getStarSvg(tier, size = 18) {
       const fillMap = { 'NONE': 'none', 'BRONZE': '#E19973', 'SILVER': '#E0E6ED', 'GOLD': '#FDE28A' };
       return `<svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;"><polygon points="12 2.5 14.9 8.6 21.6 9.5 16.7 14.2 17.9 20.9 12 17.7 6.1 20.9 7.3 14.2 2.4 9.5 9.1 8.6" fill="${fillMap[tier] || 'none'}" stroke="${ICON_COLOR}" stroke-width="1.8" stroke-linejoin="round" /></svg>`;
+    }
+
+    function getFreezeShieldSvg(isEquipped, size = 16) {
+      const fillCol = isEquipped ? '#7DD3FC' : 'none';
+      const strokeCol = isEquipped ? '#0284C7' : '#CBD5E1';
+      return `<svg class="star-svg" width="${size}" height="${size}" viewBox="0 0 24 24" style="width:${size}px; height:${size}px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="${fillCol}" stroke="${strokeCol}" stroke-width="1.9" stroke-linejoin="round"/><path d="M12 8v8M9 10l6 4M15 10l-6 4" stroke="${isEquipped ? '#0369A1' : '#CBD5E1'}" stroke-width="1.6" stroke-linecap="round"/></svg>`;
     }
 
     // 오프닝 영상(opening.mp4) 최초 1회 자동 재생 & 다시보기
@@ -1979,10 +2217,199 @@
       }
     }
 
-    // [보안 분리 완료] 일일 퀴즈 & 3단계 유의어 사용량 DB 동기화 (localStorage 삭제 우회 완전 차단)
+    // [게이밍 3단계] 오답 노트 양방향 동기화 (Supabase wrong_notes 테이블 + localStorage 폴백)
+    function saveWrongNotesToLocal() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      try {
+        localStorage.setItem(`madevoca_wrongnotes_${uid}`, JSON.stringify(myWrongNotes));
+      } catch (e) {}
+    }
+
+    async function loadUserWrongNotes() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      myWrongNotes = [];
+      try {
+        const raw = localStorage.getItem(`madevoca_wrongnotes_${uid}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) myWrongNotes = parsed;
+        }
+      } catch (e) {}
+
+      if (uid !== 'guest') {
+        try {
+          const { data, error } = await sb.from('wrong_notes')
+            .select('*')
+            .eq('user_id', uid)
+            .order('updated_at', { ascending: false })
+            .limit(200);
+          if (!error && Array.isArray(data)) {
+            myWrongNotes = data.map(r => ({
+              word: r.word || '',
+              meaning: r.meaning || '',
+              sourceSentence: r.source_sentence || '',
+              synonyms: r.synonyms || '',
+              antonyms: r.antonyms || '',
+              wordId: r.word_id || '',
+              wrongCount: Number(r.wrong_count) || 1,
+              updatedAt: r.updated_at || ''
+            })).filter(it => it.word);
+            saveWrongNotesToLocal();
+          }
+        } catch (e) {}
+      }
+    }
+
+    async function recordWordToWrongNote(itemObj) {
+      if (!itemObj || !itemObj.word) return;
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const kstFull = getNowKST().full;
+      const cleanW = String(itemObj.word).trim();
+      const existingIdx = myWrongNotes.findIndex(n => n.word === cleanW);
+
+      let targetNote = null;
+      if (existingIdx >= 0) {
+        myWrongNotes[existingIdx].wrongCount = (Number(myWrongNotes[existingIdx].wrongCount) || 1) + 1;
+        myWrongNotes[existingIdx].meaning = itemObj.meaning || myWrongNotes[existingIdx].meaning;
+        if (itemObj.sourceSentence) myWrongNotes[existingIdx].sourceSentence = itemObj.sourceSentence;
+        if (itemObj.synonyms) myWrongNotes[existingIdx].synonyms = itemObj.synonyms;
+        if (itemObj.antonyms) myWrongNotes[existingIdx].antonyms = itemObj.antonyms;
+        myWrongNotes[existingIdx].updatedAt = kstFull;
+        targetNote = myWrongNotes.splice(existingIdx, 1)[0];
+        myWrongNotes.unshift(targetNote);
+      } else {
+        targetNote = {
+          word: cleanW,
+          meaning: itemObj.meaning || '',
+          sourceSentence: itemObj.sourceSentence || '',
+          synonyms: itemObj.synonyms || '',
+          antonyms: itemObj.antonyms || '',
+          wordId: itemObj.id || itemObj.wordId || '',
+          wrongCount: 1,
+          updatedAt: kstFull
+        };
+        myWrongNotes.unshift(targetNote);
+        if (myWrongNotes.length > 150) myWrongNotes = myWrongNotes.slice(0, 150);
+      }
+      saveWrongNotesToLocal();
+      renderWrongNotesSection();
+
+      if (uid !== 'guest' && targetNote) {
+        try {
+          await sb.from('wrong_notes').upsert({
+            user_id: uid,
+            word: targetNote.word.slice(0, 60),
+            meaning: String(targetNote.meaning || '').slice(0, 400),
+            source_sentence: String(targetNote.sourceSentence || '').slice(0, 400),
+            synonyms: String(targetNote.synonyms || '').slice(0, 150),
+            antonyms: String(targetNote.antonyms || '').slice(0, 150),
+            word_id: String(targetNote.wordId || '').slice(0, 80),
+            wrong_count: targetNote.wrongCount,
+            updated_at: kstFull
+          }, { onConflict: 'user_id,word' });
+        } catch (e) {}
+      }
+    }
+
+    async function removeWordFromWrongNote(wordStr, showFeedback = false) {
+      if (!wordStr) return;
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      myWrongNotes = myWrongNotes.filter(n => n.word !== wordStr);
+      saveWrongNotesToLocal();
+      renderWrongNotesSection();
+
+      if (uid !== 'guest') {
+        try {
+          await sb.from('wrong_notes').delete().eq('user_id', uid).eq('word', wordStr);
+        } catch (e) {}
+      }
+      if (showFeedback) {
+        showToast(`'${wordStr}' 단어를 오답 노트에서 삭제했습니다.`);
+        if (quizPlayMode === 'REVIEW') generateQuiz();
+      }
+    }
+
+    function getLocalQuestFallbackState() {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const key = `madevoca_quest2_${uid}_${getNowKST().date}`;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return { questClaimed: false, quizCorrectToday: 0, quizCombo: 0, quizMaxCombo: 0, quizFreezeClaimed: false };
+    }
+
+    function saveLocalQuestFallbackState(patch) {
+      const uid = (myUser && myUser.userId) ? myUser.userId : 'guest';
+      const key = `madevoca_quest2_${uid}_${getNowKST().date}`;
+      const next = { ...getLocalQuestFallbackState(), ...patch };
+      try { localStorage.setItem(key, JSON.stringify(next)); } catch (e) {}
+      return next;
+    }
+
+    // [보안 분리 완료] 일일 퀴즈 · 유의어 · 목표 달성 · 방어권 퀴즈 보상 DB 동기화
     async function syncDailyQuizUsageFromDb() {
       if (!myUser || !myUser.userId) return;
       const today = getNowKST().date;
+      const localFb = getLocalQuestFallbackState();
+
+      // 3단계 SQL 패치 버전 조회 (quiz_combo 포함)
+      try {
+        const { data, error } = await sb.from('daily_usage')
+          .select('quiz_used, quiz_ad_watched, syn_used, syn_ad_watched, quiz_correct, quiz_combo, quest_claimed, quiz_freeze_claimed')
+          .eq('user_id', myUser.userId)
+          .eq('usage_date', today)
+          .maybeSingle();
+        if (!error) {
+          const curCombo = data ? (Number(data.quiz_combo) || 0) : 0;
+          dailyQuizCache = {
+            used: data ? (Number(data.quiz_used) || 0) : 0,
+            adWatched: data ? (Number(data.quiz_ad_watched) || 0) : 0,
+            correctToday: data ? (Number(data.quiz_correct) || 0) : 0,
+            combo: curCombo,
+            maxCombo: Math.max(Number(localFb.quizMaxCombo) || 0, curCombo),
+            questClaimed: Boolean(data && data.quest_claimed),
+            quizFreezeClaimed: Boolean(data && data.quiz_freeze_claimed)
+          };
+          dailySynCache = {
+            used: data ? (Number(data.syn_used) || 0) : 0,
+            adWatched: data ? (Number(data.syn_ad_watched) || 0) : 0,
+            serverSynced: true
+          };
+          updateStep3QuotaUI();
+          renderStreakFreezeCard();
+          return;
+        }
+      } catch (e0) {}
+
+      try {
+        const { data, error } = await sb.from('daily_usage')
+          .select('quiz_used, quiz_ad_watched, syn_used, syn_ad_watched, quiz_correct, quest_claimed, quiz_freeze_claimed')
+          .eq('user_id', myUser.userId)
+          .eq('usage_date', today)
+          .maybeSingle();
+        if (!error) {
+          dailyQuizCache = {
+            used: data ? (Number(data.quiz_used) || 0) : 0,
+            adWatched: data ? (Number(data.quiz_ad_watched) || 0) : 0,
+            correctToday: data ? (Number(data.quiz_correct) || 0) : 0,
+            combo: Number(localFb.quizCombo) || 0,
+            maxCombo: Number(localFb.quizMaxCombo) || 0,
+            questClaimed: Boolean(data && data.quest_claimed),
+            quizFreezeClaimed: Boolean(data && data.quiz_freeze_claimed)
+          };
+          dailySynCache = {
+            used: data ? (Number(data.syn_used) || 0) : 0,
+            adWatched: data ? (Number(data.syn_ad_watched) || 0) : 0,
+            serverSynced: true
+          };
+          updateStep3QuotaUI();
+          renderStreakFreezeCard();
+          return;
+        }
+      } catch (e) {}
+
+      // 2단계 SQL 실행 전 하위 호환 폴백
       try {
         const { data, error } = await sb.from('daily_usage')
           .select('quiz_used, quiz_ad_watched, syn_used, syn_ad_watched')
@@ -1992,7 +2419,12 @@
         if (!error) {
           dailyQuizCache = {
             used: data ? (Number(data.quiz_used) || 0) : 0,
-            adWatched: data ? (Number(data.quiz_ad_watched) || 0) : 0
+            adWatched: data ? (Number(data.quiz_ad_watched) || 0) : 0,
+            correctToday: Number(localFb.quizCorrectToday) || 0,
+            combo: Number(localFb.quizCombo) || 0,
+            maxCombo: Number(localFb.quizMaxCombo) || 0,
+            questClaimed: Boolean(localFb.questClaimed),
+            quizFreezeClaimed: Boolean(localFb.quizFreezeClaimed)
           };
           dailySynCache = {
             used: data ? (Number(data.syn_used) || 0) : 0,
@@ -2000,23 +2432,28 @@
             serverSynced: true
           };
           updateStep3QuotaUI();
+          renderStreakFreezeCard();
           return;
         }
-      } catch (e) {}
+      } catch (e2) {}
 
-      // SQL 보안 패치 적용 전 하위 호환 폴백
       try {
         const { data } = await sb.from('daily_usage')
           .select('quiz_used, quiz_ad_watched')
           .eq('user_id', myUser.userId)
           .eq('usage_date', today)
           .maybeSingle();
-        dailyQuizCache = data
-          ? { used: Number(data.quiz_used) || 0, adWatched: Number(data.quiz_ad_watched) || 0 }
-          : { used: 0, adWatched: 0 };
-      } catch (e2) {
-        dailyQuizCache = { used: 0, adWatched: 0 };
+        dailyQuizCache = {
+          used: data ? (Number(data.quiz_used) || 0) : 0,
+          adWatched: data ? (Number(data.quiz_ad_watched) || 0) : 0,
+          correctToday: Number(localFb.quizCorrectToday) || 0,
+          questClaimed: Boolean(localFb.questClaimed),
+          quizFreezeClaimed: Boolean(localFb.quizFreezeClaimed)
+        };
+      } catch (e3) {
+        dailyQuizCache = { used: 0, adWatched: 0, correctToday: 0, combo: 0, maxCombo: 0, questClaimed: false, quizFreezeClaimed: false };
       }
+      renderStreakFreezeCard();
     }
 
     function getNowKST() {
@@ -2085,6 +2522,8 @@
 
       document.getElementById('btnSoundToggle').innerHTML = getLineIcon('soundOn', 18);
       document.getElementById('questIconBox').innerHTML = getStarSvg('GOLD', 16);
+      const fIconEl = document.getElementById('freezeTitleIcon');
+      if (fIconEl) fIconEl.innerHTML = getLineIcon('shield', 16);
       document.getElementById('searchIconBox').innerHTML = getLineIcon('search', 16);
 
       document.getElementById('navIconWords').innerHTML = getLineIcon('book', 19);
@@ -2190,7 +2629,7 @@
 
       if (tabName === 'quiz') {
         await syncDailyQuizUsageFromDb();
-        renderMyList(); renderBadges(); generateQuiz();
+        renderMyList(); renderWrongNotesSection(); renderBadges(); generateQuiz();
       } else if (tabName === 'rank') {
         loadRanking();
       } else if (tabName === 'profile') {
@@ -2377,9 +2816,10 @@
         user_id: email, user_name: name, provider: 'EMAIL', pin: 'EMAIL_AUTH',
         school_info: school, streak: 1, bonus_xp: 0, last_study_date: kst.date, created_at: kst.full, last_access_at: kst.full
       });
-      myUser = { userId: email, name, provider: 'EMAIL', schoolInfo: school, isAdmin, streak: 1, bonusXp: 0 };
+      myUser = { userId: email, name, provider: 'EMAIL', schoolInfo: school, isAdmin, streak: 1, streakFreezes: 1, bonusXp: 0 };
       myWords = await fetchUserWords(email, isAdmin);
       await loadUserGroupsAndMap();
+      await loadUserWrongNotes();
       await syncDailyQuizUsageFromDb();
       setupUserView();
       checkAndPlayFirstOpening();
@@ -2482,21 +2922,39 @@
 
     async function syncStudentStreak(existingRow) {
       const kst = getNowKST();
-      // 1) 서버 보안 RPC(sync_daily_streak) 우선 호출
+      const fallbackFreezes = (existingRow.streak_freezes != null) ? Number(existingRow.streak_freezes) : 1;
+
+      // 1) 서버 보안 RPC(sync_daily_streak) 우선 호출 (방어권 자동 발동 포함)
       try {
         const { data: streakRes, error } = await sb.rpc('sync_daily_streak');
         if (!error && streakRes && streakRes.streak != null) {
-          return Number(streakRes.streak) || 1;
+          return {
+            streak: Number(streakRes.streak) || 1,
+            freezes: (streakRes.freezes != null) ? Number(streakRes.freezes) : fallbackFreezes,
+            freezeUsed: Number(streakRes.freezeUsed) || 0
+          };
         }
       } catch (e) {}
 
       // 2) SQL 패치 전 폴백 계산
       let curStreak = Number(existingRow.streak) || 1;
+      let curFreezes = fallbackFreezes;
+      let usedCnt = 0;
       const lastDate = String(existingRow.last_study_date || '').trim();
-      if (lastDate === kst.yesterday) {
-        curStreak += 1;
-      } else if (lastDate !== kst.date) {
-        curStreak = 1;
+      if (lastDate && lastDate !== kst.date) {
+        if (lastDate === kst.yesterday) {
+          curStreak += 1;
+        } else {
+          const dToday = new Date(kst.date + 'T00:00:00Z');
+          const dLast = new Date(lastDate + 'T00:00:00Z');
+          const missedDays = Math.round((dToday - dLast) / 86400000) - 1;
+          if (missedDays >= 1 && missedDays <= curFreezes) {
+            curFreezes -= missedDays;
+            usedCnt = missedDays;
+          } else {
+            curStreak = 1;
+          }
+        }
       }
       try {
         await sb.from('students').update({
@@ -2505,7 +2963,7 @@
           last_access_at: kst.full
         }).eq('user_id', existingRow.user_id);
       } catch (e2) {}
-      return curStreak;
+      return { streak: curStreak, freezes: curFreezes, freezeUsed: usedCnt };
     }
 
     async function handleAuthenticatedUser(authUser) {
@@ -2521,15 +2979,28 @@
       const isAdmin = (email === ADMIN_EMAIL); // 닉네임 우회 완전 제거
 
       if (existing) {
-        const updatedStreak = await syncStudentStreak(existing);
+        const streakSync = await syncStudentStreak(existing);
+        streakFreezeProtectedToday = streakSync.freezeUsed || 0;
+        if (existing.last_freeze_used_date === getNowKST().date && streakFreezeProtectedToday === 0) {
+          streakFreezeProtectedToday = 1;
+        }
         myUser = {
           userId: existing.user_id, name: existing.user_name, provider: existing.provider || provider,
-          schoolInfo: existing.school_info || '', isAdmin, streak: updatedStreak, bonusXp: existing.bonus_xp || 0
+          schoolInfo: existing.school_info || '', isAdmin,
+          streak: streakSync.streak,
+          streakFreezes: streakSync.freezes,
+          bonusXp: Number(existing.bonus_xp) || 0
         };
         myWords = await fetchUserWords(email, isAdmin);
         await loadUserGroupsAndMap();
+        await loadUserWrongNotes();
         await syncDailyQuizUsageFromDb();
         setupUserView();
+        if (streakSync.freezeUsed > 0) {
+          setTimeout(() => {
+            showToast(`❄️ 스트릭 프리즈가 발동되어 ${myUser.streak}일 연속 기록을 지켰습니다!`);
+          }, 600);
+        }
         checkAndPlayFirstOpening();
         autoHealExistingWordMeanings();
       } else if (provider === 'EMAIL' && metaName) {
@@ -2565,9 +3036,10 @@
         user_id: email, user_name: sname, provider, pin: 'OAUTH',
         school_info: school, streak: 1, bonus_xp: 0, last_study_date: kst.date, created_at: kst.full, last_access_at: kst.full
       });
-      myUser = { userId: email, name: sname, provider, schoolInfo: school, isAdmin, streak: 1, bonusXp: 0 };
+      myUser = { userId: email, name: sname, provider, schoolInfo: school, isAdmin, streak: 1, streakFreezes: 1, bonusXp: 0 };
       myWords = await fetchUserWords(email, isAdmin);
       await loadUserGroupsAndMap();
+      await loadUserWrongNotes();
       await syncDailyQuizUsageFromDb();
 
       btn.disabled = false; btn.innerText = '동의하고 메이드보카 시작하기';
@@ -2619,8 +3091,9 @@
       await sb.auth.signOut();
       cachedAccessToken = '';
       myUser = null; myWords = []; curItem = null;
-      myGroups = []; wordGroupMap = {}; lastAnalyzedPoemData = null;
-      dailyQuizCache = { used: 0, adWatched: 0 };
+      myGroups = []; wordGroupMap = {}; myWrongNotes = []; quizPlayMode = 'NORMAL'; currentQuizData = null; lastAnalyzedPoemData = null;
+      dailyQuizCache = { used: 0, adWatched: 0, correctToday: 0, combo: 0, maxCombo: 0, questClaimed: false, quizFreezeClaimed: false };
+      streakFreezeProtectedToday = 0;
       dailySynCache = { used: 0, adWatched: 0, serverSynced: false };
       showScreen('screen-login');
     }
@@ -2650,6 +3123,7 @@
           localStorage.removeItem(`madevoca_grpdata_${uid}`);
           localStorage.removeItem(`madevoca_synquota_${uid}`);
           localStorage.removeItem(`madevoca_opening_seen_${uid}`);
+          localStorage.removeItem(`madevoca_wrongnotes_${uid}`);
         } catch (e) {}
 
         await sb.auth.signOut();
@@ -3130,7 +3604,203 @@
     function getMyTotalXp() {
       let xp = Number(myUser && myUser.bonusXp ? myUser.bonusXp : 0);
       myWords.forEach(w => { xp += getWordEarnedXp(w); });
-      return xp;
+      return Math.max(0, xp);
+    }
+
+    function getTodayDirectGoldCount() {
+      const todayPrefix = getNowKST().date;
+      let cnt = 0;
+      myWords.forEach(w => {
+        if (w.star === 'GOLD' && w.updatedAt && w.updatedAt.indexOf(todayPrefix) === 0) cnt++;
+      });
+      return cnt;
+    }
+
+    function renderStreakFreezeCard() {
+      const freezes = Math.max(0, Math.min(MAX_STREAK_FREEZES, Number(myUser && myUser.streakFreezes != null ? myUser.streakFreezes : 1)));
+      const slotEl = document.getElementById('freezeSlotIcons');
+      const cntLabel = document.getElementById('freezeCountLabel');
+      const btnBuy = document.getElementById('btnBuyFreezeXp');
+      const btnQuiz = document.getElementById('btnClaimFreezeQuiz');
+      const bannerEl = document.getElementById('streakFreezeNoticeBanner');
+
+      if (bannerEl) {
+        if (streakFreezeProtectedToday > 0) {
+          bannerEl.style.display = 'flex';
+          bannerEl.innerHTML = `${getFreezeShieldSvg(true, 18)} <span>스트릭 프리즈가 자동 발동되어 <strong>${(myUser && myUser.streak) || 1}일 연속</strong> 기록을 지켰어요! 빈 방어권을 다시 충전해 두세요.</span>`;
+        } else {
+          bannerEl.style.display = 'none';
+        }
+      }
+
+      if (slotEl) {
+        slotEl.innerHTML = getFreezeShieldSvg(freezes >= 1, 15) + getFreezeShieldSvg(freezes >= 2, 15);
+      }
+      if (cntLabel) {
+        cntLabel.innerText = `${freezes} / ${MAX_STREAK_FREEZES} 장착`;
+      }
+
+      const totalXp = getMyTotalXp();
+      const isFull = (freezes >= MAX_STREAK_FREEZES);
+
+      if (btnBuy) {
+        if (isFull) {
+          btnBuy.disabled = true;
+          btnBuy.className = 'btn-freeze-action';
+          btnBuy.innerText = `최대 장착 완료 (${MAX_STREAK_FREEZES}/${MAX_STREAK_FREEZES})`;
+        } else if (totalXp < STREAK_FREEZE_XP_COST) {
+          btnBuy.disabled = true;
+          btnBuy.className = 'btn-freeze-action';
+          btnBuy.innerText = `${STREAK_FREEZE_XP_COST} XP로 충전 (${totalXp} XP 보유)`;
+        } else {
+          btnBuy.disabled = false;
+          btnBuy.className = 'btn-freeze-action';
+          btnBuy.innerText = `${STREAK_FREEZE_XP_COST} XP로 방어권 충전`;
+        }
+      }
+
+      if (btnQuiz) {
+        const corr = Number(dailyQuizCache.correctToday) || 0;
+        const claimed = Boolean(dailyQuizCache.quizFreezeClaimed);
+        if (claimed) {
+          btnQuiz.disabled = true;
+          btnQuiz.className = 'btn-freeze-action';
+          btnQuiz.innerText = '오늘 퀴즈 보상 수령 ✓';
+        } else if (isFull) {
+          btnQuiz.disabled = true;
+          btnQuiz.className = 'btn-freeze-action';
+          btnQuiz.innerText = `퀴즈 보상 (${Math.min(corr, QUIZ_CORRECT_FOR_FREEZE)}/${QUIZ_CORRECT_FOR_FREEZE} · 장착 가득 참)`;
+        } else if (corr >= QUIZ_CORRECT_FOR_FREEZE) {
+          btnQuiz.disabled = false;
+          btnQuiz.className = 'btn-freeze-action ready';
+          btnQuiz.innerText = '🎁 무료 방어권 +1 받기!';
+        } else {
+          btnQuiz.disabled = true;
+          btnQuiz.className = 'btn-freeze-action';
+          btnQuiz.innerText = `퀴즈 보상 (${corr}/${QUIZ_CORRECT_FOR_FREEZE} 정답 시 무료)`;
+        }
+      }
+    }
+
+    async function buyStreakFreezeWithXp() {
+      if (!myUser) return;
+      const curFreezes = Number(myUser.streakFreezes != null ? myUser.streakFreezes : 1);
+      if (curFreezes >= MAX_STREAK_FREEZES) {
+        showToast('이미 방어권이 최대(2/2개)로 장착되어 있습니다.');
+        return;
+      }
+      const totalXp = getMyTotalXp();
+      if (totalXp < STREAK_FREEZE_XP_COST) {
+        alert(`방어권 충전에는 ${STREAK_FREEZE_XP_COST} XP가 필요합니다. (현재 보유: ${totalXp} XP)`);
+        return;
+      }
+      if (!confirm(`모아둔 경험치 중 ${STREAK_FREEZE_XP_COST} XP를 사용하여 '스트릭 프리즈(방어권)' 1개를 장착하시겠습니까?`)) return;
+
+      const btn = document.getElementById('btnBuyFreezeXp');
+      if (btn) { btn.disabled = true; btn.innerText = '장착 중...'; }
+
+      try {
+        const { data: res, error } = await sb.rpc('buy_streak_freeze_xp');
+        if (error) {
+          const msg = String(error.message || '');
+          if (msg.includes('MAX_FREEZES_REACHED')) {
+            myUser.streakFreezes = MAX_STREAK_FREEZES;
+            showToast('이미 방어권이 최대(2/2개)로 장착되어 있습니다.');
+          } else if (msg.includes('NOT_ENOUGH_XP')) {
+            alert('보유 XP가 부족합니다.');
+          } else {
+            throw error;
+          }
+        } else if (res) {
+          myUser.streakFreezes = Number(res.freezes);
+          if (res.bonusXp != null) myUser.bonusXp = Number(res.bonusXp);
+          playRewardSound('SILVER');
+          fireConfetti(false);
+          showToast(`❄️ 스트릭 프리즈 장착 완료! (${myUser.streakFreezes}/${MAX_STREAK_FREEZES}개)`);
+        }
+      } catch (err) {
+        alert('방어권 충전 처리 중 오류가 발생했습니다. 2단계 SQL 패치가 실행되었는지 확인해 주세요.\n(' + (err.message || err) + ')');
+      } finally {
+        renderMyList();
+        renderStreakFreezeCard();
+      }
+    }
+
+    async function claimQuizStreakFreeze() {
+      if (!myUser) return;
+      const btn = document.getElementById('btnClaimFreezeQuiz');
+      if (btn) { btn.disabled = true; btn.innerText = '수령 중...'; }
+
+      try {
+        const { data: res, error } = await sb.rpc('claim_quiz_streak_freeze');
+        if (error) {
+          const msg = String(error.message || '');
+          if (msg.includes('ALREADY_CLAIMED')) {
+            dailyQuizCache.quizFreezeClaimed = true;
+            showToast('오늘 퀴즈 보상 방어권을 이미 받으셨습니다.');
+          } else if (msg.includes('MAX_FREEZES_REACHED')) {
+            showToast('방어권 슬롯(2/2개)이 이미 가득 차 있습니다.');
+          } else if (msg.includes('NOT_ENOUGH_QUIZ_CORRECT')) {
+            showToast(`오늘 퀴즈 정답 ${QUIZ_CORRECT_FOR_FREEZE}회를 달성해야 받을 수 있습니다.`);
+          } else {
+            throw error;
+          }
+        } else if (res) {
+          dailyQuizCache.quizFreezeClaimed = true;
+          saveLocalQuestFallbackState({ quizFreezeClaimed: true });
+          myUser.streakFreezes = Number(res.freezes);
+          playRewardSound('GOLD');
+          fireConfetti(true);
+          showToast(`🎁 퀴즈 5정답 보상! 무료 스트릭 프리즈 +1개 획득 (${myUser.streakFreezes}/${MAX_STREAK_FREEZES})`);
+        }
+      } catch (err) {
+        alert('무료 방어권 수령 중 오류가 발생했습니다. 2단계 SQL 패치 적용 여부를 확인해 주세요.\n(' + (err.message || err) + ')');
+      } finally {
+        renderStreakFreezeCard();
+      }
+    }
+
+    async function claimDailyQuestBonus(silentAuto = false) {
+      if (!myUser || dailyQuizCache.questClaimed) return;
+      const todayGold = getTodayDirectGoldCount();
+      if (todayGold < DAILY_QUEST_TARGET) {
+        if (!silentAuto) showToast(`오늘 4단계 완성 단어를 ${DAILY_QUEST_TARGET}개 달성하면 열립니다.`);
+        return;
+      }
+
+      const btn = document.getElementById('btnClaimDailyQuest');
+      if (btn) { btn.disabled = true; btn.innerText = '보너스 지급 중...'; }
+
+      try {
+        const { data: res, error } = await sb.rpc('claim_daily_quest_bonus');
+        if (error) {
+          if (!silentAuto) alert('보너스 수령 중 오류가 발생했습니다: ' + (error.message || error));
+          return;
+        }
+        if (res) {
+          dailyQuizCache.questClaimed = true;
+          saveLocalQuestFallbackState({ questClaimed: true });
+          if (res.bonusXp != null) myUser.bonusXp = Number(res.bonusXp);
+          if (res.freezes != null) myUser.streakFreezes = Number(res.freezes);
+          const rewardXp = Number(res.rewardXp) || getDailyQuestBonusXp(myUser.streak);
+          const gotFreeze = Boolean(res.milestoneFreezeGiven);
+
+          if (!res.alreadyClaimed) {
+            playRewardSound('GOLD');
+            fireConfetti(true);
+            showToast(
+              gotFreeze
+                ? `🔥 오늘의 목표 달성! 스트릭 보너스 +${rewardXp} XP & 7일 연속 무료 방어권 +1개 획득!`
+                : `🔥 오늘의 목표 달성! 연속 학습 보너스 +${rewardXp} XP 추가 지급!`
+            );
+          }
+        }
+      } catch (e) {
+        if (!silentAuto) console.warn('[MadeVoca] claimDailyQuestBonus 대기:', e);
+      } finally {
+        renderMyList();
+        renderStreakFreezeCard();
+      }
     }
 
     // =========================================================================
@@ -3238,12 +3908,18 @@
     };
 
     const FALLBACK_VOCAB = [
-      { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴.' },
-      { word: '고찰', meaning: '사물이나 현상을 깊이 생각하여 살핌.' },
-      { word: '역설', meaning: '겉으로는 모순되나 그 속에 진리가 담긴 표현.' },
-      { word: '간과', meaning: '큰 관심 없이 대강 보아 넘김.' },
-      { word: '귀결', meaning: '어떤 결말이나 결과에 이르게 됨.' },
-      { word: '사상', meaning: '공통점만 취하고 차이점을 버림.' }
+      { word: '배양', meaning: '실력이나 품성 따위를 기르고 발전시킴.', sourceSentence: '독서는 비판적 사고력을 배양하는 가장 좋은 방법이다.', synonyms: '함양, 양성', antonyms: '소멸, 파괴' },
+      { word: '고찰', meaning: '사물이나 현상을 깊이 생각하여 살핌.', sourceSentence: '역사적 배경에 대한 면밀한 고찰이 선행되어야 한다.', synonyms: '탐구, 성찰', antonyms: '간과, 무시' },
+      { word: '역설', meaning: '겉으로는 모순되나 그 속에 진리가 담긴 표현.', sourceSentence: '결별이 축복이라는 시구는 대표적인 역설 표현이다.', synonyms: '모순어법, 패러독스', antonyms: '직설, 정설' },
+      { word: '간과', meaning: '큰 관심 없이 대강 보아 넘김.', sourceSentence: '사소한 단서를 간과하면 사건의 본질을 놓치기 쉽다.', synonyms: '묵과, 외면', antonyms: '주목, 중시' },
+      { word: '귀결', meaning: '어떤 결말이나 결과에 이르게 됨.', sourceSentence: '모든 논의는 결국 인간의 존엄성 문제로 귀결되었다.', synonyms: '결론, 종결', antonyms: '발단, 시작' },
+      { word: '함양', meaning: '능력이나 품성 따위를 오래도록 길러 키움.', sourceSentence: '공동체 의식을 함양하기 위해 다양한 봉사 활동에 참여했다.', synonyms: '배양, 도야', antonyms: '소모, 상실' },
+      { word: '통찰', meaning: '예리한 관찰력으로 사물을 꿰뚫어 봄.', sourceSentence: '작가는 시대의 모순을 예리하게 통찰한 작품을 남겼다.', synonyms: '간파, 직관', antonyms: '맹목, 착각' },
+      { word: '성찰', meaning: '자기가 한 일을 깊이 반성하여 살핌.', sourceSentence: '윤동주의 시에는 부끄러움을 통한 자아 성찰이 잘 드러난다.', synonyms: '반성, 자성', antonyms: '자만, 망각' },
+      { word: '지양', meaning: '더 높은 단계로 오르기 위하여 어떠한 것을 하지 아니함.', sourceSentence: '소모적인 감정 대립을 지양하고 합리적인 대안을 모색하자.', synonyms: '극복, 탈피', antonyms: '지향, 고수' },
+      { word: '지향', meaning: '어떤 목표로 뜻이 쏠리어 향함.', sourceSentence: '그들은 자연과 인간이 조화를 이루는 삶을 지향한다.', synonyms: '추구, 지망', antonyms: '지양, 회피' },
+      { word: '수렴', meaning: '여럿으로 나뉜 의견을 하나로 모아 정리함.', sourceSentence: '학생회는 학급별 건의 사항을 폭넓게 수렴하여 학교에 전달했다.', synonyms: '집약, 통합', antonyms: '발산, 확산' },
+      { word: '괴리', meaning: '서로 어그러져 동떨어짐.', sourceSentence: '이상과 현실 사이의 괴리를 극복하려는 노력이 필요하다.', synonyms: '이질, 단절', antonyms: '일치, 부합' }
     ];
 
     function cleanSenseMarkers(str) {
@@ -3827,9 +4503,40 @@
       document.getElementById('xpNextText').innerText = `다음 레벨까지 ${Math.max(0, lvInfo.max - totalXp)} XP`;
       document.getElementById('xpBarFill').style.width = `${progressPct}%`;
 
-      const questPct = Math.min(100, Math.round((todayGold / 3) * 100));
+      const streakNow = (myUser && myUser.streak) || 1;
+      const expectedQuestBonus = getDailyQuestBonusXp(streakNow);
+      const isMilestone7 = (streakNow >= 7 && streakNow % 7 === 0);
+      const questPct = Math.min(100, Math.round((todayGold / DAILY_QUEST_TARGET) * 100));
       document.getElementById('dailyQuestFill').style.width = `${questPct}%`;
-      document.getElementById('dailyQuestText').innerText = todayGold >= 3 ? '달성 완료' : `${todayGold} / 3`;
+      document.getElementById('dailyQuestText').innerText = `${Math.min(todayGold, DAILY_QUEST_TARGET)} / ${DAILY_QUEST_TARGET}`;
+
+      const qPill = document.getElementById('dailyQuestRewardPill');
+      const qBtn = document.getElementById('btnClaimDailyQuest');
+      const qSub = document.getElementById('dailyQuestSubDesc');
+      if (qPill) {
+        if (dailyQuizCache.questClaimed) {
+          qPill.className = 'daily-quest-bonus-pill claimed';
+          qPill.innerText = `보너스 +${expectedQuestBonus} XP 수령 완료 ✓`;
+        } else {
+          qPill.className = 'daily-quest-bonus-pill';
+          qPill.innerText = `+${expectedQuestBonus} XP${isMilestone7 ? ' + 방어권 1개' : ''}`;
+        }
+      }
+      if (qSub) {
+        qSub.innerText = streakNow >= 3
+          ? `현재 ${streakNow}일 연속 학습 중! 기본 +20 XP에 연속 가산 보너스(+${expectedQuestBonus - 20} XP)가 적용됩니다.`
+          : '3일 연속(+25 XP) · 7일 연속(+30 XP + 방어권) · 14일 연속(+40 XP) 달성 시 보너스가 커집니다!';
+      }
+      if (qBtn) {
+        if (todayGold >= DAILY_QUEST_TARGET && !dailyQuizCache.questClaimed) {
+          qBtn.style.display = 'block';
+          qBtn.disabled = false;
+          qBtn.innerText = `오늘의 목표 보너스 +${expectedQuestBonus} XP 받기`;
+        } else {
+          qBtn.style.display = 'none';
+        }
+      }
+      renderStreakFreezeCard();
 
       renderGroupFilterBar();
 
@@ -4245,6 +4952,10 @@
       await sb.from('words').update({
         my_sentence: my, ai_feedback: evalResult.feedback, star: newStar, updated_at: kst.full
       }).eq('id', curItem.id);
+
+      if (evalResult.isPassed && !dailyQuizCache.questClaimed && getTodayDirectGoldCount() >= DAILY_QUEST_TARGET) {
+        await claimDailyQuestBonus(true);
+      }
     }
 
     async function doDelete() {
@@ -5398,13 +6109,182 @@
       `).join('');
     }
 
+    function renderQuizComboBadge(animatePop = false) {
+      const el = document.getElementById('quizComboBadge');
+      if (!el) return;
+      const combo = Number(dailyQuizCache.combo) || 0;
+      const bonus = getQuizComboBonusXp(combo);
+      el.classList.remove('active', 'hot');
+      void el.offsetWidth;
+
+      if (quizPlayMode === 'REVIEW') {
+        el.innerText = `오답 노트 남음: ${myWrongNotes.length}개`;
+        return;
+      }
+      if (combo <= 0) {
+        el.innerText = '연속 정답 시 콤보 +XP';
+      } else if (combo < 3) {
+        el.classList.add('active');
+        el.innerText = `🔥 ${combo}콤보 (3콤보부터 추가 XP!)`;
+      } else {
+        el.classList.add(animatePop ? 'hot' : 'active');
+        el.innerText = `🔥 ${combo}콤보 진행 중! (정답 시 +${XP_QUIZ_CORRECT + bonus} XP)`;
+      }
+    }
+
+    function renderWrongNotesSection() {
+      const cnt = myWrongNotes.length;
+      const tabReviewLbl = document.getElementById('tabQuizReviewLabel');
+      const cntPill = document.getElementById('wrongNoteCountPill');
+      const startBtn = document.getElementById('btnStartWrongReview');
+      const listBox = document.getElementById('wrongNoteListContainer');
+
+      if (tabReviewLbl) tabReviewLbl.innerText = `📝 오답 복습 (${cnt})`;
+      if (cntPill) cntPill.innerText = `${cnt}개`;
+      if (startBtn) {
+        startBtn.style.display = (cnt > 0 && quizPlayMode !== 'REVIEW') ? 'inline-block' : 'none';
+      }
+      if (!listBox) return;
+
+      if (cnt === 0) {
+        listBox.innerHTML = `<div style="text-align:center; padding:16px 8px; color:var(--text-sub); font-size:12px; background:var(--bg-app); border:1px dashed var(--border); border-radius:11px; margin-top:6px;">현재 미해결 오답 단어가 없습니다! 틀린 문제가 생기면 이곳에 자동 기록됩니다.</div>`;
+        return;
+      }
+
+      listBox.innerHTML = myWrongNotes.slice(0, 15).map((item, idx) => {
+        const matchedMyWord = myWords.find(w => (item.wordId && w.id === item.wordId) || w.word === item.word);
+        const openAttr = matchedMyWord
+          ? `<button type="button" onclick="openBuilder('${escapeHtml(matchedMyWord.id)}')" style="background:var(--surface); border:1px solid var(--border); color:var(--primary); padding:4px 8px; border-radius:7px; font-size:11px; font-weight:700; cursor:pointer;">학습</button>`
+          : '';
+        return `
+          <div class="wrong-note-item">
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:14px; font-weight:800; color:var(--text-main);">
+                <span>${escapeHtml(item.word)}</span>
+                <span class="wrong-cnt-tag">오답 ${Number(item.wrongCount) || 1}회</span>
+              </div>
+              <div style="font-size:12px; color:var(--text-sub); margin-top:3px; line-height:1.4; word-break:keep-all;">
+                ${escapeHtml(item.meaning)}
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:5px; flex-shrink:0;">
+              ${openAttr}
+              <button type="button" data-idx="${idx}" onclick="removeWrongNoteByIndex(Number(this.dataset.idx))" title="오답 노트에서 삭제" style="background:none; border:1px solid var(--border); color:var(--text-sub); width:26px; height:26px; border-radius:7px; font-size:12px; cursor:pointer;">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function removeWrongNoteByIndex(idx) {
+      if (idx < 0 || idx >= myWrongNotes.length) return;
+      const target = myWrongNotes[idx];
+      if (target && target.word) removeWordFromWrongNote(target.word, true);
+    }
+
+    function switchQuizPlayMode(mode) {
+      if (mode === 'REVIEW' && myWrongNotes.length === 0) {
+        showToast('현재 오답 노트에 복습할 단어가 없습니다!');
+        return;
+      }
+      quizPlayMode = (mode === 'REVIEW') ? 'REVIEW' : 'NORMAL';
+      const tabNorm = document.getElementById('tabQuizNormal');
+      const tabRev = document.getElementById('tabQuizReview');
+      const quizBox = document.getElementById('quizContainer');
+      const limitBar = document.getElementById('quizLimitBar');
+
+      if (tabNorm) tabNorm.className = 'quiz-mode-tab' + (quizPlayMode === 'NORMAL' ? ' active' : '');
+      if (tabRev) tabRev.className = 'quiz-mode-tab' + (quizPlayMode === 'REVIEW' ? ' review-active' : '');
+      if (quizBox) quizBox.className = 'quiz-box' + (quizPlayMode === 'REVIEW' ? ' review-box' : '');
+      if (limitBar) limitBar.className = 'quiz-limit-bar' + (quizPlayMode === 'REVIEW' ? ' review-mode' : '');
+
+      renderWrongNotesSection();
+      generateQuiz();
+    }
+
     function updateQuizStatusHeader() {
       const qState = dailyQuizCache;
       const maxAllowed = DAILY_BASE_QUIZ_LIMIT + (Math.min(qState.adWatched, MAX_DAILY_ADS) * QUIZ_REWARD_PER_AD);
       const remaining = Math.max(0, maxAllowed - qState.used);
-      document.getElementById('quizRemainLabel').innerText = `오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
-      document.getElementById('quizAdRemainLabel').innerText = `광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
+
+      if (quizPlayMode === 'REVIEW') {
+        document.getElementById('quizRemainLabel').innerText = `오답 집중 복습 모드 (미해결 ${myWrongNotes.length}개)`;
+        document.getElementById('quizAdRemainLabel').innerText = '일일 횟수 미차감 · 0 XP';
+      } else {
+        document.getElementById('quizRemainLabel').innerText = `오늘 남은 문제: ${remaining}개 (총 ${qState.used}/${maxAllowed}풀이)`;
+        document.getElementById('quizAdRemainLabel').innerText = `광고 충전: ${qState.adWatched} / ${MAX_DAILY_ADS}회`;
+      }
+      renderQuizComboBadge(false);
       return { qState, maxAllowed, remaining };
+    }
+
+    function normalizeQuizPoolItem(rawObj) {
+      const cleanW = String(rawObj.word || '').trim();
+      const cleanM = rawObj.meaning ? getCleanSingleDisplayMeaning(rawObj) : '';
+      let syn = cleanSynAntText(rawObj.synonyms || '', cleanW);
+      let ant = cleanSynAntText(rawObj.antonyms || '', cleanW);
+      let src = String(rawObj.sourceSentence || '').trim();
+
+      // 내장 사전 데이터로 유의어·반의어·예문 보강 (3단계 미완료 단어도 다변화 퀴즈 출제 지원)
+      const cands = getKoreanGrammarBaseCandidates(cleanW, src);
+      for (const c of cands) {
+        if (CORE_SYN_ANT_MAP[c]) {
+          if (!syn && CORE_SYN_ANT_MAP[c].syn) syn = cleanSynAntText(CORE_SYN_ANT_MAP[c].syn, cleanW, c);
+          if (!ant && CORE_SYN_ANT_MAP[c].ant) ant = cleanSynAntText(CORE_SYN_ANT_MAP[c].ant, cleanW, c);
+          break;
+        }
+      }
+      const fbMatch = FALLBACK_VOCAB.find(f => f.word === cleanW);
+      if (fbMatch) {
+        if (!syn) syn = cleanSynAntText(fbMatch.synonyms, cleanW);
+        if (!ant) ant = cleanSynAntText(fbMatch.antonyms, cleanW);
+        if (!src || src.endsWith('의 뜻을 기억해 봅시다.')) src = fbMatch.sourceSentence || src;
+      }
+
+      return {
+        id: rawObj.id || rawObj.wordId || '',
+        word: cleanW,
+        meaning: cleanM || (fbMatch ? fbMatch.meaning : ''),
+        sourceSentence: src,
+        synonyms: syn,
+        antonyms: ant
+      };
+    }
+
+    // 출처 문장 속에서 목표 어휘(또는 활용 어간)를 찾아 빈칸 토큰(__BLANK__)으로 치환
+    function buildClozeMaskedSentence(wordStr, sentenceStr) {
+      const w = String(wordStr || '').trim().replace(/\([^)]*\)/g, '').trim();
+      const s = String(sentenceStr || '').trim();
+      if (!w || !s || s.length < 8 || s.endsWith('의 뜻을 기억해 봅시다.')) return null;
+
+      const tryMaskToken = (tok) => {
+        if (!tok || tok.length < 1) return null;
+        const idx = s.indexOf(tok);
+        if (idx === -1) return null;
+        // 1음절 단어는 앞쪽 경계(공백 또는 문장 시작)가 맞을 때만 치환하여 엉뚱한 글자 마스킹 방지
+        if (tok.length === 1 && idx > 0 && /[가-힣]/.test(s[idx - 1])) return null;
+        return s.slice(0, idx) + '__BLANK__' + s.slice(idx + tok.length);
+      };
+
+      // 1순위: 원형 그대로 포함 여부
+      let masked = tryMaskToken(w);
+      if (masked) return masked;
+
+      // 2순위: '~하다/~되다/~다' 기본형의 어근/어간(2자 이상) 포함 여부
+      const stem = w.replace(/(하다|되다|시키다|다)$/, '').trim();
+      if (stem.length >= 2) {
+        masked = tryMaskToken(stem);
+        if (masked) return masked;
+      }
+      return null;
+    }
+
+    function splitCleanTokens(csvStr) {
+      if (!csvStr) return [];
+      return String(csvStr)
+        .split(/[,/|;·]+/)
+        .map(t => t.trim())
+        .filter(t => t && t !== '없음' && t !== '유사 어휘 없음');
     }
 
     function generateQuiz() {
@@ -5412,50 +6292,235 @@
       const playArea = document.getElementById('quizPlayArea');
       const limitArea = document.getElementById('quizLimitArea');
       const adBtn = document.getElementById('btnWatchAdUnlock');
+      const clozeEl = document.getElementById('quizClozeSentence');
+      const fbBox = document.getElementById('quizFeedbackBox');
 
-      if (remaining <= 0) {
-        playArea.style.display = 'none'; limitArea.style.display = 'block';
+      if (fbBox) { fbBox.style.display = 'none'; fbBox.innerHTML = ''; }
+      if (clozeEl) { clozeEl.style.display = 'none'; clozeEl.innerHTML = ''; }
+
+      // 오답 복습 모드인데 모든 오답을 해결한 경우 자동 전환 안내
+      if (quizPlayMode === 'REVIEW' && myWrongNotes.length === 0) {
+        showToast('🎉 오답 노트의 모든 단어를 완벽히 정복했습니다! 실전 퀴즈로 돌아갑니다.');
+        switchQuizPlayMode('NORMAL');
+        return;
+      }
+
+      if (quizPlayMode === 'NORMAL' && remaining <= 0) {
+        playArea.style.display = 'none';
+        limitArea.style.display = 'block';
         const adsLeft = Math.max(0, MAX_DAILY_ADS - qState.adWatched);
+        const reviewHint = myWrongNotes.length > 0
+          ? `<br><span style="color:#B91C1C; font-weight:700;">💡 위 [오답 복습 (${myWrongNotes.length})] 탭에서는 횟수 제한 없이 틀린 단어를 복습할 수 있어요!</span>`
+          : '';
         if (adsLeft > 0) {
           document.getElementById('limitIcon').innerHTML = getLineIcon('lock', 28);
           document.getElementById('limitTitle').innerText = qState.adWatched === 0 ? '오늘의 기본 10문제를 모두 풀었습니다.' : '충전한 퀴즈를 모두 풀었습니다.';
-          document.getElementById('limitDesc').innerHTML = `광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있습니다.<br>(오늘 남은 광고 시청 횟수: <strong>${adsLeft}회</strong> / 최대 ${MAX_DAILY_ADS}회)`;
+          document.getElementById('limitDesc').innerHTML = `광고를 1회 시청하면 <strong>+${QUIZ_REWARD_PER_AD}문제</strong>를 더 풀 수 있습니다. (남은 충전 <strong>${adsLeft}/${MAX_DAILY_ADS}회</strong>)${reviewHint}`;
           adBtn.disabled = false;
           adBtn.innerText = `광고 보고 +${QUIZ_REWARD_PER_AD}문제 더 풀기 (${adsLeft}/${MAX_DAILY_ADS} 남음)`;
         } else {
           document.getElementById('limitIcon').innerHTML = getLineIcon('check', 28);
-          document.getElementById('limitTitle').innerText = '오늘의 모든 퀴즈와 충전을 완료했습니다.';
-          document.getElementById('limitDesc').innerHTML = `오늘 기본 10문제와 광고 충전(${MAX_DAILY_ADS}회)을 모두 마쳤습니다.<br>내일 자정에 새로운 퀴즈가 열립니다.`;
+          document.getElementById('limitTitle').innerText = '오늘의 모든 실전 퀴즈와 충전을 완료했습니다.';
+          document.getElementById('limitDesc').innerHTML = `내일 자정에 새로운 실전 퀴즈가 열립니다.${reviewHint}`;
           adBtn.disabled = true;
           adBtn.innerText = '오늘 광고 시청 한도 완료 (3/3)';
         }
         return;
       }
 
-      playArea.style.display = 'block'; limitArea.style.display = 'none';
+      playArea.style.display = 'block';
+      limitArea.style.display = 'none';
       document.getElementById('btnNextQuiz').style.display = 'none';
 
-      const pool = myWords.map(w => ({ word: w.word, meaning: getCleanSingleDisplayMeaning(w) }));
-      FALLBACK_VOCAB.forEach(fb => { if (!pool.some(p => p.word === fb.word)) pool.push(fb); });
+      // 전체 어휘 풀 구성 (내 단어 + 오답 방지용 기본 어휘 풀)
+      const fullPool = myWords.map(w => normalizeQuizPoolItem(w)).filter(p => p.word && p.meaning);
+      FALLBACK_VOCAB.forEach(fb => {
+        if (!fullPool.some(p => p.word === fb.word)) {
+          fullPool.push(normalizeQuizPoolItem(fb));
+        }
+      });
 
-      const targetPool = myWords.length > 0 ? myWords.map(w => ({ word: w.word, meaning: getCleanSingleDisplayMeaning(w) })) : pool;
-      const answerItem = targetPool[Math.floor(Math.random() * targetPool.length)];
-      const wrongPool = pool.filter(p => p.word !== answerItem.word).sort(() => Math.random() - 0.5).slice(0, 3);
-      const choices = [answerItem, ...wrongPool].sort(() => Math.random() - 0.5);
+      let targetPool = [];
+      if (quizPlayMode === 'REVIEW') {
+        targetPool = myWrongNotes.map(n => normalizeQuizPoolItem(n)).filter(p => p.word && p.meaning);
+      } else {
+        targetPool = myWords.length > 0
+          ? myWords.map(w => normalizeQuizPoolItem(w)).filter(p => p.word && p.meaning)
+          : fullPool;
+      }
+      if (targetPool.length === 0) targetPool = fullPool;
 
-      document.getElementById('quizQuestion').innerText = `Q. "${answerItem.word}"`;
-      document.getElementById('quizSub').innerText = '이 단어의 가장 알맞은 뜻은 무엇일까요?';
+      // 유형별 출제 가능 후보 분류 (1: 뜻 고르기 / 2: 출처 문장 빈칸 / 3: 유의어 매칭 / 4: 반의어 매칭)
+      const clozeCandidates = targetPool.filter(p => Boolean(buildClozeMaskedSentence(p.word, p.sourceSentence)));
+      const synCandidates = targetPool.filter(p => splitCleanTokens(p.synonyms).length > 0);
+      const antCandidates = targetPool.filter(p => splitCleanTokens(p.antonyms).length > 0);
+
+      const availableTypes = ['MEANING'];
+      if (clozeCandidates.length > 0) availableTypes.push('CLOZE', 'CLOZE'); // 빈칸 채우기 비중 강화
+      if (synCandidates.length > 0) availableTypes.push('SYNONYM');
+      if (antCandidates.length > 0) availableTypes.push('ANTONYM');
+
+      const chosenType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+      let typePool = targetPool;
+      if (chosenType === 'CLOZE') typePool = clozeCandidates;
+      else if (chosenType === 'SYNONYM') typePool = synCandidates;
+      else if (chosenType === 'ANTONYM') typePool = antCandidates;
+
+      // 직전 문제와 동일한 단어·유형 연속 출제 최소화
+      if (typePool.length > 1 && lastQuizSignature) {
+        const nonRepeat = typePool.filter(p => `${chosenType}:${p.word}` !== lastQuizSignature);
+        if (nonRepeat.length > 0) typePool = nonRepeat;
+      }
+
+      const answerItem = typePool[Math.floor(Math.random() * typePool.length)];
+      lastQuizSignature = `${chosenType}:${answerItem.word}`;
+
+      const badgeEl = document.getElementById('quizTypeBadge');
+      const qTitleEl = document.getElementById('quizQuestion');
+      const qSubEl = document.getElementById('quizSub');
+      const modePrefix = (quizPlayMode === 'REVIEW') ? '오답 복습 · ' : '';
+
+      let choices = [];
+
+      if (chosenType === 'CLOZE') {
+        const masked = buildClozeMaskedSentence(answerItem.word, answerItem.sourceSentence) || `__BLANK__: ${answerItem.meaning}`;
+        const safeParts = masked.split('__BLANK__').map(part => escapeHtml(part));
+        if (badgeEl) { badgeEl.className = 'quiz-type-badge cloze'; badgeEl.innerText = `${modePrefix}출처 문장 빈칸 채우기`; }
+        qTitleEl.innerText = '빈칸에 들어갈 알맞은 어휘는?';
+        if (clozeEl) {
+          clozeEl.style.display = 'block';
+          clozeEl.innerHTML = `"${safeParts.join('<span class="quiz-blank-box">ㅤㅤㅤ</span>')}"`;
+        }
+        qSubEl.innerText = `문맥 힌트: ${answerItem.meaning}`;
+
+        const distractorWords = [];
+        const shuffled = [...fullPool].sort(() => Math.random() - 0.5);
+        for (const p of shuffled) {
+          if (p.word !== answerItem.word && !distractorWords.includes(p.word)) {
+            distractorWords.push(p.word);
+            if (distractorWords.length >= 3) break;
+          }
+        }
+        choices = [
+          { label: answerItem.word, isCorrect: true },
+          ...distractorWords.map(w => ({ label: w, isCorrect: false }))
+        ].sort(() => Math.random() - 0.5);
+
+        currentQuizData = { type: 'CLOZE', item: answerItem, correctLabel: answerItem.word, choices };
+      } else if (chosenType === 'SYNONYM' || chosenType === 'ANTONYM') {
+        const isSyn = (chosenType === 'SYNONYM');
+        const ansTokens = splitCleanTokens(isSyn ? answerItem.synonyms : answerItem.antonyms);
+        const correctTok = ansTokens[Math.floor(Math.random() * ansTokens.length)];
+        const forbiddenSet = new Set([
+          answerItem.word,
+          ...splitCleanTokens(answerItem.synonyms),
+          ...splitCleanTokens(answerItem.antonyms)
+        ]);
+
+        // 오답 보기 풀 수집 (다른 단어의 유의어·반의어·표제어 중 정답과 겹치지 않는 순수 한글 어휘)
+        const distractorPool = [];
+        fullPool.forEach(p => {
+          [p.word, ...splitCleanTokens(p.synonyms), ...splitCleanTokens(p.antonyms)].forEach(cand => {
+            const cleanCand = String(cand || '').replace(/\([^)]*\)/g, '').trim();
+            if (cleanCand && !forbiddenSet.has(cleanCand) && !distractorPool.includes(cleanCand)) {
+              distractorPool.push(cleanCand);
+            }
+          });
+        });
+        const pickedWrong = distractorPool.sort(() => Math.random() - 0.5).slice(0, 3);
+
+        if (badgeEl) {
+          badgeEl.className = 'quiz-type-badge ' + (isSyn ? 'syn' : 'ant');
+          badgeEl.innerText = `${modePrefix}${isSyn ? '유의어(비슷한말) 매칭' : '반의어(반대말) 매칭'}`;
+        }
+        qTitleEl.innerText = `Q. "${answerItem.word}"의 ${isSyn ? '유의어' : '반의어'}`;
+        qSubEl.innerText = `문맥 의미: ${answerItem.meaning}`;
+
+        choices = [
+          { label: correctTok, isCorrect: true },
+          ...pickedWrong.map(w => ({ label: w, isCorrect: false }))
+        ].sort(() => Math.random() - 0.5);
+
+        currentQuizData = { type: chosenType, item: answerItem, correctLabel: correctTok, choices };
+      } else {
+        // 기본 유형: 문맥 뜻 맞히기 (MEANING)
+        if (badgeEl) { badgeEl.className = 'quiz-type-badge'; badgeEl.innerText = `${modePrefix}문맥 뜻 맞히기`; }
+        qTitleEl.innerText = `Q. "${answerItem.word}"`;
+        qSubEl.innerText = '이 단어의 가장 알맞은 문맥적 의미는 무엇일까요?';
+
+        const wrongMeanings = [];
+        const shuffled = [...fullPool].sort(() => Math.random() - 0.5);
+        for (const p of shuffled) {
+          if (p.word !== answerItem.word && p.meaning !== answerItem.meaning && !wrongMeanings.includes(p.meaning)) {
+            wrongMeanings.push(p.meaning);
+            if (wrongMeanings.length >= 3) break;
+          }
+        }
+        choices = [
+          { label: answerItem.meaning, isCorrect: true },
+          ...wrongMeanings.map(m => ({ label: m, isCorrect: false }))
+        ].sort(() => Math.random() - 0.5);
+
+        currentQuizData = { type: 'MEANING', item: answerItem, correctLabel: answerItem.meaning, choices };
+      }
+
       document.getElementById('quizOptions').innerHTML = choices.map((c, idx) => `
-        <button type="button" class="quiz-option-btn" onclick="checkQuizAnswer(this, ${c.word === answerItem.word})">
-          ${idx + 1}. ${escapeHtml(c.meaning)}
+        <button type="button" class="quiz-option-btn" data-cidx="${idx}" onclick="checkQuizAnswer(this, Number(this.dataset.cidx))">
+          ${idx + 1}. ${escapeHtml(c.label)}
         </button>
       `).join('');
     }
 
-    // [보안 핵심] 퀴즈 횟수 차감 및 경험치(+10 XP) 지급을 서버 RPC(record_quiz_attempt)에서만 수행
-    async function checkQuizAnswer(btnEl, isCorrect) {
-      document.querySelectorAll('.quiz-option-btn').forEach(b => b.disabled = true);
+    // [보안 핵심] 실전 모드는 서버 RPC(record_quiz_attempt)로 횟수·콤보 보너스 XP 검증 / 복습 모드는 횟수 미차감·오답 졸업 처리
+    async function checkQuizAnswer(btnEl, choiceIdx) {
+      if (!currentQuizData || !currentQuizData.choices[choiceIdx]) return;
+      const picked = currentQuizData.choices[choiceIdx];
+      const isCorrect = Boolean(picked.isCorrect);
+      const ansItem = currentQuizData.item;
 
+      const allBtns = Array.from(document.querySelectorAll('.quiz-option-btn'));
+      allBtns.forEach((b, idx) => {
+        b.disabled = true;
+        if (currentQuizData.choices[idx] && currentQuizData.choices[idx].isCorrect) {
+          b.classList.add('correct');
+        }
+      });
+      if (!isCorrect) {
+        btnEl.classList.add('wrong');
+      }
+
+      // 1줄 핵심 해설 피드백 표시
+      const fbBox = document.getElementById('quizFeedbackBox');
+      if (fbBox && ansItem) {
+        const synInfo = ansItem.synonyms ? `<div style="margin-top:3px; color:var(--text-sub);">유의어: ${escapeHtml(ansItem.synonyms)}${ansItem.antonyms ? ` · 반의어: ${escapeHtml(ansItem.antonyms)}` : ''}</div>` : '';
+        fbBox.style.display = 'block';
+        fbBox.innerHTML = `<strong style="color:var(--primary-dark);">[${escapeHtml(ansItem.word)}]</strong> ${escapeHtml(ansItem.meaning)}${synInfo}`;
+      }
+
+      // A. 오답 복습 모드 (일일 횟수 미차감 · 0 XP · 맞히면 오답 노트 졸업!)
+      if (quizPlayMode === 'REVIEW') {
+        if (isCorrect) {
+          playRewardSound('QUIZ');
+          fireConfetti(false);
+          await removeWordFromWrongNote(ansItem.word, false);
+          updateQuizStatusHeader();
+          showToast(`🎉 복습 성공! '${ansItem.word}' 단어가 오답 노트에서 해결되었습니다.`);
+        } else {
+          triggerHaptic([40, 30, 40]);
+          await recordWordToWrongNote(ansItem);
+          updateQuizStatusHeader();
+          showToast('아직 헷갈리는 단어예요. 해설을 확인하고 한 번 더 도전해 보세요!');
+        }
+        const nextBtn = document.getElementById('btnNextQuiz');
+        nextBtn.style.display = 'block';
+        nextBtn.innerText = myWrongNotes.length > 0
+          ? `다음 오답 복습하기 (남은 오답 ${myWrongNotes.length}개)`
+          : '🎉 오답 복습 모두 완료! 실전 퀴즈로 돌아가기';
+        return;
+      }
+
+      // B. 실전 퀴즈 모드 (서버 검증 +10 XP 기본 + 연속 콤보 보너스 XP)
+      let earnedThisTurn = isCorrect ? XP_QUIZ_CORRECT : 0;
       try {
         const { data: rpcRes, error } = await sb.rpc('record_quiz_attempt', { p_is_correct: Boolean(isCorrect) });
         if (error) throw error;
@@ -5463,6 +6528,33 @@
         if (rpcRes) {
           dailyQuizCache.used = Number(rpcRes.used) || (dailyQuizCache.used + 1);
           dailyQuizCache.adWatched = Number(rpcRes.adWatched) || dailyQuizCache.adWatched;
+          if (rpcRes.quizCorrect != null) {
+            dailyQuizCache.correctToday = Number(rpcRes.quizCorrect) || 0;
+          } else if (isCorrect) {
+            dailyQuizCache.correctToday = (Number(dailyQuizCache.correctToday) || 0) + 1;
+          }
+
+          if (rpcRes.combo != null) {
+            dailyQuizCache.combo = Number(rpcRes.combo) || 0;
+          } else {
+            dailyQuizCache.combo = isCorrect ? ((Number(dailyQuizCache.combo) || 0) + 1) : 0;
+          }
+          dailyQuizCache.maxCombo = Math.max(Number(dailyQuizCache.maxCombo) || 0, dailyQuizCache.combo);
+
+          if (rpcRes.earnedXp != null) {
+            earnedThisTurn = Number(rpcRes.earnedXp) || 0;
+          } else if (isCorrect) {
+            earnedThisTurn = XP_QUIZ_CORRECT + getQuizComboBonusXp(dailyQuizCache.combo);
+          }
+
+          if (rpcRes.quizFreezeClaimed != null) {
+            dailyQuizCache.quizFreezeClaimed = Boolean(rpcRes.quizFreezeClaimed);
+          }
+          saveLocalQuestFallbackState({
+            quizCorrectToday: dailyQuizCache.correctToday,
+            quizCombo: dailyQuizCache.combo,
+            quizMaxCombo: dailyQuizCache.maxCombo
+          });
           if (myUser && rpcRes.bonusXp != null) {
             myUser.bonusXp = Number(rpcRes.bonusXp);
           }
@@ -5477,15 +6569,29 @@
       const { remaining } = updateQuizStatusHeader();
 
       if (isCorrect) {
-        btnEl.classList.add('correct');
-        playRewardSound('QUIZ'); fireConfetti(false);
-        quizSolveCount++; localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
-        renderMyList(); renderBadges();
-        showToast(`정답입니다! 보너스 +${XP_QUIZ_CORRECT} XP 획득`);
+        const comboNow = Number(dailyQuizCache.combo) || 1;
+        const comboExtra = Math.max(0, earnedThisTurn - XP_QUIZ_CORRECT);
+        playRewardSound(comboNow >= 5 ? 'GOLD' : 'QUIZ');
+        fireConfetti(comboNow >= 5);
+        renderQuizComboBadge(comboNow >= 3);
+        quizSolveCount++;
+        localStorage.setItem('madevoca_quiz_cnt', quizSolveCount);
+        renderMyList();
+        renderBadges();
+
+        const curFreezes = Number(myUser && myUser.streakFreezes != null ? myUser.streakFreezes : 1);
+        if (dailyQuizCache.correctToday === QUIZ_CORRECT_FOR_FREEZE && !dailyQuizCache.quizFreezeClaimed && curFreezes < MAX_STREAK_FREEZES) {
+          showToast(`정답! +${earnedThisTurn} XP · 위 방어권 카드에서 무료 방어권을 받으세요!`);
+        } else if (comboExtra > 0) {
+          showToast(`🔥 ${comboNow}연속 콤보 정답! +${XP_QUIZ_CORRECT} XP + 콤보 보너스 +${comboExtra} XP!`);
+        } else {
+          showToast(`정답입니다! +${earnedThisTurn} XP 획득 (${comboNow}콤보)`);
+        }
       } else {
-        btnEl.classList.add('wrong');
         triggerHaptic([40, 30, 40]);
-        showToast('아쉽네요. 뜻을 다시 확인해 보세요.');
+        renderQuizComboBadge(false);
+        await recordWordToWrongNote(ansItem);
+        showToast(`아쉽네요! '${ansItem.word}' 단어가 오답 노트에 자동 추가되었습니다.`);
       }
 
       const nextBtn = document.getElementById('btnNextQuiz');
@@ -5854,5 +6960,6 @@
       `).join('');
     }
   </script>
+  <script src="./league.js"></script>
 </body>
 </html>
